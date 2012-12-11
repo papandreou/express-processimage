@@ -9,8 +9,8 @@
     "dependencies": {
         "express-hijackresponse": "=0.0.7",
         "gm": "=1.6.1",
-        "jpegtran": "=0.0.3",
-        "optipng": "=0.0.3",
+        "jpegtran": "=0.0.4",
+        "optipng": "=0.0.4",
         "passerror": "=0.0.1",
         "pngcrush": "=0.0.3",
         "pngquant": "=0.0.3"
