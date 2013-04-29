@@ -9,6 +9,7 @@
     "dependencies": {
         "express-hijackresponse": "=0.0.7",
         "gm": "=1.6.1",
+        "inkscape": "=0.0.1",
         "jpegtran": "=0.0.4",
         "optipng": "=0.0.4",
         "passerror": "=0.0.1",
