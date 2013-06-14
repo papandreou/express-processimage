@@ -15,7 +15,7 @@
         "passerror": "=0.0.1",
         "pngcrush": "=0.0.3",
         "pngquant": "=0.0.3",
-        "svgfilter": "=0.2.0"
+        "svgfilter": "=0.2.1"
     },
     "devDependencies": {
         "expect.js": "=0.2.0",
