@@ -1,10 +1,10 @@
 {
     "name": "express-processimage",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Express middleware that processes served images according to the query string",
     "main": "lib/processImage.js",
     "directories": {
-      "test": "test"
+        "test": "test"
     },
     "dependencies": {
         "express-hijackresponse": "=0.0.7",
