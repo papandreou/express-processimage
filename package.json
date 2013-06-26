@@ -14,7 +14,9 @@
         "optipng": "=0.0.4",
         "passerror": "=0.0.1",
         "pngcrush": "=0.0.3",
-        "pngquant": "=0.0.3",
+        "pngquant": "=0.0.3"
+    },
+    "optionalDependencies": {
         "svgfilter": "=0.2.1"
     },
     "devDependencies": {
