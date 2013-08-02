@@ -24,10 +24,16 @@ describe('test server', function () {
         server;
 
     before(function (done) {
+        var root = Path.resolve(__dirname, 'root') + '/';
         server = express()
-            .use(processImage())
-            .use(express.static(Path.resolve(__dirname, 'root')))
-            .use(express.errorHandler())
+            .use(processImage({root: root}))
+            .use(express.static(root))
+            .use(function errorHandler(err, req, res, next) {
+                res.writeHead(500, {
+                    'content-type': 'text/plain'
+                });
+                res.end(err.stack || err);
+            })
             .listen(portNumber, done);
     });
 
@@ -118,6 +124,16 @@ describe('test server', function () {
                 expect(metadata.size.height).to.equal(300);
                 done();
             }));
+        }));
+    });
+
+    it('should run the image through svgfilter when the svgfilter parameter is specified', function (done) {
+        request({url: baseUrl + '/dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId'}, passError(done, function (response, svgText) {
+            expect(response.statusCode).to.equal(200);
+            expect(response.headers['content-type']).to.equal('image/svg+xml');
+            expect(svgText).to.match(/<svg/);
+            expect(svgText).to.match(/id="theBogusElementId"/);
+            done();
         }));
     });
 

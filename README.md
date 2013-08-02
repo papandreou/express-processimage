@@ -28,10 +28,11 @@ Query string syntax
 -------------------
 
 `express-processimages` supports `pngcrush`, `pngquant`, `optipng`,
-`jpegtran`, and all methods listed under "manipulation" and "drawing
-primitives" in the <a
-href="https://github.com/aheckmann/gm#methods">documentation for the
-gm module</a>.
+`jpegtran`, <a
+href="https://github.com/papandreou/node-svgfilter">`svgfilter`</a>,
+and all methods listed under "manipulation" and "drawing primitives"
+in the <a href="https://github.com/aheckmann/gm#methods">documentation
+for the gm module</a>.
 
 Multiple tools can be applied to the same image (separated by `&`, and
 the order is significant). Arguments for the individual tools are
@@ -43,6 +44,7 @@ http://localhost:1337/myImage.png?pngcrush=-rem+alla
 http://localhost:1337/myImage.png?optipng=-o7
 http://localhost:1337/bigImage.png?resize=400,300&pngquant=128&pngcrush
 http://localhost:1337/hello.png?setFormat=gif
+http://localhost:1337/file.svg?svgfilter=--runScript=makeItBlue.js
 ```
 
 Installation
@@ -59,13 +61,18 @@ Express 3.0 syntax:
 
 ```javascript
 var express = require('express'),
-    processImages = require('express-processimages');
+    processImages = require('express-processimages'),
+    root = '/path/to/my/static/files';
 
 express()
-    .use(processImages())
-    .use(express.static('/path/to/my/static/files'))
+    .use(processImages({root: root}))
+    .use(express.static(root))
     .listen(1337);
 ```
+
+The `root` option is used by <a
+href="https://github.com/papandreou/node-svgfilter">node-svgfilter</a>
+for finding the location of external JavaScript files to run on the SVG document.
 
 License
 -------
