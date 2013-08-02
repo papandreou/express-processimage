@@ -17,7 +17,7 @@
         "pngquant": "=0.0.3"
     },
     "optionalDependencies": {
-        "svgfilter": "=0.3.0"
+        "svgfilter": "=0.3.1"
     },
     "devDependencies": {
         "expect.js": "=0.2.0",
