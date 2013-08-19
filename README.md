@@ -16,19 +16,20 @@ The response will be be processed under these circumstances:
 * If the request has a query string and accepts `image/*`.
 * If the response is served with a `Content-Type` of `image/*`.
 
-`express-processimages` plays nice with conditional GET. If the
-original response has an ETag, `express-processimages` will add to it
+`express-processimage` plays nice with conditional GET. If the
+original response has an ETag, `express-processimage` will add to it
 so the ETag of the processed image never clashes with the original
 ETag. That prevents the middleware issuing the original response from
 being confused into sending a false positive `304 Not Modified` if
-`express-processimages` is turned off or removed from the stack later.
+`express-processimage` is turned off or removed from the stack later.
 
 
 Query string syntax
 -------------------
 
-`express-processimages` supports `pngcrush`, `pngquant`, `optipng`,
+`express-processimage` supports `pngcrush`, `pngquant`, `optipng`,
 `jpegtran`, <a
+href="https://github.com/papandreou/node-inkscape">`inkscape`</a>, <a
 href="https://github.com/papandreou/node-svgfilter">`svgfilter`</a>,
 and all methods listed under "manipulation" and "drawing primitives"
 in the <a href="https://github.com/aheckmann/gm#methods">documentation
@@ -52,7 +53,7 @@ Installation
 
 Make sure you have node.js and npm installed, then run:
 
-    npm install express-processimages
+    npm install express-processimage
 
 Example usage
 -------------
@@ -61,11 +62,11 @@ Express 3.0 syntax:
 
 ```javascript
 var express = require('express'),
-    processImages = require('express-processimages'),
+    processImage = require('express-processimage'),
     root = '/path/to/my/static/files';
 
 express()
-    .use(processImages({root: root}))
+    .use(processImage({root: root}))
     .use(express.static(root))
     .listen(1337);
 ```
