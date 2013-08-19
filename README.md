@@ -45,6 +45,7 @@ http://localhost:1337/myImage.png?pngcrush=-rem+alla
 http://localhost:1337/myImage.png?optipng=-o7
 http://localhost:1337/bigImage.png?resize=400,300&pngquant=128&pngcrush
 http://localhost:1337/hello.png?setFormat=gif
+http://localhost:1337/logo.svg?inkscape
 http://localhost:1337/file.svg?svgfilter=--runScript=makeItBlue.js
 ```
 
