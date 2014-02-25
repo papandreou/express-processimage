@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+var fs = require('fs'),
+    getFiltersAndTargetContentTypeFromQueryString = require('../lib/getFiltersAndTargetContentTypeFromQueryString'),
+    commandLineOptions = require('optimist')
+        .usage('$0 imageProcessingSpec [-o outputFileName]')
+        .option('o', {
+            alias: 'output',
+            describe: 'The file to output'
+        })
+        .demand(1)
+        .argv;
+
+var filtersAndTargetContentType = getFiltersAndTargetContentTypeFromQueryString(commandLineOptions._[0]),
+    filters = filtersAndTargetContentType.filters,
+    inputStream = process.stdin,
+    outputStream;
+
+if (commandLineOptions.o) {
+    outputStream = fs.createWriteStream(commandLineOptions.o);
+} else {
+    outputStream = process.stdout;
+}
+
+inputStream.pipe(filters[0]);
+
+for (var i = 0 ; i < filters.length - 1; i += 1) {
+    filters[i].pipe(filters[i + 1]);
+}
+
+filters[filters.length - 1].pipe(outputStream);

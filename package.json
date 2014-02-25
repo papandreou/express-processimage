@@ -4,13 +4,15 @@
   "description": "Express middleware that processes served images according to the query string",
   "main": "lib/processImage.js",
   "directories": {
-    "test": "test"
+    "test": "test",
+    "bin": "bin"
   },
   "dependencies": {
     "express-hijackresponse": "=0.0.7",
     "gm": "=1.6.1",
     "inkscape": "=0.0.3",
     "jpegtran": "=0.0.4",
+    "optimist": "=0.6.1",
     "optipng": "=0.0.4",
     "passerror": "=0.0.1",
     "pngcrush": "=0.0.3",
