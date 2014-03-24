@@ -10,7 +10,7 @@
   "dependencies": {
     "express-hijackresponse": "=0.0.7",
     "gm": "=1.6.1",
-    "inkscape": "=0.0.3",
+    "inkscape": "=0.0.4",
     "jpegtran": "=0.0.4",
     "optimist": "=0.6.1",
     "optipng": "=0.0.4",
