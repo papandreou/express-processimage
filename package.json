@@ -28,8 +28,7 @@
     "unexpected": "=1.0.11"
   },
   "scripts": {
-    "test": "mocha",
-    "prepublish": "mocha"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
