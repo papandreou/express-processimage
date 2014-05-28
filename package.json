@@ -15,7 +15,7 @@
     "optimist": "=0.6.1",
     "optipng": "=0.0.6",
     "passerror": "=0.0.1",
-    "pngcrush": "=0.0.4",
+    "pngcrush": "=0.0.5",
     "pngquant": "=0.1.4"
   },
   "optionalDependencies": {
