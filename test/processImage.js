@@ -1,3 +1,4 @@
+/*global describe, it, before, after*/
 var express = require('express'),
     Path = require('path'),
     request = require('request'),

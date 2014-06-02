@@ -23,12 +23,14 @@
   },
   "devDependencies": {
     "express": "=3.0.3",
+    "jshint": "=2.5.0",
     "mocha": "=1.20.0",
     "request": "=2.12.0",
     "unexpected": "=3.2.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "jshint ."
   },
   "repository": {
     "type": "git",
