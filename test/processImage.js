@@ -24,7 +24,7 @@ describe('test server', function () {
         server;
 
     before(function (done) {
-        var root = Path.resolve(__dirname, 'root') + '/';
+        var root = Path.resolve(__dirname, '..', 'testdata') + '/';
         server = express()
             .use(processImage({root: root}))
             .use(express.static(root))
