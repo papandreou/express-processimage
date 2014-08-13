@@ -198,4 +198,12 @@ describe('test server', function () {
             done();
         }));
     });
+
+    it('should include the command line in the response body when an error is encountered', function (done) {
+        request({url: baseUrl + '/notajpeg.jpg?jpegtran=-grayscale', encoding: null}, passError(done, function (response, body) {
+            expect(response.statusCode, 'to be greater than or equal to', 400);
+            expect(body.toString('utf-8'), 'to match', /jpegtran -grayscale/);
+            done();
+        }));
+    });
 });
