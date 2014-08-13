@@ -24,8 +24,17 @@ if (commandLineOptions.o) {
 
 inputStream.pipe(filters[0]);
 
-for (var i = 0 ; i < filters.length - 1; i += 1) {
-    filters[i].pipe(filters[i + 1]);
+for (var i = 0 ; i < filters.length ; i += 1) {
+    var filter = filters[i];
+    filter.on('error', function (err) {
+        if ('commandLine' in this) {
+            err.message = this.commandLine + ': ' + err.message;
+        }
+        throw err;
+    });
+    if (i < filters.length - 1) {
+        filter.pipe(filters[i + 1]);
+    }
 }
 
 filters[filters.length - 1].pipe(outputStream);
