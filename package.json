@@ -19,7 +19,7 @@
     "pngquant": "=0.1.5"
   },
   "optionalDependencies": {
-    "svgfilter": "=0.3.2"
+    "svgfilter": "0.4.0"
   },
   "devDependencies": {
     "express": "=3.0.3",
