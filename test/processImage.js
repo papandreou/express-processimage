@@ -185,6 +185,16 @@ describe('test server', function () {
         }));
     });
 
+    it('should process a video with avconv', function (done) {
+        request({url: baseUrl + '/small.mp4?avconv=-i+pipe:0+-b+32k+pipe:1', encoding: null}, passError(done, function (response, body) {
+            expect(response.statusCode, 'to equal', 200);
+            expect(response.headers['content-type'], 'to equal', 'video/mp4');
+            expect(body.length, 'to be greater than', 0);
+            expect(body.length, 'to be less than than', 383631);
+            done();
+        }));
+    });
+
     it('should serve an error response if an invalid image is processed with GraphicsMagick', function (done) {
         request({url: baseUrl + '/invalidImage.png?setFormat=jpg', encoding: null}, passError(done, function (response, body) {
             expect(response.statusCode, 'to be greater than or equal to', 400);
