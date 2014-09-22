@@ -13,7 +13,7 @@
     "inkscape": "=0.0.5",
     "jpegtran": "=0.0.6",
     "optimist": "=0.6.1",
-    "optipng": "=0.0.6",
+    "optipng": "=0.1.0",
     "passerror": "=0.0.1",
     "pngcrush": "=0.0.5",
     "pngquant": "=0.1.5"
