@@ -52,7 +52,7 @@ describe('test server', function () {
 
     it('should not mess with request for image with no query string', function (done) {
         request({url: baseUrl + '/ancillaryChunks.png', encoding: null}, passError(done, function (response, body) {
-            expect(body.length, 'to equal', 152);
+            expect(body.length, 'to equal', 3711);
             expect(response.headers['content-type'], 'to equal', 'image/png');
             done();
         }));
@@ -60,7 +60,7 @@ describe('test server', function () {
 
     it('should not mess with request for image with an unsupported operation in the query string', function (done) {
         request({url: baseUrl + '/ancillaryChunks.png?foo=bar', encoding: null}, passError(done, function (response, body) {
-            expect(body.length, 'to equal', 152);
+            expect(body.length, 'to equal', 3711);
             expect(response.headers['content-type'], 'to equal', 'image/png');
             done();
         }));
@@ -70,12 +70,12 @@ describe('test server', function () {
         request({url: baseUrl + '/ancillaryChunks.png?pngcrush=-rem+alla', encoding: null}, passError(done, function (response, body) {
             expect(response.statusCode, 'to equal', 200);
             expect(response.headers['content-type'], 'to equal', 'image/png');
-            expect(body.length, 'to be less than', 152);
+            expect(body.length, 'to be less than', 3711);
             expect(body.length, 'to be greater than', 0);
             getImageMetadataFromBuffer(body, passError(done, function (metadata) {
                 expect(metadata.format, 'to equal', 'PNG');
-                expect(metadata.size.width, 'to equal', 12);
-                expect(metadata.size.height, 'to equal', 5);
+                expect(metadata.size.width, 'to equal', 400);
+                expect(metadata.size.height, 'to equal', 20);
                 done();
             }));
         }));
