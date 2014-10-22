@@ -113,12 +113,25 @@ describe('test server', function () {
     });
 
     it('should run the image through graphicsmagick when methods exposed by the gm module are added as CGI params', function (done) {
-        request({url: baseUrl + '/turtle.jpg?resize=340,300', encoding: null}, passError(done, function (response, body) {
+        request({url: baseUrl + '/turtle.jpg?gm&resize=340,300', encoding: null}, passError(done, function (response, body) {
             expect(response.statusCode, 'to equal', 200);
             expect(response.headers['content-type'], 'to equal', 'image/jpeg');
             expect(body.slice(0, 10).toString(), 'to equal', new Buffer([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46]).toString());
             expect(body.length, 'to be less than', 105836);
             expect(body.length, 'to be greater than', 0);
+            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
+                expect(metadata.format, 'to equal', 'JPEG');
+                expect(metadata.size.width, 'to equal', 340);
+                expect(metadata.size.height, 'to equal', 300);
+                done();
+            }));
+        }));
+    });
+
+    it.skip('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function (done) {
+        request({url: baseUrl + '/turtle.jpg?sharp&resize=340,300', encoding: null}, passError(done, function (response, body) {
+            expect(response.statusCode, 'to equal', 200);
+            expect(response.headers['content-type'], 'to equal', 'image/jpeg');
             getImageMetadataFromBuffer(body, passError(done, function (metadata) {
                 expect(metadata.format, 'to equal', 'JPEG');
                 expect(metadata.size.width, 'to equal', 340);
