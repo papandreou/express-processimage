@@ -128,12 +128,12 @@ describe('test server', function () {
         }));
     });
 
-    it.skip('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function (done) {
-        request({url: baseUrl + '/turtle.jpg?sharp&resize=340,300', encoding: null}, passError(done, function (response, body) {
+    it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function (done) {
+        request({url: baseUrl + '/turtle.jpg?sharp&resize=340,300&png', encoding: null}, passError(done, function (response, body) {
             expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/jpeg');
+            expect(response.headers['content-type'], 'to equal', 'image/png');
             getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'JPEG');
+                expect(metadata.format, 'to equal', 'PNG');
                 expect(metadata.size.width, 'to equal', 340);
                 expect(metadata.size.height, 'to equal', 300);
                 done();
