@@ -16,10 +16,10 @@
     "optipng": "0.1.1",
     "passerror": "0.0.1",
     "pngcrush": "0.1.0",
-    "pngquant": "0.3.0",
-    "sharp": "0.7.0"
+    "pngquant": "0.3.0"
   },
   "optionalDependencies": {
+    "sharp": "0.7.0",
     "svgfilter": "0.4.0"
   },
   "devDependencies": {
