@@ -8,7 +8,7 @@
     "bin": "bin"
   },
   "dependencies": {
-    "express-hijackresponse": "0.0.7",
+    "express-hijackresponse": "0.2.1",
     "gm": "1.6.1",
     "inkscape": "0.0.5",
     "jpegtran": "0.0.6",
