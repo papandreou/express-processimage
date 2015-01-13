@@ -12,6 +12,7 @@
     "gm": "1.6.1",
     "inkscape": "0.0.5",
     "jpegtran": "0.0.6",
+    "mime": "1.2.11",
     "optimist": "0.6.1",
     "optipng": "0.1.1",
     "passerror": "0.0.1",
