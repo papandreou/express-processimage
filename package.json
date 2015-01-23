@@ -8,6 +8,7 @@
     "bin": "bin"
   },
   "dependencies": {
+    "createerror": "0.5.1",
     "express-hijackresponse": "0.2.1",
     "gm": "1.6.1",
     "inkscape": "0.0.5",
