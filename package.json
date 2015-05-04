@@ -26,8 +26,10 @@
     "svgfilter": "0.4.0"
   },
   "devDependencies": {
+    "coveralls": "2.11.2",
     "express": "4.12.3",
-    "jshint": "2.5.0",
+    "istanbul": "0.3.13",
+    "jshint": "2.7.0",
     "messy": "6.2.0",
     "mocha": "2.2.4",
     "unexpected": "7.0.3",
@@ -35,8 +37,10 @@
     "unexpected-messy": "3.0.3"
   },
   "scripts": {
-    "test": "mocha",
-    "lint": "jshint ."
+    "lint": "jshint .",
+    "test": "mocha && npm run lint",
+    "travis": "npm test && npm run coverage && <coverage/lcov.info coveralls",
+    "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,11 @@
 express-processimage
 ====================
 
+[![NPM version](https://badge.fury.io/js/express-processimage.svg)](http://badge.fury.io/js/express-processimage)
+[![Build Status](https://travis-ci.org/papandreou/express-processimage.svg?branch=master)](https://travis-ci.org/papandreou/express-processimage)
+[![Coverage Status](https://coveralls.io/repos/papandreou/express-processimage/badge.svg)](https://coveralls.io/r/papandreou/express-processimage)
+[![Dependency Status](https://david-dm.org/papandreou/express-processimage.svg)](https://david-dm.org/papandreou/express-processimage)
+
 Middleware that processes images according to the query
 string. Intended to be used in a development setting with the
 `connect.static` middleware, but should work with any middleware
