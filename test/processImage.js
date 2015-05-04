@@ -152,7 +152,7 @@ describe('express-processimage', function () {
         });
     });
 
-    it.skipIf(!sharp, 'should run the image through sharp when methods exposed by the sharp module are added as CGI params', function () {
+    it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function () {
         return expect('GET /turtle.jpg?sharp&resize=340,300&png', 'to yield response', {
             statusCode: 200,
             headers: {

@@ -18,7 +18,8 @@
     "optipng": "0.1.1",
     "passerror": "0.0.1",
     "pngcrush": "0.1.0",
-    "pngquant": "0.3.0"
+    "pngquant": "0.3.0",
+    "underscore": "1.8.3"
   },
   "optionalDependencies": {
     "sharp": "0.9.0",
