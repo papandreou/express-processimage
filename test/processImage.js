@@ -4,7 +4,20 @@ var express = require('express'),
     unexpected = require('unexpected'),
     processImage = require('../lib/processImage'),
     gm = require('gm'),
-    root = pathModule.resolve(__dirname, '..', 'testdata') + '/';
+    root = pathModule.resolve(__dirname, '..', 'testdata') + '/',
+    sharp;
+
+describe.skipIf = function (condition) {
+    (condition ? describe.skip : describe).apply(describe, Array.prototype.slice.call(arguments, 1));
+};
+
+it.skipIf = function (condition) {
+    (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
+};
+
+try {
+    sharp = require('sharp');
+} catch (e) {}
 
 describe('express-processimage', function () {
     var expect = unexpected.clone()
@@ -139,7 +152,7 @@ describe('express-processimage', function () {
         });
     });
 
-    it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function () {
+    it.skipIf(!sharp, 'should run the image through sharp when methods exposed by the sharp module are added as CGI params', function () {
         return expect('GET /turtle.jpg?sharp&resize=340,300&png', 'to yield response', {
             statusCode: 200,
             headers: {
