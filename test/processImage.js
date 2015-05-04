@@ -1,222 +1,254 @@
-/*global describe, it, before, after*/
+/*global describe, it, __dirname*/
 var express = require('express'),
-    Path = require('path'),
-    request = require('request'),
-    passError = require('passerror'),
-    expect = require('unexpected'),
+    pathModule = require('path'),
+    unexpected = require('unexpected'),
     processImage = require('../lib/processImage'),
-    Stream = require('stream'),
-    gm = require('gm');
+    gm = require('gm'),
+    root = pathModule.resolve(__dirname, '..', 'testdata') + '/';
 
-function getImageMetadataFromBuffer(buffer, cb) {
-    var readStream = new Stream();
-    readStream.readable = true;
-    gm(readStream).identify(cb);
-    process.nextTick(function () {
-        readStream.emit('data', buffer);
-        readStream.emit('end');
-    });
-}
-
-describe('test server', function () {
-    // Pick a random TCP port above 10000 (.listen(0) doesn't work anymore?)
-    var portNumber = 10000 + Math.floor(55536 * Math.random()),
-        baseUrl = 'http://127.0.0.1:' + portNumber,
-        server;
-
-    before(function (done) {
-        var root = Path.resolve(__dirname, '..', 'testdata') + '/';
-        server = express()
-            .use(processImage({root: root}))
-            .use(express.static(root))
-            .use(function errorHandler(err, req, res, next) {
-                res.writeHead(500, {
-                    'content-type': 'text/plain'
-                });
-                res.end(err.stack || err);
-            })
-            .listen(portNumber, done);
-    });
-
-    after(function () {
-        server.close();
-    });
-
-    it('should not mess with request for non-image file', function (done) {
-        request(baseUrl + '/something.txt', passError(done, function (response, body) {
-            expect(body, 'to equal', 'foo\n');
-            expect(response.headers['content-type'], 'to equal', 'text/plain; charset=UTF-8');
-            done();
-        }));
-    });
-
-    it('should not mess with request for image with no query string', function (done) {
-        request({url: baseUrl + '/ancillaryChunks.png', encoding: null}, passError(done, function (response, body) {
-            expect(body.length, 'to equal', 3711);
-            expect(response.headers['content-type'], 'to equal', 'image/png');
-            done();
-        }));
-    });
-
-    it('should not mess with request for image with an unsupported operation in the query string', function (done) {
-        request({url: baseUrl + '/ancillaryChunks.png?foo=bar', encoding: null}, passError(done, function (response, body) {
-            expect(body.length, 'to equal', 3711);
-            expect(response.headers['content-type'], 'to equal', 'image/png');
-            done();
-        }));
-    });
-
-    it('should run the image through pngcrush when the pngcrush CGI param is specified', function (done) {
-        request({url: baseUrl + '/ancillaryChunks.png?pngcrush=-rem+alla', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/png');
-            expect(body.length, 'to be less than', 3711);
-            expect(body.length, 'to be greater than', 0);
-            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'PNG');
-                expect(metadata.size.width, 'to equal', 400);
-                expect(metadata.size.height, 'to equal', 20);
-                done();
-            }));
-        }));
-    });
-
-    it('should run the image through pngquant when the pngquant CGI param is specified', function (done) {
-        request({url: baseUrl + '/purplealpha24bit.png?pngquant', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/png');
-            expect(body.length, 'to be less than', 8285);
-            expect(body.length, 'to be greater than', 0);
-            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'PNG');
-                expect(metadata.size.width, 'to equal', 100);
-                expect(metadata.size.height, 'to equal', 100);
-                done();
-            }));
-        }));
-    });
-
-    it('should run the image through jpegtran when the jpegtran CGI param is specified', function (done) {
-        request({url: baseUrl + '/turtle.jpg?jpegtran=-grayscale,-flip,horizontal', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/jpeg');
-            expect(body.length, 'to be less than', 105836);
-            expect(body.length, 'to be greater than', 0);
-            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'JPEG');
-                expect(metadata.size.width, 'to equal', 481);
-                expect(metadata.size.height, 'to equal', 424);
-                expect(metadata['Channel Depths'].Gray, 'to equal', '8 bits');
-                done();
-            }));
-        }));
-    });
-
-    it('should run the image through graphicsmagick when methods exposed by the gm module are added as CGI params', function (done) {
-        request({url: baseUrl + '/turtle.jpg?gm&resize=340,300', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/jpeg');
-            expect(body.slice(0, 10).toString(), 'to equal', new Buffer([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46]).toString());
-            expect(body.length, 'to be less than', 105836);
-            expect(body.length, 'to be greater than', 0);
-            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'JPEG');
-                expect(metadata.size.width, 'to equal', 340);
-                expect(metadata.size.height, 'to equal', 300);
-                done();
-            }));
-        }));
-    });
-
-    it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function (done) {
-        request({url: baseUrl + '/turtle.jpg?sharp&resize=340,300&png', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/png');
-            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'PNG');
-                expect(metadata.size.width, 'to equal', 340);
-                expect(metadata.size.height, 'to equal', 300);
-                done();
-            }));
-        }));
-    });
-
-    it('should run the image through svgfilter when the svgfilter parameter is specified', function (done) {
-        request({url: baseUrl + '/dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId'}, passError(done, function (response, svgText) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/svg+xml');
-            expect(response.headers.etag, 'to be ok');
-            // expect(response.headers.etag, 'to match', /^"\d+-\d+-697ebc4fd42e6b09794a5d60968435a7-processimage"$/);
-            expect(svgText, 'to match', /<svg/);
-            expect(svgText, 'to match', /id="theBogusElementId"/);
-            request({url: baseUrl + '/dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId', headers: {'if-none-match': response.headers.etag}}, passError(done, function (response) {
-                expect(response.statusCode, 'to equal', 304);
-                done();
-            }));
-        }));
-    });
-
-    it('should run the image through multiple filters when multiple CGI params are specified', function (done) {
-        request({url: baseUrl + '/purplealpha24bit.png?resize=800,800&pngquant=8&pngcrush=-rem,gAMA', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/png');
-            expect(body.length, 'to be greater than', 0);
-            expect(body.toString('ascii'), 'not to match', /gAMA/);
-            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'PNG');
-                expect(metadata.size.width, 'to equal', 800);
-                expect(metadata.size.height, 'to equal', 800);
-                done();
-            }));
-        }));
-    });
-
-    it('should serve a converted image with the correct Content-Type', function (done) {
-        request({url: baseUrl + '/purplealpha24bit.png?setFormat=jpg', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to equal', 200);
-            expect(response.headers['content-type'], 'to equal', 'image/jpeg');
-            expect(body.length, 'to be greater than', 0);
-            expect(body.toString('ascii'), 'not to match', /gAMA/);
-            getImageMetadataFromBuffer(body, passError(done, function (metadata) {
-                expect(metadata.format, 'to equal', 'JPEG');
-                expect(metadata.size.width, 'to equal', 100);
-                expect(metadata.size.height, 'to equal', 100);
-                var etag = response.headers.etag;
-                expect(typeof etag, 'to equal', 'string');
-                expect(etag, 'to match', /-processimage/);
-                request({
-                    url: baseUrl + '/purplealpha24bit.png?setFormat=jpg',
-                    encoding: null,
-                    headers: {
-                        'if-none-match': etag
+describe('express-processimage', function () {
+    var expect = unexpected.clone()
+        .installPlugin(require('unexpected-express'))
+        .addAssertion('Buffer', 'to have metadata satisfying', function (expect, subject) { // ...
+            var extraArgs = Array.prototype.slice.call(arguments, 2);
+            this.errorMode = 'nested';
+            return expect.promise(function (resolve, reject) {
+                gm(subject).identify(function (err, metadata) {
+                    if (err) {
+                        return reject(err);
+                    } else {
+                        return expect.promise(function () {
+                            return expect.apply(expect, [metadata, 'to satisfy assertion'].concat(extraArgs));
+                        }).caught(reject).then(resolve);
                     }
-                }, passError(done, function (response2, body2) {
-                    expect(response2.statusCode, 'to equal', 304);
-                    done();
-                }));
-            }));
-        }));
+                });
+            });
+        })
+        .addAssertion('to yield response', function (expect, subject, value) {
+            return expect(
+                express()
+                    .use(processImage({root: root}))
+                    .use(express['static'](root)),
+                'to yield exchange', {
+                    request: subject,
+                    response: value
+                }
+            );
+        });
+
+    it('should not mess with request for non-image file', function () {
+        return expect('GET /something.txt', 'to yield response', {
+            headers: {
+                'Content-Type': 'text/plain; charset=UTF-8'
+            },
+            body: 'foo\n'
+        });
     });
 
-    it('should serve an error response if an invalid image is processed with GraphicsMagick', function (done) {
-        request({url: baseUrl + '/invalidImage.png?setFormat=jpg', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to be greater than or equal to', 400);
-            done();
-        }));
+    it('should not mess with request for image with no query string', function () {
+        return expect('GET /ancillaryChunks.png', 'to yield response', {
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have length', 3711)
+        });
     });
 
-    it('should serve an error response if an invalid image is processed with pngquant', function (done) {
-        request({url: baseUrl + '/invalidImage.png?pngquant', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to be greater than or equal to', 400);
-            done();
-        }));
+    it('should not mess with request for image with an unsupported operation in the query string', function () {
+        return expect('GET /ancillaryChunks.png?foo=bar', 'to yield response', {
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have length', 3711)
+        });
     });
 
-    it('should include the command line in the response body when an error is encountered', function (done) {
-        request({url: baseUrl + '/notajpeg.jpg?jpegtran=-grayscale', encoding: null}, passError(done, function (response, body) {
-            expect(response.statusCode, 'to be greater than or equal to', 400);
-            expect(body.toString('utf-8'), 'to match', /jpegtran -grayscale/);
-            done();
-        }));
+    it('should run the image through pngcrush when the pngcrush CGI param is specified', function () {
+        return expect('GET /ancillaryChunks.png?pngcrush=-rem+alla', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have metadata satisfying', {
+                format: 'PNG',
+                size: {
+                    width: 400,
+                    height: 20
+                }
+            }).and('to satisfy', function (body) {
+                expect(body.length, 'to be within', 1, 3711);
+            })
+        });
+    });
+
+    it('should run the image through pngquant when the pngquant CGI param is specified', function () {
+        return expect('GET /purplealpha24bit.png?pngquant', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have metadata satisfying', {
+                format: 'PNG',
+                size: {
+                    width: 100,
+                    height: 100
+                }
+            }).and('to satisfy', function (body) {
+                expect(body.length, 'to be within', 1, 8285);
+            })
+        });
+    });
+
+    it('should run the image through jpegtran when the jpegtran CGI param is specified', function () {
+        return expect('GET /turtle.jpg?jpegtran=-grayscale,-flip,horizontal', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/jpeg'
+            },
+            body: expect.it('to have metadata satisfying', {
+                format: 'JPEG',
+                'Channel Depths': {
+                    Gray: '8 bits'
+                },
+                size: {
+                    width: 481,
+                    height: 424
+                }
+            }).and('to satisfy', function (body) {
+                expect(body.length, 'to be within', 1, 105836);
+            })
+        });
+    });
+
+    it('should run the image through graphicsmagick when methods exposed by the gm module are added as CGI params', function () {
+        return expect('GET /turtle.jpg?gm&resize=340,300', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/jpeg'
+            },
+            body: expect.it('to have metadata satisfying', {
+                format: 'JPEG',
+                size: {
+                    width: 340,
+                    height: 300
+                }
+            }).and('to satisfy', function (body) {
+                expect(body.length, 'to be within', 1, 105836);
+                expect(body.slice(0, 10), 'to equal', new Buffer([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46]));
+            })
+        });
+    });
+
+    it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function () {
+        return expect('GET /turtle.jpg?sharp&resize=340,300&png', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have metadata satisfying', {
+                format: 'PNG',
+                size: {
+                    width: 340,
+                    height: 300
+                }
+            })
+        });
+    });
+
+    it('should run the image through svgfilter when the svgfilter parameter is specified', function () {
+        return expect('GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/svg+xml',
+                ETag: /"\d+-\d+-processimage"$/
+            },
+            body: expect.it('to match', /<svg/)
+                .and('to match', /id="theBogusElementId"/)
+        }).then(function (context) {
+            var etag = context.httpResponse.headers.get('ETag');
+            return expect({
+                url: 'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
+                headers: {
+                    'If-None-Match': etag
+                }
+            }, 'to yield response', {
+                statusCode: 304,
+                headers: {
+                    ETag: etag
+                }
+            });
+        });
+    });
+
+    it('should run the image through multiple filters when multiple CGI params are specified', function () {
+        return expect('GET /purplealpha24bit.png?resize=800,800&pngquant=8&pngcrush=-rem,gAMA', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('when decoded as', 'ascii', 'not to match', /gAMA/)
+                .and('to satisfy', function (body) {
+                    expect(body.length, 'to be greater than', 0);
+                })
+                .and('to have metadata satisfying', {
+                    format: 'PNG',
+                    size: {
+                        width: 800,
+                        height: 800
+                    }
+                })
+        });
+    });
+
+    it('should serve a converted image with the correct Content-Type', function () {
+        return expect('GET /purplealpha24bit.png?setFormat=jpg', 'to yield response', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/jpeg',
+                ETag: /-processimage/
+            },
+            body: expect.it('when decoded as', 'ascii', 'not to match', /gAMA/)
+                .and('to satisfy', function (body) {
+                    expect(body.length, 'to be greater than', 0);
+                })
+                .and('to have metadata satisfying', {
+                    format: 'JPEG',
+                    size: {
+                        width: 100,
+                        height: 100
+                    }
+                })
+        }).then(function (context) {
+            var etag = context.httpResponse.headers.get('ETag');
+            return expect({
+                url: 'GET /purplealpha24bit.png?setFormat=jpg',
+                headers: {
+                    'If-None-Match': etag
+                }
+            }, 'to yield response', {
+                statusCode: 304,
+                headers: {
+                    ETag: etag
+                }
+            });
+        });
+    });
+
+    it('should serve an error response if an invalid image is processed with GraphicsMagick', function () {
+        return expect('GET /invalidImage.png?setFormat=jpg', 'to yield response', {
+            errorPassedToNext: true
+        });
+    });
+
+    it('should serve an error response if an invalid image is processed with pngquant', function () {
+        return expect('GET /invalidImage.png?pngquant', 'to yield response', {
+            errorPassedToNext: true
+        });
+    });
+
+    it('should include the command line in the response body when an error is encountered', function () {
+        return expect('GET /notajpeg.jpg?jpegtran=-grayscale', 'to yield response', {
+            errorPassedToNext: /jpegtran -grayscale:/
+        });
     });
 });
