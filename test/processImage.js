@@ -22,6 +22,7 @@ describe('express-processimage', function () {
     var expect = unexpected.clone()
         .installPlugin(require('unexpected-express'))
         .installPlugin(require('unexpected-image'))
+        .installPlugin(require('magicpen-prism'))
         .addAssertion('to yield response', function (expect, subject, value) {
             return expect(
                 express()

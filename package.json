@@ -30,6 +30,8 @@
     "express": "4.12.3",
     "istanbul": "0.3.13",
     "jshint": "2.7.0",
+    "magicpen": "4.7.0",
+    "magicpen-prism": "1.2.0",
     "messy": "6.2.0",
     "mocha": "2.2.4",
     "unexpected": "7.0.5",
