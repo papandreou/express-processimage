@@ -3,7 +3,6 @@ var express = require('express'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
     processImage = require('../lib/processImage'),
-    gm = require('gm'),
     root = pathModule.resolve(__dirname, '..', 'testdata') + '/',
     sharp;
 
