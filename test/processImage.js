@@ -22,21 +22,7 @@ try {
 describe('express-processimage', function () {
     var expect = unexpected.clone()
         .installPlugin(require('unexpected-express'))
-        .addAssertion('Buffer', 'to have metadata satisfying', function (expect, subject) { // ...
-            var extraArgs = Array.prototype.slice.call(arguments, 2);
-            this.errorMode = 'nested';
-            return expect.promise(function (resolve, reject) {
-                gm(subject).identify(function (err, metadata) {
-                    if (err) {
-                        return reject(err);
-                    } else {
-                        return expect.promise(function () {
-                            return expect.apply(expect, [metadata, 'to satisfy assertion'].concat(extraArgs));
-                        }).caught(reject).then(resolve);
-                    }
-                });
-            });
-        })
+        .installPlugin(require('unexpected-image'))
         .addAssertion('to yield response', function (expect, subject, value) {
             return expect(
                 express()
