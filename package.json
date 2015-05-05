@@ -33,9 +33,9 @@
     "messy": "6.2.0",
     "mocha": "2.2.4",
     "unexpected": "7.0.5",
-    "unexpected-express": "6.1.0",
+    "unexpected-express": "6.2.2",
     "unexpected-image": "1.0.0",
-    "unexpected-messy": "3.0.3"
+    "unexpected-messy": "3.0.4"
   },
   "scripts": {
     "lint": "jshint .",
