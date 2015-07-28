@@ -30,14 +30,15 @@
     "express": "4.12.3",
     "istanbul": "0.3.13",
     "jshint": "2.7.0",
-    "magicpen": "4.7.0",
-    "magicpen-prism": "1.2.0",
-    "messy": "6.2.0",
-    "mocha": "2.2.4",
-    "unexpected": "7.0.5",
-    "unexpected-express": "6.2.2",
+    "magicpen": "5.0.0",
+    "magicpen-media": "1.5.0",
+    "magicpen-prism": "2.2.0",
+    "messy": "6.6.1",
+    "mocha": "2.2.5",
+    "unexpected": "9.4.0",
+    "unexpected-express": "7.5.0",
     "unexpected-image": "1.0.0",
-    "unexpected-messy": "3.0.4"
+    "unexpected-messy": "4.6.0"
   },
   "scripts": {
     "lint": "jshint .",
