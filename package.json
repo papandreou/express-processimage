@@ -12,7 +12,7 @@
     "express-hijackresponse": "0.2.1",
     "gm": "1.17.0",
     "inkscape": "0.0.5",
-    "jpegtran": "0.0.6",
+    "jpegtran": "0.2.0",
     "mime": "1.2.11",
     "optimist": "0.6.1",
     "optipng": "0.3.0",
