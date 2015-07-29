@@ -23,7 +23,7 @@
   },
   "optionalDependencies": {
     "sharp": "0.9.0",
-    "svgfilter": "1.0.0"
+    "svgfilter": "1.1.0"
   },
   "devDependencies": {
     "coveralls": "2.11.2",
