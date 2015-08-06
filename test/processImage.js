@@ -250,4 +250,32 @@ describe('express-processimage', function () {
             errorPassedToNext: /jpegtran -grayscale:/
         });
     });
+
+    describe.skipIf(!sharp, 'when sharp is available', function () {
+        it('should allow retrieving the image metadata as JSON', function () {
+            return expect('GET /turtle.jpg?metadata', 'to yield response', {
+                body: {
+                    width: 481,
+                    height: 424,
+                    space: 'srgb',
+                    channels: 3,
+                    hasProfile: false,
+                    hasAlpha: false
+                }
+            });
+        });
+
+        it('should allow retrieving the image metadata for the result of an operation', function () {
+            return expect('GET /turtle.jpg?png&greyscale&resize=10&metadata', 'to yield response', {
+                body: {
+                    width: 10,
+                    height: 9,
+                    space: 'srgb',
+                    channels: 3,
+                    hasProfile: false,
+                    hasAlpha: false
+                }
+            });
+        });
+    });
 });
