@@ -291,5 +291,17 @@ describe('express-processimage', function () {
                 }
             });
         });
+
+        it('should parse the ICC Profile data if available', function () {
+            return expect('GET /Landscape_8.jpg?metadata', 'to yield response', {
+                body: {
+                    icc: {
+                        deviceClass: 'Monitor',
+                        colorSpace: 'RGB'
+                        // etc.
+                    }
+                }
+            });
+        });
     });
 });

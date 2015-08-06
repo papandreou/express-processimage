@@ -12,6 +12,7 @@
     "exif-reader": "1.0.0",
     "express-hijackresponse": "0.2.1",
     "gm": "1.17.0",
+    "icc": "0.0.2",
     "inkscape": "0.0.5",
     "jpegtran": "0.2.0",
     "mime": "1.2.11",
