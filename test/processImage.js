@@ -277,5 +277,19 @@ describe('express-processimage', function () {
                 }
             });
         });
+
+        it('should include the EXIF data in the image metadata', function () {
+            return expect('GET /exifOriented.jpg?metadata', 'to yield response', {
+                body: {
+                    image: {
+                        Make: 'Apple',
+                        Model: 'iPhone 6'
+                    },
+                    exif: {
+                        ExposureTime: 0.025
+                    }
+                }
+            });
+        });
     });
 });
