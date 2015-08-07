@@ -1,4 +1,4 @@
-/*global describe, it, __dirname*/
+/*global describe, it, beforeEach, __dirname*/
 var express = require('express'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
@@ -19,6 +19,11 @@ try {
 } catch (e) {}
 
 describe('express-processimage', function () {
+    var config;
+    beforeEach(function () {
+        config = { root: root };
+    });
+
     var expect = unexpected.clone()
         .installPlugin(require('unexpected-express'))
         .installPlugin(require('unexpected-image'))
@@ -26,7 +31,7 @@ describe('express-processimage', function () {
         .addAssertion('to yield response', function (expect, subject, value) {
             return expect(
                 express()
-                    .use(processImage({root: root}))
+                    .use(processImage(config))
                     .use(express['static'](root)),
                 'to yield exchange', {
                     request: subject,
@@ -60,6 +65,11 @@ describe('express-processimage', function () {
             },
             body: expect.it('to have length', 3711)
         });
+    });
+
+    it('refuses to process an image whose dimensions exceed maxInputPixels', function () {
+        config.maxInputPixels = 100000;
+        return expect('GET /hugearea.png?resize=100,100', 'to yield response', 413);
     });
 
     it('should run the image through pngcrush when the pngcrush CGI param is specified', function () {
@@ -305,7 +315,7 @@ describe('express-processimage', function () {
         });
 
         it('should send back an error when ?metadata is applied to a non-image', function () {
-            return expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', 405);
+            return expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', 415);
         });
     });
 });
