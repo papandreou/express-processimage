@@ -303,5 +303,9 @@ describe('express-processimage', function () {
                 }
             });
         });
+
+        it('should send back an error when ?metadata is applied to a non-image', function () {
+            return expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', 405);
+        });
     });
 });
