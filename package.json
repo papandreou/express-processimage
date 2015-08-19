@@ -41,7 +41,8 @@
     "unexpected": "9.4.0",
     "unexpected-express": "7.5.0",
     "unexpected-image": "1.0.0",
-    "unexpected-messy": "4.6.0"
+    "unexpected-messy": "4.6.0",
+    "unexpected-resemble": "2.4.1"
   },
   "scripts": {
     "lint": "jshint .",

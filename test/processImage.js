@@ -27,6 +27,7 @@ describe('express-processimage', function () {
     var expect = unexpected.clone()
         .installPlugin(require('unexpected-express'))
         .installPlugin(require('unexpected-image'))
+        .installPlugin(require('unexpected-resemble'))
         .installPlugin(require('magicpen-prism'))
         .addAssertion('to yield response', function (expect, subject, value) {
             return expect(
@@ -316,6 +317,12 @@ describe('express-processimage', function () {
 
         it('should send back an error when ?metadata is applied to a non-image', function () {
             return expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', 415);
+        });
+
+        it('should allow a crop operation with the gravity specified as a string', function () {
+            return expect('GET /turtle.jpg?resize=40,15&crop=north', 'to yield response', {
+                body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedNorth.jpg'))
+            });
         });
     });
 });
