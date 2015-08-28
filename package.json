@@ -25,7 +25,7 @@
     "underscore": "1.8.3"
   },
   "optionalDependencies": {
-    "sharp": "0.11.0",
+    "sharp": "0.11.2",
     "svgfilter": "1.1.0"
   },
   "devDependencies": {
