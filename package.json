@@ -39,7 +39,7 @@
     "unexpected": "9.6.0",
     "unexpected-express": "7.7.0",
     "unexpected-image": "1.4.1",
-    "unexpected-resemble": "2.4.2"
+    "unexpected-resemble": "2.4.3"
   },
   "scripts": {
     "lint": "jshint .",
