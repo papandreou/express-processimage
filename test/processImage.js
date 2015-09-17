@@ -1,5 +1,6 @@
 /*global describe, it, beforeEach, __dirname*/
 var express = require('express'),
+    fs = require('fs'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
     processImage = require('../lib/processImage'),
@@ -259,6 +260,43 @@ describe('express-processimage', function () {
     it('should include the command line in the response body when an error is encountered', function () {
         return expect('GET /notajpeg.jpg?jpegtran=-grayscale', 'to yield response', {
             errorPassedToNext: /jpegtran -grayscale:/
+        });
+    });
+
+    // Undetectable by gm -- the source format must be explicitly specified
+    it('should convert an icon to png via GraphicsMagick', function () {
+        return expect('GET /favicon.ico?gm&setFormat=png', 'to yield response', {
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have metadata satisfying', {
+                format: 'PNG',
+                size: {
+                    width: 16,
+                    height: 16
+                }
+            })
+        });
+    });
+
+    it('should convert an icon served as image/vnd.microsoft.icon to png via GraphicsMagick', function () {
+        return expect(express().use(processImage(config)).get('/favicon.ico', function (req, res, next) {
+            res.setHeader('Content-Type', 'image/vnd.microsoft.icon');
+            fs.createReadStream(pathModule.resolve(__dirname, '..', 'testdata', 'favicon.ico')).pipe(res);
+        }), 'to yield exchange', {
+            request: 'GET /favicon.ico?gm&setFormat=png',
+            response: {
+                headers: {
+                    'Content-Type': 'image/png'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'PNG',
+                    size: {
+                        width: 16,
+                        height: 16
+                    }
+                })
+            }
         });
     });
 
