@@ -265,7 +265,7 @@ describe('express-processimage', function () {
 
     // Undetectable by gm -- the source format must be explicitly specified
     it('should convert an icon to png via GraphicsMagick', function () {
-        return expect('GET /favicon.ico?gm&setFormat=png', 'to yield response', {
+        return expect('GET /favicon.ico?gm&png', 'to yield response', {
             headers: {
                 'Content-Type': 'image/png'
             },
@@ -284,7 +284,7 @@ describe('express-processimage', function () {
             res.setHeader('Content-Type', 'image/vnd.microsoft.icon');
             fs.createReadStream(pathModule.resolve(__dirname, '..', 'testdata', 'favicon.ico')).pipe(res);
         }), 'to yield exchange', {
-            request: 'GET /favicon.ico?gm&setFormat=png',
+            request: 'GET /favicon.ico?gm&png',
             response: {
                 headers: {
                     'Content-Type': 'image/png'
