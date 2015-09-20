@@ -21,7 +21,7 @@
     "optipng": "0.3.1",
     "passerror": "0.0.1",
     "pngcrush": "0.2.0",
-    "pngquant": "0.5.0",
+    "pngquant": "0.6.0",
     "underscore": "1.8.3"
   },
   "optionalDependencies": {
