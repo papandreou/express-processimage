@@ -1,6 +1,7 @@
 {
   "name": "express-processimage",
   "version": "2.6.1",
+  "tag": "next",
   "description": "Express middleware that processes served images according to the query string",
   "main": "lib/processImage.js",
   "directories": {
