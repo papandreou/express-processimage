@@ -10,8 +10,8 @@
   "dependencies": {
     "createerror": "0.5.1",
     "exif-reader": "1.0.0",
-    "express-hijackresponse": "0.2.1",
     "gm": "1.19.0",
+    "hijackresponse": "0.0.1",
     "httperrors": "1.1.0",
     "icc": "0.0.2",
     "inkscape": "0.0.5",
