@@ -258,6 +258,7 @@ describe('express-processimage', function () {
     });
 
     it('should include the command line in the response body when an error is encountered', function () {
+        // TODO: This test results in a statusCode 404. That is weird...
         return expect('GET /notajpeg.jpg?jpegtran=-grayscale', 'to yield response', {
             errorPassedToNext: /jpegtran -grayscale:/
         });
