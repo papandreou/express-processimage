@@ -37,9 +37,9 @@
     "jshint": "2.7.0",
     "magicpen": "5.0.0",
     "magicpen-prism": "2.2.0",
-    "mocha": "2.2.5",
-    "unexpected": "9.6.0",
-    "unexpected-express": "7.7.0",
+    "mocha": "2.3.3",
+    "unexpected": "9.13.0",
+    "unexpected-express": "7.8.1",
     "unexpected-image": "1.4.1",
     "unexpected-resemble": "2.4.3"
   },
