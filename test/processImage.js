@@ -305,6 +305,9 @@ describe('express-processimage', function () {
         it('should allow retrieving the image metadata as JSON', function () {
             return expect('GET /turtle.jpg?metadata', 'to yield response', {
                 body: {
+                    contentType: 'image/jpeg',
+                    filesize: 105836,
+                    etag: /^W\//,
                     width: 481,
                     height: 424,
                     space: 'srgb',
