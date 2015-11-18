@@ -22,10 +22,10 @@
     "passerror": "0.0.1",
     "pngcrush": "0.2.0",
     "pngquant": "0.6.0",
+    "sharp": "lovell/sharp#look",
     "underscore": "1.8.3"
   },
   "optionalDependencies": {
-    "sharp": "0.11.2",
     "svgfilter": "1.1.0"
   },
   "devDependencies": {
