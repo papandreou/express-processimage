@@ -366,5 +366,12 @@ describe('express-processimage', function () {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedNorth.jpg'))
             });
         });
+
+        // https://github.com/lovell/sharp/issues/276
+        it('should fix the ordering of the parameters to extract to be left,top,width,height', function () {
+            return expect('GET /turtle.jpg?extract=40,60,30,40', 'to yield response', {
+                body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleExtract.jpg'))
+            });
+        });
     });
 });
