@@ -373,5 +373,11 @@ describe('express-processimage', function () {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleExtract.jpg'))
             });
         });
+
+        it('should propagate a "bad extract area" error correctly', function () {
+            return expect('GET /turtle.jpg?extract=99,99,9999,9999', 'to yield response', {
+                errorPassedToNext: /bad extract area/
+            });
+        });
     });
 });
