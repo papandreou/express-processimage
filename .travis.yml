@@ -2,9 +2,11 @@ language: node_js
 node_js:
   - "0.10"
   - "0.12"
-  - "4.1"
+  - "4"
+  - "5"
 before_install: "sudo apt-get update && sudo apt-get install -y optipng pngcrush pngquant graphicsmagick libjpeg-turbo-progs inkscape libcairo2-dev libgif-dev libjpeg8-dev && npm install -g npm && npm cache clean"
 script: "npm run-script travis"
 matrix:
   allow_failures:
-    - node_js: "4.1"
+    - node_js: "4"
+    - node_js: "5"
