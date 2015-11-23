@@ -39,7 +39,7 @@
     "unexpected": "10.3.1",
     "unexpected-express": "8.0.0",
     "unexpected-image": "2.0.0",
-    "unexpected-resemble": "unexpectedjs/unexpected-resemble#update-canvas-via-resemble"
+    "unexpected-resemble": "3.0.0"
   },
   "scripts": {
     "lint": "jshint .",
