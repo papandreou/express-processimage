@@ -3,6 +3,7 @@ var express = require('express'),
     fs = require('fs'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
+    sinon = require('sinon'),
     processImage = require('../lib/processImage'),
     root = pathModule.resolve(__dirname, '..', 'testdata') + '/',
     sharp;
@@ -26,10 +27,11 @@ describe('express-processimage', function () {
     });
 
     var expect = unexpected.clone()
-        .installPlugin(require('unexpected-express'))
-        .installPlugin(require('unexpected-image'))
-        .installPlugin(require('unexpected-resemble'))
-        .installPlugin(require('magicpen-prism'))
+        .use(require('unexpected-express'))
+        .use(require('unexpected-image'))
+        .use(require('unexpected-resemble'))
+        .use(require('unexpected-sinon'))
+        .use(require('magicpen-prism'))
         .addAssertion('to yield response', function (expect, subject, value) {
             return expect(
                 express()
@@ -298,6 +300,42 @@ describe('express-processimage', function () {
                     }
                 })
             }
+        });
+    });
+
+    describe('with an allowOperation option', function () {
+        beforeEach(function () {
+            config.allowOperation = sinon.spy(function (keyValue) {
+                return keyValue !== 'png';
+            }).named('allowOperation');
+        });
+
+        it('should allow an operation for which allowOperation returns true', function () {
+            return expect('GET /turtle.jpg?resize=87', 'to yield response', {
+                headers: {
+                    'Content-Type': 'image/jpeg'
+                },
+                body: expect.it('to have metadata satisfying', { size: { width: 87 } })
+            }).then(function () {
+                expect(config.allowOperation, 'to have calls satisfying', function () {
+                    config.allowOperation('resize', [87]);
+                });
+            });
+        });
+
+        it('should disallow an operation for which allowOperation returns false', function () {
+            return expect('GET /turtle.jpg?png', 'to yield response', {
+                headers: {
+                    'Content-Type': 'image/jpeg'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'JPEG'
+                })
+            }).then(function () {
+                expect(config.allowOperation, 'to have calls satisfying', function () {
+                    config.allowOperation('png', []);
+                });
+            });
         });
     });
 

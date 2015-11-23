@@ -36,10 +36,12 @@
     "magicpen": "5.5.0",
     "magicpen-prism": "2.2.1",
     "mocha": "2.3.4",
+    "sinon": "1.17.2",
     "unexpected": "10.3.1",
     "unexpected-express": "8.0.0",
     "unexpected-image": "2.0.0",
-    "unexpected-resemble": "3.0.0"
+    "unexpected-resemble": "3.0.0",
+    "unexpected-sinon": "9.0.0"
   },
   "scripts": {
     "lint": "jshint .",
