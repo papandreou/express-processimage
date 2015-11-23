@@ -171,7 +171,7 @@ describe('express-processimage', function () {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/svg+xml',
-                ETag: /"\d+-\d+-processimage"$/
+                ETag: /"\w+-\w+-processimage"$/
             },
             body: expect.it('to match', /<svg/)
                 .and('to match', /id="theBogusElementId"/)
