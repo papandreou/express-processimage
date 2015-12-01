@@ -432,14 +432,15 @@ describe('express-processimage', function () {
 
         it('should resize an animated gif using gm', function () {
             config.debug = true;
-            return expect('GET /animated.gif?resize=40', 'to yield response', {
+            return expect('GET /animated.gif?resize=40,35', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'gm'
                 },
                 body: expect.it('to have metadata satisfying', {
                     format: 'GIF',
                     size: {
-                        width: 40
+                        width: 40,
+                        height: 35
                     }
                 })
             });
