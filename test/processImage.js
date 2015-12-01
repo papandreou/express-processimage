@@ -417,5 +417,62 @@ describe('express-processimage', function () {
                 errorPassedToNext: /bad extract area/
             });
         });
+
+        it('should convert an animated gif to png', function () {
+            return expect('GET /animated.gif?png', 'to yield response', {
+                body: expect.it('to have metadata satisfying', {
+                    format: 'PNG',
+                    size: {
+                        width: 23,
+                        height: 20
+                    }
+                })
+            });
+        });
+
+        it('should resize an animated gif using gm', function () {
+            config.debug = true;
+            return expect('GET /animated.gif?resize=40', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'gm'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'GIF',
+                    size: {
+                        width: 40
+                    }
+                })
+            });
+        });
+
+        it('should resize a non-animated gif using gm', function () {
+            config.debug = true;
+            return expect('GET /bulb.gif?resize=200,200', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'gm'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'GIF',
+                    size: {
+                        width: 200
+                    }
+                })
+            });
+        });
+
+        it('should use sharp when a gif is converted to png', function () {
+            config.debug = true;
+            return expect('GET /animated.gif?resize=40&png', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'sharp'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'PNG',
+                    size: {
+                        width: 40
+                    }
+                })
+            });
+        });
     });
 });
