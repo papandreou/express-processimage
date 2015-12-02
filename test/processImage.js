@@ -383,6 +383,33 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should auto-orient an image', function () {
+            return expect('GET /exifOriented.jpg?rotate', 'to yield response', {
+                body: expect.it('to have metadata satisfying', {
+                    size: {
+                        width: 2448,
+                        height: 3264
+                    }
+                })
+            });
+        });
+
+        // Not yet supported by graphicsmagick (although imagemagick has -auto-orient)
+        it.skip('should auto-orient an image with the gm engine', function () {
+            config.debug = true;
+            return expect('GET /exifOriented.jpg?gm&rotate', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'gm'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    size: {
+                        width: 2448,
+                        height: 3264
+                    }
+                })
+            });
+        });
+
         it('should parse the ICC Profile data if available', function () {
             return expect('GET /Landscape_8.jpg?metadata', 'to yield response', {
                 body: {
@@ -489,6 +516,23 @@ describe('express-processimage', function () {
                         height: 15
                     }
                 }).and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'croppedBulb.gif'))
+            });
+        });
+
+        it('should support rotate with a single argument for gm', function () {
+            config.debug = true;
+            return expect('GET /bulb.gif?rotate=90', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'gm'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'GIF',
+                    size: {
+                        width: 48,
+                        height: 48
+                    }
+                })
+                .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
             });
         });
     });
