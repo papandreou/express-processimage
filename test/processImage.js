@@ -475,5 +475,21 @@ describe('express-processimage', function () {
                 })
             });
         });
+
+        it('should support extract and rotate for gm', function () {
+            config.debug = true;
+            return expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'gm'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'GIF',
+                    size: {
+                        width: 15,
+                        height: 15
+                    }
+                }).and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'croppedBulb.gif'))
+            });
+        });
     });
 });
