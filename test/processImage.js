@@ -31,6 +31,7 @@ describe('express-processimage', function () {
         .use(require('unexpected-image'))
         .use(require('unexpected-resemble'))
         .use(require('unexpected-sinon'))
+        .use(require('unexpected-stream'))
         .use(require('magicpen-prism'))
         .addAssertion('to yield response', function (expect, subject, value) {
             return expect(
@@ -533,6 +534,33 @@ describe('express-processimage', function () {
                     }
                 })
                 .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+            });
+        });
+    });
+
+    describe('with a PUT request', function () {
+        it('should support scaling the uploaded image', function () {
+            var app = express()
+                .use(processImage(config))
+                .use(function (req, res, next) {
+                    expect(req, 'to yield output satisfying to have metadata satisfying', {
+                        format: 'PNG',
+                        size: {
+                            width: 10,
+                            height: 10
+                        }
+                    }).then(function () {
+                        res.send(200);
+                    }).caught(next);
+                });
+
+            return expect(app, 'to yield exchange', {
+                request: {
+                    method: 'PUT',
+                    url: '/uploadHandler?resize=10,10',
+                    body: fs.readFileSync(pathModule.resolve(__dirname, '..', 'testdata', 'purplealpha24bit.png'))
+                },
+                response: 200
             });
         });
     });

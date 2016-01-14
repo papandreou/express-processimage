@@ -41,7 +41,8 @@
     "unexpected-express": "8.0.1",
     "unexpected-image": "2.0.0",
     "unexpected-resemble": "3.0.0",
-    "unexpected-sinon": "9.0.4"
+    "unexpected-sinon": "9.0.4",
+    "unexpected-stream": "2.0.2"
   },
   "scripts": {
     "lint": "jshint .",
