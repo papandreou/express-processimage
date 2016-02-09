@@ -536,4 +536,25 @@ describe('express-processimage', function () {
             });
         });
     });
+
+    it('should process a big image when the compression middleware is present above express-processimage', function () {
+        return expect(
+            express()
+                .use(require('compression')())
+                .use(processImage())
+                .use(express['static'](root)),
+            'to yield exchange', {
+                request: 'GET /the-villa-facade.png?sourceContentType=image%2Fpng&ignoreAspectRatio&resize=652,435&extract=315,10,280,420',
+                response: {
+                    body: expect.it('to have metadata satisfying', {
+                        format: 'PNG',
+                        size: {
+                            width: 280,
+                            height: 420
+                        }
+                    })
+                }
+            }
+        );
+    });
 });

@@ -29,6 +29,7 @@
     "svgfilter": "1.1.0"
   },
   "devDependencies": {
+    "compression": "1.6.1",
     "coveralls": "2.11.4",
     "express": "4.13.3",
     "istanbul": "0.4.0",
