@@ -535,6 +535,19 @@ describe('express-processimage', function () {
                 .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
             });
         });
+
+        it('should support creating a progressive jpeg', function () {
+            config.debug = true;
+            return expect('GET /turtle.jpg?resize=100,100&progressive', 'to yield response', {
+                body: expect.it('to have metadata satisfying', {
+                    size: {
+                        width: 100,
+                        height: 100
+                    },
+                    Interlace: 'Line'
+                })
+            });
+        });
     });
 
     it('should process a big image when the compression middleware is present above express-processimage', function () {
