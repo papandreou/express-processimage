@@ -576,4 +576,10 @@ describe('express-processimage', function () {
             }
         );
     });
+
+    it.skip('should allow a crop operation with a gravity of center', function () {
+        return expect('GET /turtle.jpg?gm&resize=40,15&crop=center', 'to yield response', {
+            body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedCenter.jpg'))
+        });
+    });
 });
