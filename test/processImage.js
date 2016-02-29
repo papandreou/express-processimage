@@ -548,6 +548,12 @@ describe('express-processimage', function () {
                 })
             });
         });
+
+        it('should return an error when an invalid syntax is used for a parameter value', function () {
+            return expect('GET /turtle.jpg?resize=100%22', 'to yield response', {
+                errorPassedToNext: { statusCode: 400 }
+            });
+        });
     });
 
     it('should process a big image when the compression middleware is present above express-processimage', function () {
