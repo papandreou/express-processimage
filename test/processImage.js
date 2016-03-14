@@ -563,6 +563,20 @@ describe('express-processimage', function () {
                     });
                 });
 
+                it('should support resize with crop', function () {
+                    return expect('GET /animated.gif?resize=40,35&crop=center', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
+                        },
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            // gifsicle does not support cropping to a specific gravity,
+                            // so the parameter will be ignored:
+                            size: gifsicleAvailable ? { width: 23, height: 20 } : { width: 40, height: 35 }
+                        })
+                    });
+                });
+
                 it('should resize a non-animated gif', function () {
                     return expect('GET /bulb.gif?resize=200,200', 'to yield response', {
                         headers: {
