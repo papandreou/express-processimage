@@ -563,6 +563,18 @@ describe('express-processimage', function () {
                     });
                 });
 
+                it('should support the ignoreAspectRatio modfier', function () {
+                    return expect('GET /animated.gif?resize=100,100&ignoreAspectRatio', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
+                        },
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            size: { width: 100, height: 100 }
+                        })
+                    });
+                });
+
                 it('should support resize with crop', function () {
                     return expect('GET /animated.gif?resize=40,35&crop=center', 'to yield response', {
                         headers: {
