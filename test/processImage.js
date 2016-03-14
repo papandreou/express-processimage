@@ -549,6 +549,20 @@ describe('express-processimage', function () {
                     });
                 });
 
+                it('should support the withoutEnlargement modfier', function () {
+                    return expect('GET /animated.gif?resize=40,35&withoutEnlargement', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
+                        },
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            // gifsicle does not enlarge to fill the bounding box
+                            // https://github.com/kohler/gifsicle/issues/13#issuecomment-196321546
+                            size: { width: 23, height: 20 }
+                        })
+                    });
+                });
+
                 it('should resize a non-animated gif', function () {
                     return expect('GET /bulb.gif?resize=200,200', 'to yield response', {
                         headers: {
