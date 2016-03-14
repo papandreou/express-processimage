@@ -15,11 +15,11 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function () {
         filterInfosAndTargetContentTypeFromQueryString.filterInfos[0].create();
 
         expect(filterInfosAndTargetContentTypeFromQueryString, 'to satisfy', {
-            operationNames: [ 'gm' ],
+            operationNames: [ 'gifsicle' ],
             filterInfos: {
                 0: {
                     targetContentType: 'image/gif',
-                    operationName: 'gm'
+                    operationName: 'gifsicle'
                 }
             }
         });
