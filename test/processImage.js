@@ -311,14 +311,14 @@ describe('express-processimage', function () {
         });
 
         it('should allow an operation for which allowOperation returns true', function () {
-            return expect('GET /turtle.jpg?resize=87', 'to yield response', {
+            return expect('GET /turtle.jpg?resize=87,100', 'to yield response', {
                 headers: {
                     'Content-Type': 'image/jpeg'
                 },
                 body: expect.it('to have metadata satisfying', { size: { width: 87 } })
             }).then(function () {
                 expect(config.allowOperation, 'to have calls satisfying', function () {
-                    config.allowOperation('resize', [87]);
+                    config.allowOperation('resize', [ 87, 100 ]);
                 });
             });
         });
@@ -357,7 +357,7 @@ describe('express-processimage', function () {
         });
 
         it('should allow retrieving the image metadata for the result of an operation', function () {
-            return expect('GET /turtle.jpg?png&greyscale&resize=10&metadata', 'to yield response', {
+            return expect('GET /turtle.jpg?png&greyscale&resize=10,9&metadata', 'to yield response', {
                 body: {
                     width: 10,
                     height: 9,
@@ -459,7 +459,7 @@ describe('express-processimage', function () {
 
         it('should use sharp when a gif is converted to png', function () {
             config.debug = true;
-            return expect('GET /animated.gif?resize=40&png', 'to yield response', {
+            return expect('GET /animated.gif?resize=40,100&png', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'sharp'
                 },
@@ -485,9 +485,14 @@ describe('express-processimage', function () {
             });
         });
 
-        it('should return an error when an invalid syntax is used for a parameter value', function () {
-            return expect('GET /turtle.jpg?resize=100%22', 'to yield response', {
-                errorPassedToNext: { statusCode: 400 }
+        it('should ignore invalid operations', function () {
+            return expect('GET /turtle.jpg?resize=10%22', 'to yield response', {
+                body: expect.it('to have metadata satisfying', {
+                    size: {
+                        width: 481,
+                        height: 424
+                    }
+                })
             });
         });
     });
@@ -659,6 +664,25 @@ describe('express-processimage', function () {
                         })
                         .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
                     });
+                });
+            });
+        });
+    });
+
+    describe('with invalid parameters', function () {
+        [
+            'resize=foo,100', 'resize=', 'resize=100,200,300', 'resize=0,0', 'resize=-1,-1', 'resize=32000,32000',
+            'crop=foo', 'crop=', 'crop=north,south',
+            'extract=', 'extract=1,2,3,4,5', 'extract=32000,32000,32000,32000',
+            'rotate=95', 'rotate=90,270',
+            'png=hey',
+            'interpolateWith=something'
+        ].forEach(function (invalidOperation) {
+            it('disallows an operation of ' + invalidOperation, function () {
+                return expect('GET /testImage.png?' + invalidOperation, 'to yield response', {
+                    body: expect.it('to have metadata satisfying', {
+                        size: { width: 12, height: 5 }
+                    })
                 });
             });
         });
