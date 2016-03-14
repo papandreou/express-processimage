@@ -356,6 +356,25 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should allow retrieving the image metadata of a GIF', function () {
+            return expect('GET /animated.gif?metadata', 'to yield response', {
+                body: {
+                    format: 'gif',
+                    contentType: 'image/gif',
+                    filesize: 362
+                }
+            });
+        });
+
+        it('should allow retrieving the image metadata of a JPEG converted to GIF', function () {
+            return expect('GET /turtle.jpg?setFormat=gif&metadata', 'to yield response', {
+                body: {
+                    format: 'gif',
+                    contentType: 'image/gif'
+                }
+            });
+        });
+
         it('should allow retrieving the image metadata for the result of an operation', function () {
             return expect('GET /turtle.jpg?png&greyscale&resize=10,9&metadata', 'to yield response', {
                 body: {
