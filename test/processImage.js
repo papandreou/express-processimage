@@ -528,202 +528,97 @@ describe('express-processimage', function () {
     });
 
     describe('with a GIF', function () {
-        describe('with gifsicle unavailable', function () {
-            beforeEach(function () {
-                config.filters.gifsicle = false;
-            });
-
-            it('should resize an animated gif using gm', function () {
-                config.debug = true;
-                return expect('GET /animated.gif?resize=40,35', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gm'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 40,
-                            height: 35
-                        }
-                    })
+        [true, false].forEach(function (gifsicleAvailable) {
+            describe('with gifsicle ' + (gifsicleAvailable ? '' : 'un') + 'available', function () {
+                beforeEach(function () {
+                    config.filters.gifsicle = gifsicleAvailable;
+                    config.debug = true;
                 });
-            });
 
-            it('should resize a non-animated gif using gm', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?resize=200,200', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gm'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 200
-                        }
-                    })
-                });
-            });
-
-            it('should resize an animated gif with differently sized frames using gm', function () {
-                config.debug = true;
-                return expect('GET /cat.gif?resize=200,200', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gm'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 200
-                        }
-                    })
-                });
-            });
-
-            it('should support extract and rotate for gm', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gm'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 15,
-                            height: 15
-                        }
-                    }).and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'croppedBulb.gif'))
-                });
-            });
-
-            it('should support rotate with a single argument for gm', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?rotate=90', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gm'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 48,
-                            height: 48
-                        }
-                    })
-                    .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
-                });
-            });
-
-            it('should support generating a progressive (interlaced) GIF', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?rotate=90&progressive', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gm'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 48,
-                            height: 48
+                it('should resize an animated gif', function () {
+                    return expect('GET /animated.gif?resize=40,35', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
-                        Interlace: 'Line'
-                    })
-                    .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            // gifsicle does not enlarge to fill the bounding box
+                            // https://github.com/kohler/gifsicle/issues/13#issuecomment-196321546
+                            size: gifsicleAvailable ? { width: 23, height: 20 } : { width: 40, height: 35 }
+                        })
+                    });
                 });
-            });
-        });
 
-        describe('with gifsicle available', function () {
-            it('should resize an animated gif', function () {
-                config.debug = true;
-                return expect('GET /animated.gif?resize=2,2', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gifsicle'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 2,
-                            height: 2
-                        }
-                    })
-                });
-            });
-
-            it('should resize a non-animated gif', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?resize=10,10', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gifsicle'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 10
-                        }
-                    })
-                });
-            });
-
-            it('should support generating a progressive (interlaced) GIF', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?progressive', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gifsicle'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        Interlace: 'Line'
-                    })
-                });
-            });
-
-            it('should resize an animated gif with differently sized frames', function () {
-                config.debug = true;
-                return expect('GET /cat.gif?resize=200,200', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gifsicle'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            // First frame should be 156x200, but unexpected-image doesn't report that :/
-                            width: 141,
-                            height: 104
+                it('should resize a non-animated gif', function () {
+                    return expect('GET /bulb.gif?resize=200,200', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
-                        Scene: '3 of 4'
-                    })
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            size: gifsicleAvailable ? { width: 48, height: 48 } : { width: 200 }
+                        })
+                    });
                 });
-            });
 
-            it('should support extract and rotate', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gifsicle'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 15,
-                            height: 15
-                        }
-                    }).and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'croppedBulb.gif'))
+                it('should resize an animated gif with differently sized frames', function () {
+                    return expect('GET /cat.gif?resize=200,200', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
+                        },
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            size: gifsicleAvailable ? { width: 141, height: 104 } : { width: 200 }
+                        })
+                    });
                 });
-            });
 
-            it('should support rotate with a single argument for gm', function () {
-                config.debug = true;
-                return expect('GET /bulb.gif?rotate=90', 'to yield response', {
-                    headers: {
-                        'X-Express-Processimage': 'gifsicle'
-                    },
-                    body: expect.it('to have metadata satisfying', {
-                        format: 'GIF',
-                        size: {
-                            width: 48,
-                            height: 48
-                        }
-                    })
-                    .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+                it('should support extract and rotate', function () {
+                    return expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
+                        },
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            size: {
+                                width: 15,
+                                height: 15
+                            }
+                        }).and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'croppedBulb.gif'))
+                    });
+                });
+
+                it('should support rotate with a single argument', function () {
+                    return expect('GET /bulb.gif?rotate=90', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
+                        },
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            size: {
+                                width: 48,
+                                height: 48
+                            }
+                        })
+                        .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+                    });
+                });
+
+                it('should support generating a progressive (interlaced) GIF', function () {
+                    return expect('GET /bulb.gif?rotate=90&progressive', 'to yield response', {
+                        headers: {
+                            'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
+                        },
+                        body: expect.it('to have metadata satisfying', {
+                            format: 'GIF',
+                            size: {
+                                width: 48,
+                                height: 48
+                            },
+                            Interlace: 'Line'
+                        })
+                        .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+                    });
                 });
             });
         });
