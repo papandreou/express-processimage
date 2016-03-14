@@ -611,6 +611,24 @@ describe('express-processimage', function () {
                     .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
                 });
             });
+
+            it('should support generating a progressive (interlaced) GIF', function () {
+                config.debug = true;
+                return expect('GET /bulb.gif?rotate=90&progressive', 'to yield response', {
+                    headers: {
+                        'X-Express-Processimage': 'gm'
+                    },
+                    body: expect.it('to have metadata satisfying', {
+                        format: 'GIF',
+                        size: {
+                            width: 48,
+                            height: 48
+                        },
+                        Interlace: 'Line'
+                    })
+                    .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+                });
+            });
         });
 
         describe('with gifsicle available', function () {
