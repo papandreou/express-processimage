@@ -614,7 +614,7 @@ describe('express-processimage', function () {
         });
 
         describe('with gifsicle available', function () {
-            it('should resize an animated gif using gifsicle', function () {
+            it('should resize an animated gif', function () {
                 config.debug = true;
                 return expect('GET /animated.gif?resize=2,2', 'to yield response', {
                     headers: {
@@ -630,7 +630,7 @@ describe('express-processimage', function () {
                 });
             });
 
-            it('should resize a non-animated gif using gifsicle', function () {
+            it('should resize a non-animated gif', function () {
                 config.debug = true;
                 return expect('GET /bulb.gif?resize=10,10', 'to yield response', {
                     headers: {
@@ -645,7 +645,20 @@ describe('express-processimage', function () {
                 });
             });
 
-            it('should resize an animated gif with differently sized frames using gifsicle', function () {
+            it('should support generating a progressive (interlaced) GIF', function () {
+                config.debug = true;
+                return expect('GET /bulb.gif?progressive', 'to yield response', {
+                    headers: {
+                        'X-Express-Processimage': 'gifsicle'
+                    },
+                    body: expect.it('to have metadata satisfying', {
+                        format: 'GIF',
+                        Interlace: 'Line'
+                    })
+                });
+            });
+
+            it('should resize an animated gif with differently sized frames', function () {
                 config.debug = true;
                 return expect('GET /cat.gif?resize=200,200', 'to yield response', {
                     headers: {
@@ -663,7 +676,7 @@ describe('express-processimage', function () {
                 });
             });
 
-            it('should support extract and rotate for gm', function () {
+            it('should support extract and rotate', function () {
                 config.debug = true;
                 return expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
                     headers: {
