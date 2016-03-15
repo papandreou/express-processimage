@@ -537,6 +537,12 @@ describe('express-processimage', function () {
         );
     });
 
+    it('should work fine when cropping an item starting from top 0 and left 0', function () {
+        return expect('GET /turtle.jpg?extract=0,0,300,200', 'to yield response', {
+            body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCropped300x200FromTopLeft.jpg'))
+        });
+    });
+
     describe('with the gm engine', function () {
         it('should allow a crop operation with a gravity of center', function () {
             return expect('GET /turtle.jpg?gm&resize=40,15&crop=center', 'to yield response', {
