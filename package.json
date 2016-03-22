@@ -31,19 +31,19 @@
   "devDependencies": {
     "compression": "1.6.1",
     "coveralls": "2.11.4",
-    "express": "4.13.3",
+    "express": "4.13.4",
     "gifsicle-stream": "0.1.1",
     "istanbul": "0.4.0",
     "jshint": "2.9.1-rc1",
     "magicpen": "5.5.0",
     "magicpen-prism": "2.2.1",
-    "mocha": "2.3.4",
-    "sinon": "1.17.2",
-    "unexpected": "10.5.1",
-    "unexpected-express": "8.0.1",
+    "mocha": "2.4.5",
+    "sinon": "1.17.3",
+    "unexpected": "10.10.12",
+    "unexpected-express": "8.2.0",
     "unexpected-image": "2.0.0",
     "unexpected-resemble": "3.0.0",
-    "unexpected-sinon": "9.0.4"
+    "unexpected-sinon": "10.2.0"
   },
   "scripts": {
     "lint": "jshint .",
