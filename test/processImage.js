@@ -340,6 +340,22 @@ describe('express-processimage', function () {
     });
 
     describe.skipIf(!sharp, 'when sharp is available', function () {
+        it('should apply the sharpCache option', function () {
+            config.sharpCache = 123;
+            var cacheStub = sinon.stub(sharp, 'cache');
+            return expect('GET /turtle.jpg?metadata', 'to yield response', {
+                body: {
+                    contentType: 'image/jpeg'
+                }
+            }).then(function () {
+                expect(cacheStub, 'to have calls satisfying', function () {
+                    cacheStub(123);
+                });
+            }).finally(function () {
+                cacheStub.restore();
+            });
+        });
+
         it('should allow retrieving the image metadata as JSON', function () {
             return expect('GET /turtle.jpg?metadata', 'to yield response', {
                 body: {
