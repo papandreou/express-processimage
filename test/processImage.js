@@ -356,6 +356,22 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should allow support ?metadata=true as well (legacy)', function () {
+            return expect('GET /turtle.jpg?metadata=true', 'to yield response', {
+                body: {
+                    contentType: 'image/jpeg',
+                    filesize: 105836,
+                    etag: /^W\//,
+                    width: 481,
+                    height: 424,
+                    space: 'srgb',
+                    channels: 3,
+                    hasProfile: false,
+                    hasAlpha: false
+                }
+            });
+        });
+
         it('should allow retrieving the image metadata of a GIF', function () {
             return expect('GET /animated.gif?metadata', 'to yield response', {
                 body: {
