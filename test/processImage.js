@@ -382,6 +382,22 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should set animated:true for an animated gif', function () {
+            return expect('GET /animated.gif?metadata', 'to yield response', {
+                body: {
+                    animated: true
+                }
+            });
+        });
+
+        it('should set animated:false for a non-animated gif', function () {
+            return expect('GET /bulb.gif?metadata', 'to yield response', {
+                body: {
+                    animated: false
+                }
+            });
+        });
+
         it('should allow support ?metadata=true as well (legacy)', function () {
             return expect('GET /turtle.jpg?metadata=true', 'to yield response', {
                 body: {
