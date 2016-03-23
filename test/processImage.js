@@ -372,6 +372,16 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should allow retrieving the metadata of a non-image file with a non-image extension', function () {
+            return expect('GET /something.txt?metadata', 'to yield response', {
+                body: {
+                    contentType: 'text/plain; charset=UTF-8',
+                    filesize: 4,
+                    etag: expect.it('to be a string')
+                }
+            });
+        });
+
         it('should allow support ?metadata=true as well (legacy)', function () {
             return expect('GET /turtle.jpg?metadata=true', 'to yield response', {
                 body: {
@@ -473,8 +483,19 @@ describe('express-processimage', function () {
             });
         });
 
-        it('should send back an error when ?metadata is applied to a non-image', function () {
-            return expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', 415);
+        it('should send back the upstream Content-Type and Content-Length when ?metadata is applied to a non-image with an image extension', function () {
+            return expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', {
+                body: {
+                    contentType: 'image/jpeg',
+                    error: 'Input buffer contains unsupported image format',
+                    filesize: 4,
+                    etag: expect.it('to be a string')
+                }
+            });
+        });
+
+        it('should send back an error when an operation is applied to a non-image', function () {
+            return expect('GET /certainlynotanimage.jpg?resize=10,10', 'to yield response', 415);
         });
 
         it('should allow a crop operation with the gravity specified as a string', function () {
