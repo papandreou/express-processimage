@@ -747,6 +747,15 @@ describe('express-processimage', function () {
         });
     });
 
+    it('should handle resize before extract', function () {
+        return expect('GET /cat.gif?resize=380,486&extract=150,150,100,100', 'to yield response', {
+            body: expect.it('to have metadata satisfying', {
+                size: { width: 100, height: 100 },
+                Scene: '3 of 4' // Animated
+            }).and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'cat-resized-then-cropped.gif'))
+        });
+    });
+
     describe('with invalid parameters', function () {
         [
             'resize=foo,100', 'resize=', 'resize=100,200,300', 'resize=0,0', 'resize=-1,-1', 'resize=32000,32000',
