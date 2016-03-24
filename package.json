@@ -8,7 +8,7 @@
     "bin": "bin"
   },
   "dependencies": {
-    "animated-gif-detector-papandreou": "1.1.6-patch2",
+    "animated-gif-detector": "1.1.7",
     "bluebird": "3.3.4",
     "createerror": "1.0.1",
     "exif-reader": "1.0.0",
