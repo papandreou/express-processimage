@@ -13,7 +13,7 @@
     "createerror": "1.0.1",
     "exif-reader": "1.0.0",
     "gm": "1.19.0",
-    "hijackresponse-nobackpressure": "1.0.2",
+    "hijackresponse-nobackpressure": "1.0.2-patch1",
     "httperrors": "1.2.0",
     "icc": "0.0.2",
     "inkscape": "0.0.5",
