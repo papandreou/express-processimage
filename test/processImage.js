@@ -832,7 +832,7 @@ describe('express-processimage', function () {
                 request.once('error', run(function (err) {
                     expect(err, 'to have message', 'socket hang up');
                 }));
-            }).delay(1).then(function () {
+            }).delay(100).then(function () {
                 expect(createdStreams, 'to satisfy', [
                     { destroy: expect.it('was called once') }
                 ]);
