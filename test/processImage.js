@@ -799,9 +799,9 @@ describe('express-processimage', function () {
             var request;
             return expect.promise(function (run) {
                 config.filters = {
-                    montage: run(function () {
+                    montage: function () {
                         return {
-                            create: run(function () {
+                            create: function () {
                                 var stream = new Stream.Transform();
                                 stream._transform = function (chunk, encoding, callback) {
                                     setImmediate(function () {
@@ -814,9 +814,9 @@ describe('express-processimage', function () {
                                     request.abort();
                                 }));
                                 return stream;
-                            })
+                            }
                         };
-                    })
+                    }
                 };
                 var server = express()
                     .use(processImage(config))
