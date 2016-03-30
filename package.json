@@ -34,7 +34,7 @@
     "compression": "1.6.1",
     "coveralls": "2.11.4",
     "express": "4.13.4",
-    "gifsicle-stream": "0.1.1",
+    "gifsicle-stream-papandreou": "0.1.1",
     "istanbul": "0.4.0",
     "jshint": "2.9.1-rc1",
     "magicpen": "5.5.0",
