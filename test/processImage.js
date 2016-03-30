@@ -1,9 +1,11 @@
 /*global describe, it, beforeEach, __dirname*/
 var express = require('express'),
     fs = require('fs'),
+    http = require('http'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
     sinon = require('sinon'),
+    Stream = require('stream'),
     processImage = require('../lib/processImage'),
     root = pathModule.resolve(__dirname, '..', 'testdata') + '/',
     sharp;
@@ -787,6 +789,53 @@ describe('express-processimage', function () {
                         size: { width: 12, height: 5 }
                     })
                 });
+            });
+        });
+    });
+
+    describe('against a real server', function () {
+        it('should destroy the created filters when the client closes the connection prematurely', function () {
+            var createdStreams = [];
+            var request;
+            return expect.promise(function (run) {
+                config.filters = {
+                    montage: run(function () {
+                        return {
+                            create: run(function () {
+                                var stream = new Stream.Transform();
+                                stream._transform = function (chunk, encoding, callback) {
+                                    setImmediate(function () {
+                                        callback(null, chunk);
+                                    });
+                                };
+                                stream.destroy = sinon.spy();
+                                createdStreams.push(stream);
+                                setImmediate(run(function () {
+                                    request.abort();
+                                }));
+                                return stream;
+                            })
+                        };
+                    })
+                };
+                var server = express()
+                    .use(processImage(config))
+                    .use(express['static'](root))
+                    .listen(0);
+
+                var serverAddress = server.address();
+                var serverHostname = serverAddress.address === '::' ? 'localhost' : serverAddress.address;
+                var serverUrl = 'http://' + serverHostname + ':' + serverAddress.port + '/testImage.png?montage';
+
+                request = http.get(serverUrl);
+                request.end();
+                request.once('error', run(function (err) {
+                    expect(err, 'to have message', 'socket hang up');
+                }));
+            }).delay(1).then(function () {
+                expect(createdStreams, 'to satisfy', [
+                    { destroy: expect.it('was called once') }
+                ]);
             });
         });
     });
