@@ -10,11 +10,11 @@
   "dependencies": {
     "animated-gif-detector": "1.1.7",
     "bluebird": "3.3.4",
-    "createerror": "1.0.1",
+    "createerror": "1.1.0",
     "exif-reader": "1.0.0",
     "gm": "1.21.1",
     "hijackresponse-nobackpressure": "1.0.2-patch1",
-    "httperrors": "1.2.0",
+    "httperrors": "2.0.1",
     "icc": "0.0.2",
     "inkscape": "0.0.5",
     "jpegtran": "1.0.1",
