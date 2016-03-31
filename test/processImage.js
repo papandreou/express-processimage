@@ -804,11 +804,11 @@ describe('express-processimage', function () {
                             create: run(function () {
                                 var stream = new Stream.Transform();
                                 stream._transform = function (chunk, encoding, callback) {
-                                    setImmediate(function () {
+                                    setTimeout(function () {
                                         callback(null, chunk);
-                                    });
+                                    }, 1000);
                                 };
-                                stream.destroy = sinon.spy();
+                                stream.destroy = sinon.spy().named('destroy');
                                 createdStreams.push(stream);
                                 setImmediate(run(function () {
                                     request.abort();
@@ -832,10 +832,8 @@ describe('express-processimage', function () {
                 request.once('error', run(function (err) {
                     expect(err, 'to have message', 'socket hang up');
                 }));
-            }).delay(100).then(function () {
-                expect(createdStreams, 'to satisfy', [
-                    { destroy: expect.it('was called once') }
-                ]);
+            }).delay(1).then(function () {
+                expect(createdStreams[0].destroy, 'was called once');
             });
         });
     });
