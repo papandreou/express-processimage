@@ -837,4 +837,61 @@ describe('express-processimage', function () {
             });
         });
     });
+
+    describe('with secondGuessSourceContentType=true', function () {
+        beforeEach(function () {
+            config.secondGuessSourceContentType = true;
+        });
+        it('should recover gracefully when attempting to process a wrongly named jpeg', function () {
+            config.debug = true;
+            return expect('GET /reallyajpeg.gif?resize=40,35', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'sharp'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'JPEG',
+                    size: { width: 40, height: 35 }
+                })
+            });
+        });
+
+        it('should recover gracefully when attempting to process a wrongly named png', function () {
+            config.debug = true;
+            return expect('GET /reallyapng.gif?resize=40,35', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'sharp'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'PNG',
+                    size: { width: 40, height: 35 }
+                })
+            });
+        });
+
+        it('should recover gracefully when attempting to process a wrongly named gif', function () {
+            config.debug = true;
+            return expect('GET /reallyagif.jpeg?resize=40,35', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'gifsicle'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'GIF',
+                    size: { width: 35, height: 35 }
+                })
+            });
+        });
+
+        it('should recover gracefully when attempting to process a wrongly named bmp', function () {
+            config.debug = true;
+            return expect('GET /reallyabmp.gif?gm&resize=40,35', 'to yield response', {
+                headers: {
+                    'X-Express-Processimage': 'gm'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    format: 'BMP',
+                    size: { width: 40, height: 25 }
+                })
+            });
+        });
+    });
 });
