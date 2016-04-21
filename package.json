@@ -24,7 +24,7 @@
     "passerror": "1.1.1",
     "pngcrush": "1.0.0",
     "pngquant": "1.0.0",
-    "sharp-paras20xx": "0.14.0-patch1",
+    "sharp-papandreou": "0.13.1-patch1",
     "underscore": "1.8.3"
   },
   "optionalDependencies": {
