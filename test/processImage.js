@@ -19,7 +19,7 @@ it.skipIf = function (condition) {
 };
 
 try {
-    sharp = require('sharp-papandreou');
+    sharp = require('sharp-paras20xx');
 } catch (e) {}
 
 describe('express-processimage', function () {
