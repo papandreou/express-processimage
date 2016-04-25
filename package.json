@@ -23,25 +23,17 @@
     "underscore": "1.8.3"
   },
   "devDependencies": {
-    "compression": "1.6.1",
     "coveralls": "2.11.4",
     "express": "4.13.4",
-    "gifsicle-stream": "0.2.0",
     "istanbul": "0.4.0",
-    "jshint": "2.9.1-rc1",
     "magicpen": "5.5.0",
     "magicpen-prism": "2.2.1",
     "mocha": "2.4.5",
-    "sinon": "1.17.3",
     "unexpected": "10.11.0",
-    "unexpected-express": "8.2.0",
-    "unexpected-http": "5.5.0",
-    "unexpected-image": "2.0.0",
-    "unexpected-sinon": "10.2.0"
+    "unexpected-express": "8.2.0"
   },
   "scripts": {
-    "lint": "jshint .",
-    "test": "mocha && npm run lint",
+    "test": "mocha",
     "travis": "npm test && npm run coverage && (<coverage/lcov.info coveralls || true)",
     "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
   },

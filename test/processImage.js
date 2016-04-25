@@ -4,8 +4,6 @@ var express = require('express'),
     http = require('http'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
-    sinon = require('sinon'),
-    Stream = require('stream'),
     processImage = require('../lib/processImage'),
     root = pathModule.resolve(__dirname, '..', 'testdata') + '/',
     sharp = require('sharp-paras20xx');
@@ -18,9 +16,6 @@ describe('express-processimage', function () {
 
     var expect = unexpected.clone()
         .use(require('unexpected-express'))
-        .use(require('unexpected-http'))
-        .use(require('unexpected-image'))
-        .use(require('unexpected-sinon'))
         .use(require('magicpen-prism'))
         .addAssertion('<string|object> to yield response <object|number>', function (expect, subject, value) {
             return expect(
@@ -36,9 +31,7 @@ describe('express-processimage', function () {
 
     it('should process and convert a transparent gif', function () {
         return expect('GET /transparentbw.gif?flip&png', 'to yield response', {
-            body: expect.it('to have metadata satisfying', {
-                format: 'PNG'
-            })
+            body: expect.it('when decoded as', 'binary', 'to match', /^\x89PNG/)
         });
     });
 });
