@@ -8,19 +8,7 @@ var express = require('express'),
     Stream = require('stream'),
     processImage = require('../lib/processImage'),
     root = pathModule.resolve(__dirname, '..', 'testdata') + '/',
-    sharp;
-
-describe.skipIf = function (condition) {
-    (condition ? describe.skip : describe).apply(describe, Array.prototype.slice.call(arguments, 1));
-};
-
-it.skipIf = function (condition) {
-    (condition ? it.skip : it).apply(it, Array.prototype.slice.call(arguments, 1));
-};
-
-try {
     sharp = require('sharp-paras20xx');
-} catch (e) {}
 
 describe('express-processimage', function () {
     var config;
@@ -341,7 +329,7 @@ describe('express-processimage', function () {
         });
     });
 
-    describe.skipIf(!sharp, 'when sharp is available', function () {
+    describe('with the sharp engine', function () {
         it('should apply the sharpCache option', function () {
             config.sharpCache = 123;
             var cacheStub = sinon.stub(sharp, 'cache');
