@@ -331,6 +331,14 @@ describe('express-processimage', function () {
     });
 
     describe('with the sharp engine', function () {
+        it('should process and convert a transparent gif', function () {
+            return expect('GET /transparentbw.gif?flip&png', 'to yield response', {
+                body: expect.it('to have metadata satisfying', {
+                    format: 'PNG'
+                })
+            });
+        });
+
         it('should apply the sharpCache option', function () {
             config.sharpCache = 123;
             var cacheStub = sinon.stub(sharp, 'cache');
