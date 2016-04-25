@@ -18,11 +18,12 @@ describe('express-processimage', function () {
 
     var expect = unexpected.clone()
         .use(require('unexpected-express'))
+        .use(require('unexpected-http'))
         .use(require('unexpected-image'))
         .use(require('unexpected-resemble'))
         .use(require('unexpected-sinon'))
         .use(require('magicpen-prism'))
-        .addAssertion('to yield response', function (expect, subject, value) {
+        .addAssertion('<string|object> to yield response <object|number>', function (expect, subject, value) {
             return expect(
                 express()
                     .use(processImage(config))
@@ -880,6 +881,21 @@ describe('express-processimage', function () {
                     size: { width: 40, height: 25 }
                 })
             });
+        });
+    });
+
+    it('should send an error response when an out-of-bounds extract operation is requested', function () {
+        var server = express()
+            .use(processImage(config))
+            .use(express['static'](root))
+            .listen(0);
+
+        var serverAddress = server.address();
+        var serverHostname = serverAddress.address === '::' ? 'localhost' : serverAddress.address;
+        var serverUrl = 'http://' + serverHostname + ':' + serverAddress.port + '/';
+
+        return expect(serverUrl + 'turtle.jpg?extract=100,100,800,10', 'to yield HTTP response satisfying', {
+            body: 'Error: extract_area: bad extract area<br>\n'
         });
     });
 });
