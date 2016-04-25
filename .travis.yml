@@ -12,5 +12,5 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - g++-4.8
-before_install: "sudo apt-get update && sudo apt-get install -y optipng pngcrush pngquant graphicsmagick libjpeg-turbo-progs inkscape libcairo2-dev libgif-dev libjpeg8-dev && npm install -g npm && npm cache clean"
+before_install: "sudo apt-get update && npm install -g npm && npm cache clean"
 script: "npm run-script travis"
