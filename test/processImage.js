@@ -331,7 +331,8 @@ describe('express-processimage', function () {
     });
 
     describe('with the sharp engine', function () {
-        it('should process and convert a transparent gif', function () {
+        // https://github.com/lovell/sharp/issues/375#issuecomment-214546310
+        it.skip('should process and convert a transparent gif', function () {
             return expect('GET /transparentbw.gif?flip&png', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     format: 'PNG'
