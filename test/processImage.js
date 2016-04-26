@@ -904,7 +904,7 @@ describe('express-processimage', function () {
         var serverUrl = 'http://' + serverHostname + ':' + serverAddress.port + '/';
 
         return expect(serverUrl + 'turtle.jpg?extract=100,100,800,10', 'to yield HTTP response satisfying', {
-            body: 'Error: extract_area: bad extract area<br>\n'
+            body: /bad extract area/
         });
     });
 });
