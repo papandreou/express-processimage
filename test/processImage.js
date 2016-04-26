@@ -808,9 +808,9 @@ describe('express-processimage', function () {
                                 };
                                 stream.destroy = sinon.spy().named('destroy');
                                 createdStreams.push(stream);
-                                setImmediate(run(function () {
+                                setTimeout(run(function () {
                                     request.abort();
-                                }));
+                                }), 0);
                                 return stream;
                             })
                         };
@@ -830,7 +830,7 @@ describe('express-processimage', function () {
                 request.once('error', run(function (err) {
                     expect(err, 'to have message', 'socket hang up');
                 }));
-            }).delay(1).then(function () {
+            }).then(function () {
                 expect(createdStreams[0].destroy, 'was called once');
             });
         });
