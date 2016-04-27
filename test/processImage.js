@@ -907,4 +907,44 @@ describe('express-processimage', function () {
             body: /bad extract area/
         });
     });
+
+    it('should discard If-None-Match tokens that do not have a -processimage suffix', function () {
+        return expect(
+            express()
+                .use(processImage(config))
+                .use(function (req, res, next) {
+                    expect(req.headers['if-none-match'], 'to be falsy');
+                    res.end();
+                }),
+            'to yield exchange', {
+                request: {
+                    url: 'GET /turtle.jpg?resize=10,10',
+                    headers: {
+                        'If-None-Match': '"foo"'
+                    }
+                },
+                response: 200
+            }
+        );
+    });
+
+    it('should strip the suffix from If-None-Match tokens that do have a -processimage suffix', function () {
+        return expect(
+            express()
+                .use(processImage(config))
+                .use(function (req, res, next) {
+                    expect(req.headers['if-none-match'], 'to equal', '"foo" "bar-somethingelse"');
+                    res.end();
+                }),
+            'to yield exchange', {
+                request: {
+                    url: 'GET /turtle.jpg?resize=10,10',
+                    headers: {
+                        'If-None-Match': '"foo-processimage" "bar-processimage-somethingelse"'
+                    }
+                },
+                response: 200
+            }
+        );
+    });
 });
