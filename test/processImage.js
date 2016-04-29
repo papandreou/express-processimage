@@ -361,7 +361,7 @@ describe('express-processimage', function () {
                 body: {
                     contentType: 'image/jpeg',
                     filesize: 105836,
-                    etag: /^W\//,
+                    etag: expect.it('to match', /^W\//).and('not to contain', '-processimage'),
                     width: 481,
                     height: 424,
                     space: 'srgb',
