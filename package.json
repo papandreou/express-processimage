@@ -41,7 +41,7 @@
     "magicpen-prism": "2.2.1",
     "mocha": "2.4.5",
     "sinon": "1.17.3",
-    "unexpected": "10.11.0",
+    "unexpected": "10.13.2",
     "unexpected-express": "8.2.0",
     "unexpected-http": "5.5.0",
     "unexpected-image": "2.0.0",
