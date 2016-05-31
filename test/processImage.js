@@ -789,6 +789,16 @@ describe('express-processimage', function () {
                 });
             });
         });
+
+        it('should not break when there is only a \"modifier\" filter left after the invalid operations have been trimmed', function () {
+            return expect('GET /bulb.gif?ignoreAspectRatio&resize=NaN,NaN', 'to yield response', {
+                statusCode: 200,
+                body: expect.it('to have metadata satisfying', {
+                    format: 'GIF',
+                    size: { width: 48, height: 48 }
+                })
+            });
+        });
     });
 
     describe('against a real server', function () {
