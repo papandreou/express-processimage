@@ -33,6 +33,12 @@ describe('express-processimage', function () {
                     response: value
                 }
             );
+        })
+        .addAssertion('<Buffer> [when] converted to PNG <assertion>', function (expect, subject) {
+            expect.errorMode = 'bubble';
+            return sharp(subject).png().toBuffer().then(function (pngBuffer) {
+                return expect.shift(pngBuffer);
+            });
         });
 
     it('should not mess with request for non-image file', function () {
@@ -739,7 +745,7 @@ describe('express-processimage', function () {
                                 height: 48
                             }
                         })
-                        .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+                        .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
                     });
                 });
 
@@ -756,7 +762,7 @@ describe('express-processimage', function () {
                             },
                             Interlace: 'Line'
                         })
-                        .and('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.gif'))
+                        .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
                     });
                 });
             });
