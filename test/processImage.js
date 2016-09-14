@@ -73,6 +73,32 @@ describe('express-processimage', function () {
         return expect('GET /hugearea.png?resize=100,100', 'to yield response', 413);
     });
 
+    describe('with the sharp engine', function () {
+        it('should resize by specifying a bounding box', function () {
+            return expect('GET /turtle.jpg?gm&resize=500,1000', 'to yield response', {
+                body: expect.it('to have metadata satisfying', {
+                    size: {
+                        width: 500,
+                        height: 441
+                    }
+                })
+            });
+        });
+    });
+
+    describe('with the sharp engine', function () {
+        it('should resize by specifying a bounding box', function () {
+            return expect('GET /turtle.jpg?sharp&resize=500,1000', 'to yield response', {
+                body: expect.it('to have metadata satisfying', {
+                    size: {
+                        width: 500,
+                        height: 441
+                    }
+                })
+            });
+        });
+    });
+
     it('should run the image through pngcrush when the pngcrush CGI param is specified', function () {
         return expect('GET /ancillaryChunks.png?pngcrush=-rem+alla', 'to yield response', {
             statusCode: 200,
@@ -572,7 +598,7 @@ describe('express-processimage', function () {
                 body: expect.it('to have metadata satisfying', {
                     size: {
                         width: 100,
-                        height: 100
+                        height: 88
                     },
                     Interlace: 'Line'
                 })
@@ -877,7 +903,7 @@ describe('express-processimage', function () {
                 },
                 body: expect.it('to have metadata satisfying', {
                     format: 'PNG',
-                    size: { width: 40, height: 35 }
+                    size: { width: 40, height: 17 }
                 })
             });
         });
