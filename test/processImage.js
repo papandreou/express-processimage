@@ -989,4 +989,21 @@ describe('express-processimage', function () {
             }
         );
     });
+
+    describe('with a allowedImageSourceContentTypes setting', function () {
+        it('should refuse to process a non-whitelisted image', function () {
+            config.allowedImageSourceContentTypes = ['image/png'];
+            return expect('GET /turtle.jpg?resize=100,100&png', 'to yield response', {
+                headers: {
+                    'Content-Type': 'image/jpeg'
+                },
+                body: expect.it('to have metadata satisfying', {
+                    size: {
+                        width: 481,
+                        height: 424
+                    }
+                })
+            });
+        });
+    });
 });
