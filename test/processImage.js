@@ -414,6 +414,17 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should allow retrieving the metadata of a non-image file with a non-image extension, even when unlisted in allowedImageSourceContentTypes', function () {
+            config.allowedImageSourceContentTypes = ['image/png'];
+            return expect('GET /something.txt?metadata', 'to yield response', {
+                body: {
+                    contentType: 'text/plain; charset=UTF-8',
+                    filesize: 4,
+                    etag: expect.it('to be a string')
+                }
+            });
+        });
+
         it('should set animated:true for an animated gif', function () {
             return expect('GET /animated.gif?metadata', 'to yield response', {
                 body: {
