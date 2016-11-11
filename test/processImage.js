@@ -414,6 +414,27 @@ describe('express-processimage', function () {
             });
         });
 
+        // Regression test
+        it('should not break when serving a 304 to a ?metadata request when secondGuessSourceContentType is enabled', function () {
+            config.secondGuessSourceContentType = true;
+            return expect(
+                express()
+                    .use(processImage(config))
+                    .use(function (req, res, next) {
+                        res.status(304).end();
+                    }),
+                'to yield exchange', {
+                    request: {
+                        url: 'GET /turtle.jpg?metadata',
+                        headers: {
+                            'If-None-Match': '"foobar"'
+                        }
+                    },
+                    response: 304
+                }
+            );
+        });
+
         it('should allow retrieving the metadata of a non-image file with a non-image extension', function () {
             return expect('GET /something.txt?metadata', 'to yield response', {
                 body: {
