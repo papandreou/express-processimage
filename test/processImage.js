@@ -388,8 +388,11 @@ describe('express-processimage', function () {
             });
         });
 
-        it('should allow retrieving the image metadata as JSON', function () {
+        it('should allow retrieving the image metadata as JSON and support conditional GET', function () {
             return expect('GET /turtle.jpg?metadata', 'to yield response', {
+                headers: {
+                    ETag: expect.it('to be a string')
+                },
                 body: {
                     contentType: 'image/jpeg',
                     filesize: 105836,
@@ -401,6 +404,13 @@ describe('express-processimage', function () {
                     hasProfile: false,
                     hasAlpha: false
                 }
+            }).then(function (context) {
+                return expect({
+                    url: 'GET /turtle.jpg?metadata',
+                    headers: {
+                        'If-None-Match': context.httpResponse.headers.get('ETag')
+                    }
+                }, 'to yield response', 304);
             });
         });
 
