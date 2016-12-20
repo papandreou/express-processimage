@@ -27,9 +27,6 @@
     "sharp": "0.17.0",
     "underscore": "1.8.3"
   },
-  "optionalDependencies": {
-    "svgfilter": "1.2.0"
-  },
   "devDependencies": {
     "compression": "1.6.1",
     "coveralls": "2.11.4",
@@ -41,6 +38,7 @@
     "magicpen-prism": "2.2.1",
     "mocha": "2.4.5",
     "sinon": "1.17.3",
+    "svgfilter": "1.2.0",
     "unexpected": "^10.18.1",
     "unexpected-express": "^8.3.2",
     "unexpected-http": "^5.6.0",
