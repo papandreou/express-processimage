@@ -4,6 +4,7 @@ var express = require('express'),
     http = require('http'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
+    consider = require('consider'),
     sinon = require('sinon'),
     Stream = require('stream'),
     processImage = require('../lib/processImage'),
@@ -16,7 +17,7 @@ describe('express-processimage', function () {
         config = { root: root, filters: {} };
     });
 
-    var expect = unexpected.clone()
+    var expect = consider(unexpected.clone())
         .use(require('unexpected-express'))
         .use(require('unexpected-http'))
         .use(require('unexpected-image'))
@@ -42,7 +43,7 @@ describe('express-processimage', function () {
         });
 
     it('should not mess with request for non-image file', function () {
-        return expect('GET /something.txt', 'to yield response', {
+        expect('GET /something.txt', 'to yield response', {
             headers: {
                 'Content-Type': 'text/plain; charset=UTF-8'
             },
@@ -51,7 +52,7 @@ describe('express-processimage', function () {
     });
 
     it('should not mess with request for image with no query string', function () {
-        return expect('GET /ancillaryChunks.png', 'to yield response', {
+        expect('GET /ancillaryChunks.png', 'to yield response', {
             headers: {
                 'Content-Type': 'image/png'
             },
@@ -60,7 +61,7 @@ describe('express-processimage', function () {
     });
 
     it('should not mess with request for image with an unsupported operation in the query string', function () {
-        return expect('GET /ancillaryChunks.png?foo=bar', 'to yield response', {
+        expect('GET /ancillaryChunks.png?foo=bar', 'to yield response', {
             headers: {
                 'Content-Type': 'image/png'
             },
@@ -70,12 +71,12 @@ describe('express-processimage', function () {
 
     it('refuses to process an image whose dimensions exceed maxInputPixels', function () {
         config.maxInputPixels = 100000;
-        return expect('GET /hugearea.png?resize=100,100', 'to yield response', 413);
+        expect('GET /hugearea.png?resize=100,100', 'to yield response', 413);
     });
 
     describe('with the sharp engine', function () {
         it('should resize by specifying a bounding box', function () {
-            return expect('GET /turtle.jpg?gm&resize=500,1000', 'to yield response', {
+            expect('GET /turtle.jpg?gm&resize=500,1000', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     size: {
                         width: 500,
@@ -88,7 +89,7 @@ describe('express-processimage', function () {
 
     describe('with the sharp engine', function () {
         it('should resize by specifying a bounding box', function () {
-            return expect('GET /turtle.jpg?sharp&resize=500,1000', 'to yield response', {
+            expect('GET /turtle.jpg?sharp&resize=500,1000', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     size: {
                         width: 500,
@@ -100,7 +101,7 @@ describe('express-processimage', function () {
     });
 
     it('should run the image through pngcrush when the pngcrush CGI param is specified', function () {
-        return expect('GET /ancillaryChunks.png?pngcrush=-rem+alla', 'to yield response', {
+        expect('GET /ancillaryChunks.png?pngcrush=-rem+alla', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/png'
@@ -118,7 +119,7 @@ describe('express-processimage', function () {
     });
 
     it('should run the image through pngquant when the pngquant CGI param is specified', function () {
-        return expect('GET /purplealpha24bit.png?pngquant', 'to yield response', {
+        expect('GET /purplealpha24bit.png?pngquant', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/png'
@@ -136,7 +137,7 @@ describe('express-processimage', function () {
     });
 
     it('should run the image through jpegtran when the jpegtran CGI param is specified', function () {
-        return expect('GET /turtle.jpg?jpegtran=-grayscale,-flip,horizontal', 'to yield response', {
+        expect('GET /turtle.jpg?jpegtran=-grayscale,-flip,horizontal', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/jpeg'
@@ -157,7 +158,7 @@ describe('express-processimage', function () {
     });
 
     it('should run the image through graphicsmagick when methods exposed by the gm module are added as CGI params', function () {
-        return expect('GET /turtle.jpg?gm&resize=340,300', 'to yield response', {
+        expect('GET /turtle.jpg?gm&resize=340,300', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/jpeg'
@@ -176,7 +177,7 @@ describe('express-processimage', function () {
     });
 
     it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', function () {
-        return expect('GET /turtle.jpg?sharp&resize=340,300&png', 'to yield response', {
+        expect('GET /turtle.jpg?sharp&resize=340,300&png', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/png'
@@ -191,8 +192,8 @@ describe('express-processimage', function () {
         });
     });
 
-    it('should run the image through svgfilter when the svgfilter parameter is specified', function () {
-        return expect('GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId', 'to yield response', {
+    it('should run the image through svgfilter when the svgfilter parameter is specified', async function () {
+        let context = await expect('GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/svg+xml',
@@ -200,24 +201,24 @@ describe('express-processimage', function () {
             },
             body: expect.it('to match', /<svg/)
                 .and('to match', /id="theBogusElementId"/)
-        }).then(function (context) {
-            var etag = context.httpResponse.headers.get('ETag');
-            return expect({
-                url: 'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
-                headers: {
-                    'If-None-Match': etag
-                }
-            }, 'to yield response', {
-                statusCode: 304,
-                headers: {
-                    ETag: etag
-                }
-            });
+        });
+
+        var etag = context.httpResponse.headers.get('ETag');
+        expect({
+            url: 'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
+            headers: {
+                'If-None-Match': etag
+            }
+        }, 'to yield response', {
+            statusCode: 304,
+            headers: {
+                ETag: etag
+            }
         });
     });
 
     it('should run the image through multiple filters when multiple CGI params are specified', function () {
-        return expect('GET /purplealpha24bit.png?resize=800,800&pngquant=8&pngcrush=-rem,gAMA', 'to yield response', {
+        expect('GET /purplealpha24bit.png?resize=800,800&pngquant=8&pngcrush=-rem,gAMA', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/png'
@@ -236,8 +237,8 @@ describe('express-processimage', function () {
         });
     });
 
-    it('should serve a converted image with the correct Content-Type', function () {
-        return expect('GET /purplealpha24bit.png?setFormat=jpg', 'to yield response', {
+    it('should serve a converted image with the correct Content-Type', async function () {
+        let context = await expect('GET /purplealpha24bit.png?setFormat=jpg', 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/jpeg',
@@ -254,44 +255,44 @@ describe('express-processimage', function () {
                         height: 100
                     }
                 })
-        }).then(function (context) {
-            var etag = context.httpResponse.headers.get('ETag');
-            return expect({
-                url: 'GET /purplealpha24bit.png?setFormat=jpg',
-                headers: {
-                    'If-None-Match': etag
-                }
-            }, 'to yield response', {
-                statusCode: 304,
-                headers: {
-                    ETag: etag
-                }
-            });
+        });
+
+        var etag = context.httpResponse.headers.get('ETag');
+        expect({
+            url: 'GET /purplealpha24bit.png?setFormat=jpg',
+            headers: {
+                'If-None-Match': etag
+            }
+        }, 'to yield response', {
+            statusCode: 304,
+            headers: {
+                ETag: etag
+            }
         });
     });
 
     it('should serve an error response if an invalid image is processed with GraphicsMagick', function () {
-        return expect('GET /invalidImage.png?setFormat=jpg', 'to yield response', {
+        expect('GET /invalidImage.png?setFormat=jpg', 'to yield response', {
             errorPassedToNext: true
         });
     });
 
     it('should serve an error response if an invalid image is processed with pngquant', function () {
-        return expect('GET /invalidImage.png?pngquant', 'to yield response', {
+        expect('GET /invalidImage.png?pngquant', 'to yield response', {
             errorPassedToNext: true
         });
     });
 
     it('should include the command line in the response body when an error is encountered', function () {
         // TODO: This test results in a statusCode 404. That is weird...
-        return expect('GET /notajpeg.jpg?jpegtran=-grayscale', 'to yield response', {
+        expect('GET /notajpeg.jpg?jpegtran=-grayscale', 'to yield response', {
             errorPassedToNext: /jpegtran -grayscale:/
         });
     });
 
     // Undetectable by gm -- the source format must be explicitly specified
     it('should convert an icon to png via GraphicsMagick', function () {
-        return expect('GET /favicon.ico?gm&png', 'to yield response', {
+        expect('GET /favicon.ico?gm&png', 'to yield response', {
             headers: {
                 'Content-Type': 'image/png'
             },
@@ -306,7 +307,7 @@ describe('express-processimage', function () {
     });
 
     it('should convert an icon served as image/vnd.microsoft.icon to png via GraphicsMagick', function () {
-        return expect(express().use(processImage(config)).get('/favicon.ico', function (req, res, next) {
+        expect(express().use(processImage(config)).get('/favicon.ico', function (req, res, next) {
             res.setHeader('Content-Type', 'image/vnd.microsoft.icon');
             fs.createReadStream(pathModule.resolve(__dirname, '..', 'testdata', 'favicon.ico')).pipe(res);
         }), 'to yield exchange', {
@@ -333,31 +334,31 @@ describe('express-processimage', function () {
             }).named('allowOperation');
         });
 
-        it('should allow an operation for which allowOperation returns true', function () {
-            return expect('GET /turtle.jpg?resize=87,100', 'to yield response', {
+        it('should allow an operation for which allowOperation returns true', async function () {
+            await expect('GET /turtle.jpg?resize=87,100', 'to yield response', {
                 headers: {
                     'Content-Type': 'image/jpeg'
                 },
                 body: expect.it('to have metadata satisfying', { size: { width: 87 } })
-            }).then(function () {
-                expect(config.allowOperation, 'to have calls satisfying', function () {
-                    config.allowOperation('resize', [ 87, 100 ]);
-                });
+            });
+
+            expect(config.allowOperation, 'to have calls satisfying', function () {
+                config.allowOperation('resize', [ 87, 100 ]);
             });
         });
 
-        it('should disallow an operation for which allowOperation returns false', function () {
-            return expect('GET /turtle.jpg?png', 'to yield response', {
+        it('should disallow an operation for which allowOperation returns false', async function () {
+            await expect('GET /turtle.jpg?png', 'to yield response', {
                 headers: {
                     'Content-Type': 'image/jpeg'
                 },
                 body: expect.it('to have metadata satisfying', {
                     format: 'JPEG'
                 })
-            }).then(function () {
-                expect(config.allowOperation, 'to have calls satisfying', function () {
-                    config.allowOperation('png', []);
-                });
+            });
+
+            expect(config.allowOperation, 'to have calls satisfying', function () {
+                config.allowOperation('png', []);
             });
         });
     });
@@ -365,31 +366,33 @@ describe('express-processimage', function () {
     describe('with the sharp engine', function () {
         // https://github.com/lovell/sharp/issues/375#issuecomment-214546310
         it.skip('should process and convert a transparent gif', function () {
-            return expect('GET /transparentbw.gif?flip&png', 'to yield response', {
+            expect('GET /transparentbw.gif?flip&png', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     format: 'PNG'
                 })
             });
         });
 
-        it('should apply the sharpCache option', function () {
+        it('should apply the sharpCache option', async function () {
             config.sharpCache = 123;
             var cacheStub = sinon.stub(sharp, 'cache');
-            return expect('GET /turtle.jpg?metadata', 'to yield response', {
-                body: {
-                    contentType: 'image/jpeg'
-                }
-            }).then(function () {
+            try {
+                await expect('GET /turtle.jpg?metadata', 'to yield response', {
+                    body: {
+                        contentType: 'image/jpeg'
+                    }
+                });
+
                 expect(cacheStub, 'to have calls satisfying', function () {
                     cacheStub(123);
                 });
-            }).finally(function () {
+            } finally {
                 cacheStub.restore();
-            });
+            }
         });
 
-        it('should allow retrieving the image metadata as JSON and support conditional GET', function () {
-            return expect('GET /turtle.jpg?metadata', 'to yield response', {
+        it('should allow retrieving the image metadata as JSON and support conditional GET', async function () {
+            let context = await expect('GET /turtle.jpg?metadata', 'to yield response', {
                 headers: {
                     ETag: expect.it('to be a string')
                 },
@@ -404,20 +407,20 @@ describe('express-processimage', function () {
                     hasProfile: false,
                     hasAlpha: false
                 }
-            }).then(function (context) {
-                return expect({
-                    url: 'GET /turtle.jpg?metadata',
-                    headers: {
-                        'If-None-Match': context.httpResponse.headers.get('ETag')
-                    }
-                }, 'to yield response', 304);
             });
+
+            expect({
+                url: 'GET /turtle.jpg?metadata',
+                headers: {
+                    'If-None-Match': context.httpResponse.headers.get('ETag')
+                }
+            }, 'to yield response', 304);
         });
 
         // Regression test
         it('should not break when serving a 304 to a ?metadata request when secondGuessSourceContentType is enabled', function () {
             config.secondGuessSourceContentType = true;
-            return expect(
+            expect(
                 express()
                     .use(processImage(config))
                     .use(function (req, res, next) {
@@ -436,7 +439,7 @@ describe('express-processimage', function () {
         });
 
         it('should allow retrieving the metadata of a non-image file with a non-image extension', function () {
-            return expect('GET /something.txt?metadata', 'to yield response', {
+            expect('GET /something.txt?metadata', 'to yield response', {
                 body: {
                     contentType: 'text/plain; charset=UTF-8',
                     filesize: 4,
@@ -447,7 +450,7 @@ describe('express-processimage', function () {
 
         it('should allow retrieving the metadata of a non-image file with a non-image extension, even when unlisted in allowedImageSourceContentTypes', function () {
             config.allowedImageSourceContentTypes = ['image/png'];
-            return expect('GET /something.txt?metadata', 'to yield response', {
+            expect('GET /something.txt?metadata', 'to yield response', {
                 body: {
                     contentType: 'text/plain; charset=UTF-8',
                     filesize: 4,
@@ -457,7 +460,7 @@ describe('express-processimage', function () {
         });
 
         it('should set animated:true for an animated gif', function () {
-            return expect('GET /animated.gif?metadata', 'to yield response', {
+            expect('GET /animated.gif?metadata', 'to yield response', {
                 body: {
                     animated: true
                 }
@@ -465,7 +468,7 @@ describe('express-processimage', function () {
         });
 
         it('should set animated:false for a non-animated gif', function () {
-            return expect('GET /bulb.gif?metadata', 'to yield response', {
+            expect('GET /bulb.gif?metadata', 'to yield response', {
                 body: {
                     animated: false
                 }
@@ -473,7 +476,7 @@ describe('express-processimage', function () {
         });
 
         it('should allow support ?metadata=true as well (legacy)', function () {
-            return expect('GET /turtle.jpg?metadata=true', 'to yield response', {
+            expect('GET /turtle.jpg?metadata=true', 'to yield response', {
                 body: {
                     contentType: 'image/jpeg',
                     filesize: 105836,
@@ -489,7 +492,7 @@ describe('express-processimage', function () {
         });
 
         it('should allow retrieving the image metadata of a GIF', function () {
-            return expect('GET /animated.gif?metadata', 'to yield response', {
+            expect('GET /animated.gif?metadata', 'to yield response', {
                 body: {
                     format: 'gif',
                     contentType: 'image/gif',
@@ -499,7 +502,7 @@ describe('express-processimage', function () {
         });
 
         it('should allow retrieving the image metadata of a JPEG converted to GIF', function () {
-            return expect('GET /turtle.jpg?setFormat=gif&metadata', 'to yield response', {
+            expect('GET /turtle.jpg?setFormat=gif&metadata', 'to yield response', {
                 body: {
                     format: 'gif',
                     contentType: 'image/gif'
@@ -508,7 +511,7 @@ describe('express-processimage', function () {
         });
 
         it('should allow retrieving the image metadata for the result of an operation', function () {
-            return expect('GET /turtle.jpg?png&greyscale&resize=10,9&metadata', 'to yield response', {
+            expect('GET /turtle.jpg?png&greyscale&resize=10,9&metadata', 'to yield response', {
                 body: {
                     width: 10,
                     height: 9,
@@ -521,7 +524,7 @@ describe('express-processimage', function () {
         });
 
         it('should include the EXIF data in the image metadata', function () {
-            return expect('GET /exifOriented.jpg?metadata', 'to yield response', {
+            expect('GET /exifOriented.jpg?metadata', 'to yield response', {
                 body: {
                     image: {
                         Make: 'Apple',
@@ -535,7 +538,7 @@ describe('express-processimage', function () {
         });
 
         it('should auto-orient an image', function () {
-            return expect('GET /exifOriented.jpg?rotate', 'to yield response', {
+            expect('GET /exifOriented.jpg?rotate', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     size: {
                         width: 2448,
@@ -548,7 +551,7 @@ describe('express-processimage', function () {
         // Not yet supported by graphicsmagick (although imagemagick has -auto-orient)
         it.skip('should auto-orient an image with the gm engine', function () {
             config.debug = true;
-            return expect('GET /exifOriented.jpg?gm&rotate', 'to yield response', {
+            expect('GET /exifOriented.jpg?gm&rotate', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'gm'
                 },
@@ -562,7 +565,7 @@ describe('express-processimage', function () {
         });
 
         it('should parse the ICC Profile data if available', function () {
-            return expect('GET /Landscape_8.jpg?metadata', 'to yield response', {
+            expect('GET /Landscape_8.jpg?metadata', 'to yield response', {
                 body: {
                     icc: {
                         deviceClass: 'Monitor',
@@ -574,7 +577,7 @@ describe('express-processimage', function () {
         });
 
         it('should send back the upstream Content-Type and Content-Length when ?metadata is applied to a non-image with an image extension', function () {
-            return expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', {
+            expect('GET /certainlynotanimage.jpg?metadata', 'to yield response', {
                 body: {
                     contentType: 'image/jpeg',
                     error: 'Input buffer contains unsupported image format',
@@ -585,30 +588,30 @@ describe('express-processimage', function () {
         });
 
         it('should send back an error when an operation is applied to a non-image', function () {
-            return expect('GET /certainlynotanimage.jpg?resize=10,10', 'to yield response', 415);
+            expect('GET /certainlynotanimage.jpg?resize=10,10', 'to yield response', 415);
         });
 
         it('should allow a crop operation with the gravity specified as a string', function () {
-            return expect('GET /turtle.jpg?resize=40,15&crop=north', 'to yield response', {
+            expect('GET /turtle.jpg?resize=40,15&crop=north', 'to yield response', {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedNorth.jpg'))
             });
         });
 
         // https://github.com/lovell/sharp/issues/276
         it('should fix the ordering of the parameters to extract to be left,top,width,height', function () {
-            return expect('GET /turtle.jpg?extract=40,60,30,40', 'to yield response', {
+            expect('GET /turtle.jpg?extract=40,60,30,40', 'to yield response', {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleExtract.jpg'))
             });
         });
 
         it('should propagate a "bad extract area" error correctly', function () {
-            return expect('GET /turtle.jpg?extract=99,99,9999,9999', 'to yield response', {
+            expect('GET /turtle.jpg?extract=99,99,9999,9999', 'to yield response', {
                 errorPassedToNext: /bad extract area/
             });
         });
 
         it('should convert an animated gif to png', function () {
-            return expect('GET /animated.gif?png', 'to yield response', {
+            expect('GET /animated.gif?png', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     format: 'PNG',
                     size: {
@@ -621,7 +624,7 @@ describe('express-processimage', function () {
 
         it('should use sharp when a gif is converted to png', function () {
             config.debug = true;
-            return expect('GET /animated.gif?resize=40,100&png', 'to yield response', {
+            expect('GET /animated.gif?resize=40,100&png', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'sharp'
                 },
@@ -636,7 +639,7 @@ describe('express-processimage', function () {
 
         it('should support creating a progressive jpeg', function () {
             config.debug = true;
-            return expect('GET /turtle.jpg?resize=100,100&progressive', 'to yield response', {
+            expect('GET /turtle.jpg?resize=100,100&progressive', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     size: {
                         width: 100,
@@ -648,7 +651,7 @@ describe('express-processimage', function () {
         });
 
         it('should ignore invalid operations', function () {
-            return expect('GET /turtle.jpg?resize=10%22', 'to yield response', {
+            expect('GET /turtle.jpg?resize=10%22', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     size: {
                         width: 481,
@@ -660,7 +663,7 @@ describe('express-processimage', function () {
     });
 
     it('should process a big image when the compression middleware is present above express-processimage', function () {
-        return expect(
+        expect(
             express()
                 .use(require('compression')())
                 .use(processImage())
@@ -681,20 +684,20 @@ describe('express-processimage', function () {
     });
 
     it('should work fine when cropping an item starting from top 0 and left 0', function () {
-        return expect('GET /turtle.jpg?extract=0,0,300,200', 'to yield response', {
+        expect('GET /turtle.jpg?extract=0,0,300,200', 'to yield response', {
             body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCropped300x200FromTopLeft.jpg'))
         });
     });
 
     describe('with the gm engine', function () {
         it('should allow a crop operation with a gravity of center', function () {
-            return expect('GET /turtle.jpg?gm&resize=40,15&crop=center', 'to yield response', {
+            expect('GET /turtle.jpg?gm&resize=40,15&crop=center', 'to yield response', {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedCenterGm.jpg'))
             });
         });
 
         it('should allow a crop operation with a gravity of northeast', function () {
-            return expect('GET /turtle.jpg?gm&resize=40,15&crop=northeast', 'to yield response', {
+            expect('GET /turtle.jpg?gm&resize=40,15&crop=northeast', 'to yield response', {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedNorthEastGm.jpg'))
             });
         });
@@ -709,7 +712,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should resize an animated gif', function () {
-                    return expect('GET /animated.gif?resize=40,35', 'to yield response', {
+                    expect('GET /animated.gif?resize=40,35', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -723,7 +726,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should support the withoutEnlargement modfier', function () {
-                    return expect('GET /animated.gif?resize=40,35&withoutEnlargement', 'to yield response', {
+                    expect('GET /animated.gif?resize=40,35&withoutEnlargement', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -737,7 +740,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should support the ignoreAspectRatio modfier', function () {
-                    return expect('GET /animated.gif?resize=100,100&ignoreAspectRatio', 'to yield response', {
+                    expect('GET /animated.gif?resize=100,100&ignoreAspectRatio', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -749,7 +752,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should support resize with crop', function () {
-                    return expect('GET /animated.gif?resize=40,35&crop=center', 'to yield response', {
+                    expect('GET /animated.gif?resize=40,35&crop=center', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -763,7 +766,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should resize a non-animated gif', function () {
-                    return expect('GET /bulb.gif?resize=200,200', 'to yield response', {
+                    expect('GET /bulb.gif?resize=200,200', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -775,7 +778,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should resize an animated gif with differently sized frames', function () {
-                    return expect('GET /cat.gif?resize=200,200', 'to yield response', {
+                    expect('GET /cat.gif?resize=200,200', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -787,7 +790,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should support extract and rotate', function () {
-                    return expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
+                    expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -802,7 +805,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should support rotate with a single argument', function () {
-                    return expect('GET /bulb.gif?rotate=90', 'to yield response', {
+                    expect('GET /bulb.gif?rotate=90', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -818,7 +821,7 @@ describe('express-processimage', function () {
                 });
 
                 it('should support generating a progressive (interlaced) GIF', function () {
-                    return expect('GET /bulb.gif?rotate=90&progressive', 'to yield response', {
+                    expect('GET /bulb.gif?rotate=90&progressive', 'to yield response', {
                         headers: {
                             'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm'
                         },
@@ -838,7 +841,7 @@ describe('express-processimage', function () {
     });
 
     it('should handle resize before extract', function () {
-        return expect('GET /cat.gif?resize=380,486&extract=150,150,100,100', 'to yield response', {
+        expect('GET /cat.gif?resize=380,486&extract=150,150,100,100', 'to yield response', {
             body: expect.it('to have metadata satisfying', {
                 size: { width: 100, height: 100 },
                 Scene: '3 of 4' // Animated
@@ -856,7 +859,7 @@ describe('express-processimage', function () {
             'interpolateWith=something'
         ].forEach(function (invalidOperation) {
             it('disallows an operation of ' + invalidOperation, function () {
-                return expect('GET /testImage.png?' + invalidOperation, 'to yield response', {
+                expect('GET /testImage.png?' + invalidOperation, 'to yield response', {
                     body: expect.it('to have metadata satisfying', {
                         size: { width: 12, height: 5 }
                     })
@@ -865,7 +868,7 @@ describe('express-processimage', function () {
         });
 
         it('should not break when there is only a \"modifier\" filter left after the invalid operations have been trimmed', function () {
-            return expect('GET /bulb.gif?ignoreAspectRatio&resize=NaN,NaN', 'to yield response', {
+            expect('GET /bulb.gif?ignoreAspectRatio&resize=NaN,NaN', 'to yield response', {
                 statusCode: 200,
                 body: expect.it('to have metadata satisfying', {
                     format: 'GIF',
@@ -926,7 +929,7 @@ describe('express-processimage', function () {
         });
         it('should recover gracefully when attempting to process a wrongly named jpeg', function () {
             config.debug = true;
-            return expect('GET /reallyajpeg.gif?resize=40,35', 'to yield response', {
+            expect('GET /reallyajpeg.gif?resize=40,35', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'sharp'
                 },
@@ -939,7 +942,7 @@ describe('express-processimage', function () {
 
         it('should recover gracefully when attempting to process a wrongly named png', function () {
             config.debug = true;
-            return expect('GET /reallyapng.gif?resize=40,35', 'to yield response', {
+            expect('GET /reallyapng.gif?resize=40,35', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'sharp'
                 },
@@ -952,7 +955,7 @@ describe('express-processimage', function () {
 
         it('should recover gracefully when attempting to process a wrongly named gif', function () {
             config.debug = true;
-            return expect('GET /reallyagif.jpeg?resize=40,35', 'to yield response', {
+            expect('GET /reallyagif.jpeg?resize=40,35', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'gifsicle'
                 },
@@ -965,7 +968,7 @@ describe('express-processimage', function () {
 
         it('should recover gracefully when attempting to process a wrongly named bmp', function () {
             config.debug = true;
-            return expect('GET /reallyabmp.gif?gm&resize=40,35', 'to yield response', {
+            expect('GET /reallyabmp.gif?gm&resize=40,35', 'to yield response', {
                 headers: {
                     'X-Express-Processimage': 'gm'
                 },
@@ -987,13 +990,13 @@ describe('express-processimage', function () {
         var serverHostname = serverAddress.address === '::' ? 'localhost' : serverAddress.address;
         var serverUrl = 'http://' + serverHostname + ':' + serverAddress.port + '/';
 
-        return expect(serverUrl + 'turtle.jpg?extract=100,100,800,10', 'to yield HTTP response satisfying', {
+        expect(serverUrl + 'turtle.jpg?extract=100,100,800,10', 'to yield HTTP response satisfying', {
             body: /bad extract area/
         });
     });
 
     it('should discard If-None-Match tokens that do not have a -processimage suffix', function () {
-        return expect(
+        expect(
             express()
                 .use(processImage(config))
                 .use(function (req, res, next) {
@@ -1013,7 +1016,7 @@ describe('express-processimage', function () {
     });
 
     it('should strip the suffix from If-None-Match tokens that do have a -processimage suffix', function () {
-        return expect(
+        expect(
             express()
                 .use(processImage(config))
                 .use(function (req, res, next) {
@@ -1035,7 +1038,7 @@ describe('express-processimage', function () {
     describe('with a allowedImageSourceContentTypes setting', function () {
         it('should refuse to process a non-whitelisted image', function () {
             config.allowedImageSourceContentTypes = ['image/png'];
-            return expect('GET /turtle.jpg?resize=100,100&png', 'to yield response', {
+            expect('GET /turtle.jpg?resize=100,100&png', 'to yield response', {
                 headers: {
                     'Content-Type': 'image/jpeg'
                 },

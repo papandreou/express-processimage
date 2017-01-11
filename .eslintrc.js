@@ -1,3 +1,6 @@
 module.exports = {
-    extends: 'onelint'
+    extends: 'onelint',
+    "parserOptions": {
+        "ecmaVersion": 8 // or 2017
+    }
 };

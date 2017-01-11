@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "compression": "1.6.1",
+    "consider": "0.3.0",
     "coveralls": "2.11.4",
     "eslint": "3.13.1",
     "eslint-config-onelint": "1.1.0",
@@ -49,9 +50,9 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "mocha && npm run lint",
+    "test": "mocha --harmony-async-await && npm run lint",
     "travis": "npm test && npm run coverage && (<coverage/lcov.info coveralls || true)",
-    "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
+    "coverage": "NODE_ENV=development istanbul cover _mocha -- --harmony-async-await --reporter dot && echo google-chrome coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
