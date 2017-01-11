@@ -8,6 +8,7 @@
     "bin": "bin"
   },
   "dependencies": {
+    "accepts": "^1.3.3",
     "animated-gif-detector": "1.2.0",
     "bluebird": "3.3.4",
     "createerror": "1.1.0",
@@ -28,6 +29,7 @@
     "underscore": "1.8.3"
   },
   "devDependencies": {
+    "browser-sync": "^2.18.6",
     "compression": "1.6.1",
     "coveralls": "2.11.4",
     "eslint": "3.13.1",
