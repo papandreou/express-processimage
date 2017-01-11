@@ -1,34 +1,34 @@
+/*global describe, it, before, after*/
 var bs = require('browser-sync').create();
 var expect = require('unexpected').clone();
 var pathModule = require('path');
 var root = pathModule.resolve(__dirname, '..', 'testdata') + '/';
-var processImage = require('../lib/processimage');
+var processImage = require('../lib/processImage');
 
 expect.use(require('unexpected-http'))
-  .use(require('unexpected-image'))
-  .use(require('unexpected-resemble'))
-  .use(require('unexpected-sinon'))
-  .use(require('magicpen-prism'))
-  .addAssertion('<string> to respond with <object|number>', function (expect, subject, value) {
-      var modifiedSubject = subject.replace(' ', ' http://localhost:9999');
-
-      return expect(modifiedSubject, 'to yield response', value);
-  });
+    .use(require('unexpected-image'))
+    .use(require('unexpected-resemble'))
+    .use(require('unexpected-sinon'))
+    .use(require('magicpen-prism'))
+    .addAssertion('<string> to respond with <object|number>', function (expect, subject, value) {
+        var modifiedSubject = subject.replace(' ', ' http://localhost:9999');
+        return expect(modifiedSubject, 'to yield response', value);
+    });
 
 before(function (done) {
-  bs.init({
-    port: '9999',
-    server: root,
-    open: false,
-    logLevel: 'silent',
-    middleware: [
-      processImage({ root: root })
-    ]
-  }, done);
+    bs.init({
+        port: '9999',
+        server: root,
+        open: false,
+        logLevel: 'silent',
+        middleware: [
+            processImage({ root: root })
+        ]
+    }, done);
 });
 
 after(function () {
-  bs.exit();
+    bs.exit();
 });
 
 describe('browser-sync compatibility', function () {
@@ -42,12 +42,12 @@ describe('browser-sync compatibility', function () {
     });
 
     it('should not mess with request for image with no query string', function () {
-      return expect('GET /ancillaryChunks.png', 'to respond with', {
-          headers: {
-              'Content-Type': 'image/png'
-          },
-          body: expect.it('to have length', 3711)
-      });
+        return expect('GET /ancillaryChunks.png', 'to respond with', {
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have length', 3711)
+        });
     });
 
     it('should not mess with request for image with an unsupported operation in the query string', function () {
