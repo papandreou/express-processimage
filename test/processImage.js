@@ -27,7 +27,7 @@ describe('express-processimage', function () {
             return expect(
                 express()
                     .use(processImage(config))
-                    .use(express['static'](root)),
+                    .use(express.static(root)),
                 'to yield exchange', {
                     request: subject,
                     response: value
@@ -664,7 +664,7 @@ describe('express-processimage', function () {
             express()
                 .use(require('compression')())
                 .use(processImage())
-                .use(express['static'](root)),
+                .use(express.static(root)),
             'to yield exchange', {
                 request: 'GET /the-villa-facade.png?sourceContentType=image%2Fpng&ignoreAspectRatio&resize=652,435&extract=315,10,280,420',
                 response: {
@@ -902,7 +902,7 @@ describe('express-processimage', function () {
                 };
                 var server = express()
                     .use(processImage(config))
-                    .use(express['static'](root))
+                    .use(express.static(root))
                     .listen(0);
 
                 var serverAddress = server.address();
@@ -980,7 +980,7 @@ describe('express-processimage', function () {
     it('should send an error response when an out-of-bounds extract operation is requested', function () {
         var server = express()
             .use(processImage(config))
-            .use(express['static'](root))
+            .use(express.static(root))
             .listen(0);
 
         var serverAddress = server.address();
