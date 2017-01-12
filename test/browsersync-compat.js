@@ -5,33 +5,45 @@ var pathModule = require('path');
 var root = pathModule.resolve(__dirname, '..', 'testdata') + '/';
 var processImage = require('../lib/processImage');
 
+var serverPort = '9999';
+
 expect.use(require('unexpected-http'))
     .use(require('unexpected-image'))
     .use(require('unexpected-resemble'))
     .use(require('unexpected-sinon'))
     .use(require('magicpen-prism'))
-    .addAssertion('<string> to respond with <object|number>', function (expect, subject, value) {
-        var modifiedSubject = subject.replace(' ', ' http://localhost:9999');
+    .addAssertion('<string|object> to respond with <object|number>', function (expect, subject, value) {
+        var modifiedSubject;
+
+        if (typeof subject === 'string') {
+            modifiedSubject = subject.replace(' ', ` http://localhost:${serverPort}`);
+        } else {
+            modifiedSubject = Object.assign({}, subject, {
+                url: subject.url.replace(/^(:?GET|POST)? ?/, `http://localhost:${serverPort}`)
+            });
+        }
         return expect(modifiedSubject, 'to yield response', value);
     });
 
-before(function (done) {
-    bs.init({
-        port: '9999',
-        server: root,
-        open: false,
-        logLevel: 'silent',
-        middleware: [
-            processImage({ root: root })
-        ]
-    }, done);
-});
-
-after(function () {
-    bs.exit();
-});
 
 describe('browser-sync compatibility', function () {
+    before(function (done) {
+        bs.init({
+            port: serverPort,
+            server: root,
+            open: false,
+            logLevel: 'silent',
+            middleware: [
+                processImage({ root: root })
+            ]
+        }, done);
+    });
+
+    after(function () {
+        bs.exit();
+    });
+
+
     it('should not mess with request for non-image file', function () {
         return expect('GET /something.txt', 'to respond with', {
             headers: {
@@ -56,6 +68,28 @@ describe('browser-sync compatibility', function () {
                 'Content-Type': 'image/png'
             },
             body: expect.it('to have length', 3711)
+        });
+    });
+
+    it('should return a 304 status code when requesting the same image with unchanged modifications', function () {
+        return expect('GET /ancillaryChunks.png?foo=bar', 'to respond with', {
+            statusCode: 200,
+            headers: {
+                'Content-Type': 'image/png'
+            },
+            body: expect.it('to have length', 3711)
+        }).then(function (context) {
+            var etag = context.httpResponse.headers.get('ETag');
+            return expect({
+                url: 'GET /ancillaryChunks.png?foo=bar',
+                headers: {
+                    'If-None-Match': etag
+                }
+            }, 'to respond with', {
+                statusCode: 304,
+                headers: expect.it('to be empty'),
+                body: expect.it('to be', '')
+            });
         });
     });
 
