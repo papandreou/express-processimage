@@ -51,8 +51,8 @@
   "scripts": {
     "lint": "eslint .",
     "test": "mocha --harmony-async-await && npm run lint",
-    "travis": "npm test && npm run coverage && (<coverage/lcov.info coveralls || true)",
-    "coverage": "NODE_ENV=development istanbul cover _mocha -- --harmony-async-await --reporter dot && echo google-chrome coverage/lcov-report/index.html"
+    "travis": "npm test && (<coverage/lcov.info coveralls || true)",
+    "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
