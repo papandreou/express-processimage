@@ -8,23 +8,7 @@ var processImage = require('../lib/processImage');
 var serverPort = '9999';
 
 expect.use(require('unexpected-http'))
-    .use(require('unexpected-image'))
-    .use(require('unexpected-resemble'))
-    .use(require('unexpected-sinon'))
-    .use(require('magicpen-prism'))
-    .addAssertion('<string|object> to respond with <object|number>', function (expect, subject, value) {
-        var modifiedSubject;
-
-        if (typeof subject === 'string') {
-            modifiedSubject = subject.replace(' ', ` http://localhost:${serverPort}`);
-        } else {
-            modifiedSubject = Object.assign({}, subject, {
-                url: subject.url.replace(/^(:?GET|POST)? ?/, `http://localhost:${serverPort}`)
-            });
-        }
-        return expect(modifiedSubject, 'to yield response', value);
-    });
-
+    .use(require('unexpected-image'));
 
 describe('browser-sync compatibility', function () {
     before(function (done) {
@@ -45,7 +29,7 @@ describe('browser-sync compatibility', function () {
 
 
     it('should not mess with request for non-image file', function () {
-        return expect('GET /something.txt', 'to respond with', {
+        return expect(`GET http://localhost:${serverPort}/something.txt`, 'to yield response', {
             headers: {
                 'Content-Type': 'text/plain; charset=UTF-8'
             },
@@ -54,7 +38,7 @@ describe('browser-sync compatibility', function () {
     });
 
     it('should not mess with request for image with no query string', function () {
-        return expect('GET /ancillaryChunks.png', 'to respond with', {
+        return expect(`GET http://localhost:${serverPort}/ancillaryChunks.png`, 'to yield response', {
             headers: {
                 'Content-Type': 'image/png'
             },
@@ -63,7 +47,7 @@ describe('browser-sync compatibility', function () {
     });
 
     it('should not mess with request for image with an unsupported operation in the query string', function () {
-        return expect('GET /ancillaryChunks.png?foo=bar', 'to respond with', {
+        return expect(`GET http://localhost:${serverPort}/ancillaryChunks.png?foo=bar`, 'to yield response', {
             headers: {
                 'Content-Type': 'image/png'
             },
@@ -72,7 +56,7 @@ describe('browser-sync compatibility', function () {
     });
 
     it('should return a 304 status code when requesting the same image with unchanged modifications', function () {
-        return expect('GET /ancillaryChunks.png?foo=bar', 'to respond with', {
+        return expect(`GET http://localhost:${serverPort}/ancillaryChunks.png?foo=bar`, 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/png'
@@ -81,11 +65,11 @@ describe('browser-sync compatibility', function () {
         }).then(function (context) {
             var etag = context.httpResponse.headers.get('ETag');
             return expect({
-                url: 'GET /ancillaryChunks.png?foo=bar',
+                url: `GET http://localhost:${serverPort}/ancillaryChunks.png?foo=bar`,
                 headers: {
                     'If-None-Match': etag
                 }
-            }, 'to respond with', {
+            }, 'to yield response', {
                 statusCode: 304,
                 headers: expect.it('to be empty'),
                 body: expect.it('to be', '')
@@ -94,7 +78,7 @@ describe('browser-sync compatibility', function () {
     });
 
     it('should run the image through pngcrush when the pngcrush CGI param is specified', function () {
-        return expect('GET /ancillaryChunks.png?pngcrush=-rem+alla', 'to respond with', {
+        return expect(`GET http://localhost:${serverPort}/ancillaryChunks.png?pngcrush=-rem+alla`, 'to yield response', {
             statusCode: 200,
             headers: {
                 'Content-Type': 'image/png'
