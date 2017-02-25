@@ -35,10 +35,10 @@
     "eslint-config-onelint": "1.1.0",
     "express": "4.13.4",
     "gifsicle-stream": "0.3.1",
-    "istanbul": "0.4.0",
     "magicpen": "5.5.0",
     "magicpen-prism": "2.2.1",
     "mocha": "2.4.5",
+    "nyc": "10.1.2",
     "sinon": "1.17.3",
     "svgfilter": "1.2.0",
     "unexpected": "^10.18.1",
@@ -52,7 +52,7 @@
     "lint": "eslint .",
     "test": "mocha && npm run lint",
     "travis": "npm test && (<coverage/lcov.info coveralls || true)",
-    "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
+    "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- mocha && echo google-chrome coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
