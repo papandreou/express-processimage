@@ -50,8 +50,8 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "mocha && npm run lint",
-    "travis": "npm test && (<coverage/lcov.info coveralls || true)",
+    "test": "mocha",
+    "travis": "npm test && npm run lint && npm run coverage && (<coverage/lcov.info coveralls || true)",
     "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- mocha && echo google-chrome coverage/lcov-report/index.html"
   },
   "repository": {
