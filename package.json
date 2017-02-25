@@ -50,7 +50,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "test": "mocha --harmony-async-await && npm run lint",
+    "test": "mocha && npm run lint",
     "travis": "npm test && (<coverage/lcov.info coveralls || true)",
     "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
   },
