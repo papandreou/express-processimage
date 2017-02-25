@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "compression": "1.6.1",
-    "consider": "0.3.0",
+    "consider": "0.4.0",
     "coveralls": "2.11.4",
     "eslint": "3.13.1",
     "eslint-config-onelint": "1.1.0",
