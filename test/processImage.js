@@ -90,6 +90,39 @@ describe('express-processimage', function () {
                 })
             });
         });
+
+        // https://github.com/papandreou/express-processimage/issues/23
+        describe('when the quality and progressiveness of the image is being adjusted', function () {
+            it('should work and not log deprecation warnings when there is no explicit conversion', function () {
+                sandbox.spy(console, 'error');
+                return expect('GET /turtle.jpg?quality=10&progressive', 'to yield response', {
+                    body: expect.it('to have metadata satisfying', {
+                        size: {
+                            width: 481,
+                            height: 424
+                        },
+                        Interlace: 'Line',
+                        Filesize: expect.it('to match', /Ki$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
+                    })
+                })
+                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+            });
+
+            it('should work and not log deprecation warnings when there is an explicit conversion', function () {
+                sandbox.spy(console, 'error');
+                return expect('GET /turtle.jpg?jpeg&quality=10&progressive', 'to yield response', {
+                    body: expect.it('to have metadata satisfying', {
+                        size: {
+                            width: 481,
+                            height: 424
+                        },
+                        Interlace: 'Line',
+                        Filesize: expect.it('to match', /Ki$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
+                    })
+                })
+                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+            });
+        });
     });
 
     describe('with the sharp engine', function () {
