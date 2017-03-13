@@ -81,7 +81,7 @@ describe('express-processimage', function () {
 
     describe('with the sharp engine', function () {
         it('should resize by specifying a bounding box', function () {
-            return expect('GET /turtle.jpg?gm&resize=500,1000', 'to yield response', {
+            return expect('GET /turtle.jpg?resize=500,1000', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
                     size: {
                         width: 500,
