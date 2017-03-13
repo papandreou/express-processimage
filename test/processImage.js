@@ -12,8 +12,14 @@ var express = require('express'),
 
 describe('express-processimage', function () {
     var config;
+    var sandbox;
     beforeEach(function () {
         config = { root: root, filters: {} };
+        sandbox = sinon.sandbox.create();
+    });
+
+    afterEach(function () {
+        sandbox.restore();
     });
 
     var expect = unexpected.clone()
@@ -328,7 +334,7 @@ describe('express-processimage', function () {
 
     describe('with an allowOperation option', function () {
         beforeEach(function () {
-            config.allowOperation = sinon.spy(function (keyValue) {
+            config.allowOperation = sandbox.spy(function (keyValue) {
                 return keyValue !== 'png';
             }).named('allowOperation');
         });
@@ -374,7 +380,7 @@ describe('express-processimage', function () {
 
         it('should apply the sharpCache option', function () {
             config.sharpCache = 123;
-            var cacheStub = sinon.stub(sharp, 'cache');
+            var cacheStub = sandbox.stub(sharp, 'cache');
             return expect('GET /turtle.jpg?metadata', 'to yield response', {
                 body: {
                     contentType: 'image/jpeg'
@@ -383,8 +389,6 @@ describe('express-processimage', function () {
                 expect(cacheStub, 'to have calls satisfying', function () {
                     cacheStub(123);
                 });
-            }).finally(function () {
-                cacheStub.restore();
             });
         });
 
@@ -890,7 +894,7 @@ describe('express-processimage', function () {
                                         callback(null, chunk);
                                     }, 1000);
                                 };
-                                stream.destroy = sinon.spy().named('destroy');
+                                stream.destroy = sandbox.spy().named('destroy');
                                 createdStreams.push(stream);
                                 setTimeout(run(function () {
                                     request.abort();
