@@ -91,6 +91,30 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should do an entropy-based crop', function () {
+            return expect('GET /turtle.jpg?resize=100,200&crop=entropy', 'to yield response', {
+                body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedEntropy100x200.jpg'))
+                    .and('to have metadata satisfying', {
+                        size: {
+                            width: 100,
+                            height: 200
+                        }
+                    })
+            });
+        });
+
+        it('should do an attention-based crop', function () {
+            return expect('GET /turtle.jpg?resize=100,200&crop=attention', 'to yield response', {
+                body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedAttention100x200.jpg'))
+                    .and('to have metadata satisfying', {
+                        size: {
+                            width: 100,
+                            height: 200
+                        }
+                    })
+            });
+        });
+
         // https://github.com/papandreou/express-processimage/issues/23
         describe('when the quality and progressiveness of the image is being adjusted', function () {
             it('should work and not log deprecation warnings when there is no explicit conversion', function () {
