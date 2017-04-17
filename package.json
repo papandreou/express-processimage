@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "compression": "1.6.1",
-    "consider": "0.4.0",
+    "consider": "0.5.0",
     "coveralls": "2.11.4",
     "eslint": "3.13.1",
     "eslint-config-onelint": "1.1.0",
@@ -41,7 +41,7 @@
     "nyc": "10.1.2",
     "sinon": "1.17.3",
     "svgfilter": "1.2.0",
-    "unexpected": "^10.18.1",
+    "unexpected": "^10.27.1",
     "unexpected-express": "^8.3.2",
     "unexpected-http": "^5.6.0",
     "unexpected-image": "^2.0.0",

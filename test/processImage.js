@@ -4,7 +4,6 @@ var express = require('express'),
     http = require('http'),
     pathModule = require('path'),
     unexpected = require('unexpected'),
-    consider = require('consider'),
     sinon = require('sinon'),
     Stream = require('stream'),
     processImage = require('../lib/processImage'),
@@ -17,13 +16,14 @@ describe('express-processimage', function () {
         config = { root: root, filters: {} };
     });
 
-    var expect = consider(unexpected.clone())
+    var expect = unexpected.clone()
         .use(require('unexpected-express'))
         .use(require('unexpected-http'))
         .use(require('unexpected-image'))
         .use(require('unexpected-resemble'))
         .use(require('unexpected-sinon'))
         .use(require('magicpen-prism'))
+        .use(require('consider'))
         .addAssertion('<string|object> to yield response <object|number>', function (expect, subject, value) {
             return expect(
                 express()
