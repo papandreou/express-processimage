@@ -126,7 +126,7 @@ describe('express-processimage', function () {
                             height: 424
                         },
                         Interlace: 'Line',
-                        Filesize: expect.it('to match', /Ki$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
+                        Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
                 .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
@@ -141,7 +141,7 @@ describe('express-processimage', function () {
                             height: 424
                         },
                         Interlace: 'Line',
-                        Filesize: expect.it('to match', /Ki$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
+                        Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
                 .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
