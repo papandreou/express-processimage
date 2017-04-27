@@ -1,4 +1,4 @@
-/*global describe, it, beforeEach, __dirname*/
+/*global describe, it, beforeEach, afterEach, __dirname*/
 var express = require('express'),
     fs = require('fs'),
     http = require('http'),
