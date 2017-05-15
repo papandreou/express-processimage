@@ -24,4 +24,86 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function () {
             }
         });
     });
+
+    describe('gm:background', function () {
+        it('should match #rrggbb', function () {
+            var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString('background=#000000');
+
+            filterInfosAndTargetContentTypeFromQueryString.filterInfos[0].create();
+
+            expect(filterInfosAndTargetContentTypeFromQueryString, 'to satisfy', {
+                filterInfos: [
+                    {
+                        operations: [
+                            {
+                                name: 'background',
+                                usedQueryStringFragment: 'background=#000000'
+                            }
+                        ],
+                        leftOverQueryStringFragments: undefined
+                    }
+                ]
+            });
+        });
+
+        it('should match #rgb', function () {
+            var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString('background=#000');
+
+            filterInfosAndTargetContentTypeFromQueryString.filterInfos[0].create();
+
+            expect(filterInfosAndTargetContentTypeFromQueryString, 'to satisfy', {
+                filterInfos: [
+                    {
+                        operations: [
+                            {
+                                name: 'background',
+                                usedQueryStringFragment: 'background=#000'
+                            }
+                        ],
+                        leftOverQueryStringFragments: undefined
+                    }
+                ]
+            });
+        });
+
+        it('should match #rrggbbaa', function () {
+            var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString('background=#00000000');
+
+            filterInfosAndTargetContentTypeFromQueryString.filterInfos[0].create();
+
+            expect(filterInfosAndTargetContentTypeFromQueryString, 'to satisfy', {
+                filterInfos: [
+                    {
+                        operations: [
+                            {
+                                name: 'background',
+                                usedQueryStringFragment: 'background=#00000000'
+                            }
+                        ],
+                        leftOverQueryStringFragments: undefined
+                    }
+                ]
+            });
+        });
+
+        it('should match #rgba', function () {
+            var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString('background=#0000');
+
+            filterInfosAndTargetContentTypeFromQueryString.filterInfos[0].create();
+
+            expect(filterInfosAndTargetContentTypeFromQueryString, 'to satisfy', {
+                filterInfos: [
+                    {
+                        operations: [
+                            {
+                                name: 'background',
+                                usedQueryStringFragment: 'background=#0000'
+                            }
+                        ],
+                        leftOverQueryStringFragments: undefined
+                    }
+                ]
+            });
+        });
+    });
 });
