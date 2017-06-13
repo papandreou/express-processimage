@@ -38,9 +38,7 @@ describe('express-processimage', function () {
                     request: subject,
                     response: value
                 }
-            ).then(function (context) {
-                return expect.shift(context);
-            });
+            );
         })
         .addAssertion('<Buffer> [when] converted to PNG <assertion>', function (expect, subject) {
             expect.errorMode = 'bubble';
