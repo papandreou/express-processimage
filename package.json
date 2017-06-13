@@ -42,7 +42,7 @@
     "mocha": "2.4.5",
     "sinon": "1.17.3",
     "svgfilter": "1.2.0",
-    "unexpected": "^10.18.1",
+    "unexpected": "github:bruderstein/unexpected#pinnochio",
     "unexpected-express": "^8.3.2",
     "unexpected-http": "^5.6.0",
     "unexpected-image": "^2.0.0",
