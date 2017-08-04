@@ -76,7 +76,7 @@ describe('express-processimage', function () {
 
     it('refuses to process an image whose dimensions exceed maxInputPixels', function () {
         config.maxInputPixels = 100000;
-        return expect('GET /hugearea.png?resize=100,100', 'to yield response', 413);
+        return expect('GET /hugearea.png?resize=100,100').toYieldResponse(413);
     });
 
     describe('with the sharp engine', function () {
@@ -129,7 +129,7 @@ describe('express-processimage', function () {
                         Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
-                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+                .then(() => expect(console.error).toHaveNoCallsSatisfying(() => console.error(/DeprecationWarning/)));
             });
 
             it('should work and not log deprecation warnings when there is an explicit conversion', function () {
@@ -144,7 +144,7 @@ describe('express-processimage', function () {
                         Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
-                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+                .then(() => expect(console.error).toHaveNoCallsSatisfying(() => console.error(/DeprecationWarning/)));
             });
         });
     });
@@ -175,7 +175,7 @@ describe('express-processimage', function () {
                     height: 20
                 }
             }).and('to satisfy', function (body) {
-                expect(body.length, 'to be within', 1, 3711);
+                expect(body.length).toBeWithin(1, 3711);
             })
         });
     });
@@ -193,7 +193,7 @@ describe('express-processimage', function () {
                     height: 100
                 }
             }).and('to satisfy', function (body) {
-                expect(body.length, 'to be within', 1, 8285);
+                expect(body.length).toBeWithin(1, 8285);
             })
         });
     });
@@ -214,7 +214,7 @@ describe('express-processimage', function () {
                     height: 424
                 }
             }).and('to satisfy', function (body) {
-                expect(body.length, 'to be within', 1, 105836);
+                expect(body.length).toBeWithin(1, 105836);
             })
         });
     });
@@ -232,8 +232,8 @@ describe('express-processimage', function () {
                     height: 300
                 }
             }).and('to satisfy', function (body) {
-                expect(body.length, 'to be within', 1, 105836);
-                expect(body.slice(0, 10), 'to equal', new Buffer([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46]));
+                expect(body.length).toBeWithin(1, 105836);
+                expect(body.slice(0, 10)).toEqual(new Buffer([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46]));
             })
         });
     });
@@ -287,7 +287,7 @@ describe('express-processimage', function () {
             },
             body: expect.it('when decoded as', 'ascii', 'not to match', /gAMA/)
                 .and('to satisfy', function (body) {
-                    expect(body.length, 'to be greater than', 0);
+                    expect(body.length).toBeGreaterThan(0);
                 })
                 .and('to have metadata satisfying', {
                     format: 'PNG',
@@ -308,7 +308,7 @@ describe('express-processimage', function () {
             },
             body: expect.it('when decoded as', 'ascii', 'not to match', /gAMA/)
                 .and('to satisfy', function (body) {
-                    expect(body.length, 'to be greater than', 0);
+                    expect(body.length).toBeGreaterThan(0);
                 })
                 .and('to have metadata satisfying', {
                     format: 'JPEG',
@@ -372,7 +372,7 @@ describe('express-processimage', function () {
         return expect(express().use(processImage(config)).get('/favicon.ico', function (req, res, next) {
             res.setHeader('Content-Type', 'image/vnd.microsoft.icon');
             fs.createReadStream(pathModule.resolve(__dirname, '..', 'testdata', 'favicon.ico')).pipe(res);
-        }), 'to yield exchange', {
+        })).toYieldExchange({
             request: 'GET /favicon.ico?gm&png',
             response: {
                 headers: {
@@ -403,7 +403,7 @@ describe('express-processimage', function () {
                 },
                 body: expect.it('to have metadata satisfying', { size: { width: 87 } })
             }).then(function () {
-                expect(config.allowOperation, 'to have calls satisfying', function () {
+                expect(config.allowOperation).toHaveCallsSatisfying(function () {
                     config.allowOperation('resize', [ 87, 100 ]);
                 });
             });
@@ -418,7 +418,7 @@ describe('express-processimage', function () {
                     format: 'JPEG'
                 })
             }).then(function () {
-                expect(config.allowOperation, 'to have calls satisfying', function () {
+                expect(config.allowOperation).toHaveCallsSatisfying(function () {
                     config.allowOperation('png', []);
                 });
             });
@@ -443,7 +443,7 @@ describe('express-processimage', function () {
                     contentType: 'image/jpeg'
                 }
             }).then(function () {
-                expect(cacheStub, 'to have calls satisfying', function () {
+                expect(cacheStub).toHaveCallsSatisfying(function () {
                     cacheStub(123);
                 });
             });
@@ -471,7 +471,7 @@ describe('express-processimage', function () {
                     headers: {
                         'If-None-Match': context.httpResponse.headers.get('ETag')
                     }
-                }, 'to yield response', 304);
+                }).toYieldResponse(304);
             });
         });
 
@@ -483,8 +483,8 @@ describe('express-processimage', function () {
                     .use(processImage(config))
                     .use(function (req, res, next) {
                         res.status(304).end();
-                    }),
-                'to yield exchange', {
+                    })
+                ).toYieldExchange({
                     request: {
                         url: 'GET /turtle.jpg?metadata',
                         headers: {
@@ -646,7 +646,7 @@ describe('express-processimage', function () {
         });
 
         it('should send back an error when an operation is applied to a non-image', function () {
-            return expect('GET /certainlynotanimage.jpg?resize=10,10', 'to yield response', 415);
+            return expect('GET /certainlynotanimage.jpg?resize=10,10').toYieldResponse(415);
         });
 
         it('should allow a crop operation with the gravity specified as a string', function () {
@@ -973,7 +973,7 @@ describe('express-processimage', function () {
                 request = http.get(serverUrl);
                 request.end();
                 request.once('error', run(function (err) {
-                    expect(err, 'to have message', 'socket hang up');
+                    expect(err).toHaveMessage('socket hang up');
                 }));
             }).then(function () {
                 expect(createdStreams[0].destroy, 'was called once');
@@ -1048,7 +1048,7 @@ describe('express-processimage', function () {
         var serverHostname = serverAddress.address === '::' ? 'localhost' : serverAddress.address;
         var serverUrl = 'http://' + serverHostname + ':' + serverAddress.port + '/';
 
-        return expect(serverUrl + 'turtle.jpg?extract=100,100,800,10', 'to yield HTTP response satisfying', {
+        return expect(serverUrl + 'turtle.jpg?extract=100,100,800,10').toYieldHttpResponseSatisfying({
             body: /bad extract area/
         });
     });
@@ -1058,7 +1058,7 @@ describe('express-processimage', function () {
             express()
                 .use(processImage(config))
                 .use(function (req, res, next) {
-                    expect(req.headers['if-none-match'], 'to be falsy');
+                    expect(req.headers['if-none-match']).toBeFalsy();
                     res.end();
                 }),
             'to yield exchange', {
@@ -1078,10 +1078,10 @@ describe('express-processimage', function () {
             express()
                 .use(processImage(config))
                 .use(function (req, res, next) {
-                    expect(req.headers['if-none-match'], 'to equal', '"foo" "bar-somethingelse"');
+                    expect(req.headers['if-none-match']).toEqual('"foo" "bar-somethingelse"');
                     res.end();
-                }),
-            'to yield exchange', {
+                })
+            ).toYieldExchange({
                 request: {
                     url: 'GET /turtle.jpg?resize=10,10',
                     headers: {
