@@ -103,6 +103,19 @@ describe('express-processimage', function () {
                 });
             });
 
+            describe('without a trailing comma', function () {
+                it('should do a proportional resize to the given width', function () {
+                    return expect('GET /turtle.jpg?resize=500', 'to yield response', {
+                        body: expect.it('to have metadata satisfying', {
+                            size: {
+                                width: 500,
+                                height: 441
+                            }
+                        })
+                    });
+                });
+            });
+
             describe('with a maxOutputPixels setting in place', function () {
                 it('should limit the size of the bounding box based on the maxOutputPixels value', function () {
                     config.maxOutputPixels = 250000;
