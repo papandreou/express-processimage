@@ -91,6 +91,73 @@ describe('express-processimage', function () {
             });
         });
 
+        describe('when omitting the height', function () {
+            it('should do a proportional resize to the given width', function () {
+                return expect('GET /turtle.jpg?resize=500,', 'to yield response', {
+                    body: expect.it('to have metadata satisfying', {
+                        size: {
+                            width: 500,
+                            height: 441
+                        }
+                    })
+                });
+            });
+
+            describe('without a trailing comma', function () {
+                it('should do a proportional resize to the given width', function () {
+                    return expect('GET /turtle.jpg?resize=500', 'to yield response', {
+                        body: expect.it('to have metadata satisfying', {
+                            size: {
+                                width: 500,
+                                height: 441
+                            }
+                        })
+                    });
+                });
+            });
+
+            describe('with a maxOutputPixels setting in place', function () {
+                it('should limit the size of the bounding box based on the maxOutputPixels value', function () {
+                    config.maxOutputPixels = 250000;
+                    return expect('GET /turtle.jpg?resize=2000,', 'to yield response', {
+                        body: expect.it('to have metadata satisfying', {
+                            size: {
+                                width: 142,
+                                height: 125
+                            }
+                        })
+                    });
+                });
+            });
+        });
+
+        describe('when omitting the width', function () {
+            it('should do a proportional resize to the given height', function () {
+                return expect('GET /turtle.jpg?resize=,500', 'to yield response', {
+                    body: expect.it('to have metadata satisfying', {
+                        size: {
+                            width: 567,
+                            height: 500
+                        }
+                    })
+                });
+            });
+
+            describe('with a maxOutputPixels setting in place', function () {
+                it('should limit the size of the bounding box based on the maxOutputPixels value', function () {
+                    config.maxOutputPixels = 250000;
+                    return expect('GET /turtle.jpg?resize=,2000', 'to yield response', {
+                        body: expect.it('to have metadata satisfying', {
+                            size: {
+                                width: 125,
+                                height: 110
+                            }
+                        })
+                    });
+                });
+            });
+        });
+
         it('should do an entropy-based crop', function () {
             return expect('GET /turtle.jpg?resize=100,200&crop=entropy', 'to yield response', {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedEntropy100x200.jpg'))
@@ -759,6 +826,60 @@ describe('express-processimage', function () {
                 body: expect.it('to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'turtleCroppedNorthEastGm.jpg'))
             });
         });
+
+        describe('when omitting the height', function () {
+            it('should do a proportional resize to the given width', function () {
+                return expect('GET /turtle.jpg?gm&resize=500,', 'to yield response', {
+                    body: expect.it('to have metadata satisfying', {
+                        size: {
+                            width: 500,
+                            height: 441
+                        }
+                    })
+                });
+            });
+
+            describe('with a maxOutputPixels setting in place', function () {
+                it('should limit the size of the bounding box based on the maxOutputPixels value', function () {
+                    config.maxOutputPixels = 250000;
+                    return expect('GET /turtle.jpg?gm&resize=2000,', 'to yield response', {
+                        body: expect.it('to have metadata satisfying', {
+                            size: {
+                                width: 142,
+                                height: 125
+                            }
+                        })
+                    });
+                });
+            });
+        });
+
+        describe('when omitting the width', function () {
+            it('should do a proportional resize to the given height', function () {
+                return expect('GET /turtle.jpg?gm&resize=,500', 'to yield response', {
+                    body: expect.it('to have metadata satisfying', {
+                        size: {
+                            width: 567,
+                            height: 500
+                        }
+                    })
+                });
+            });
+
+            describe('with a maxOutputPixels setting in place', function () {
+                it('should limit the size of the bounding box based on the maxOutputPixels value', function () {
+                    config.maxOutputPixels = 250000;
+                    return expect('GET /turtle.jpg?gm&resize=,2000', 'to yield response', {
+                        body: expect.it('to have metadata satisfying', {
+                            size: {
+                                width: 125,
+                                height: 110
+                            }
+                        })
+                    });
+                });
+            });
+        });
     });
 
     describe('with a GIF', function () {
@@ -892,6 +1013,60 @@ describe('express-processimage', function () {
                             Interlace: 'Line'
                         })
                         .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
+                    });
+                });
+
+                describe('when omitting the width', function () {
+                    it('should do a proportional resize to the given height', function () {
+                        return expect('GET /bulb.gif?resize=20,', 'to yield response', {
+                            body: expect.it('to have metadata satisfying', {
+                                size: {
+                                    width: 20,
+                                    height: 20
+                                }
+                            })
+                        });
+                    });
+
+                    describe('with a maxOutputPixels setting in place', function () {
+                        it('should limit the size of the bounding box based on the maxOutputPixels value', function () {
+                            config.maxOutputPixels = 1000;
+                            return expect('GET /bulb.gif?resize=40,', 'to yield response', {
+                                body: expect.it('to have metadata satisfying', {
+                                    size: {
+                                        width: 25,
+                                        height: 25
+                                    }
+                                })
+                            });
+                        });
+                    });
+                });
+
+                describe('when omitting the height', function () {
+                    it('should do a proportional resize to the given width', function () {
+                        return expect('GET /bulb.gif?resize=,25', 'to yield response', {
+                            body: expect.it('to have metadata satisfying', {
+                                size: {
+                                    width: 25,
+                                    height: 25
+                                }
+                            })
+                        });
+                    });
+
+                    describe('with a maxOutputPixels setting in place', function () {
+                        it('should limit the size of the bounding box based on the maxOutputPixels value', function () {
+                            config.maxOutputPixels = 1000;
+                            return expect('GET /bulb.gif?resize=,40', 'to yield response', {
+                                body: expect.it('to have metadata satisfying', {
+                                    size: {
+                                        width: 25,
+                                        height: 25
+                                    }
+                                })
+                            });
+                        });
                     });
                 });
             });
