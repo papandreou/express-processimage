@@ -662,6 +662,17 @@ describe('express-processimage', function () {
             });
         });
 
+        it('should include orientedWidth and orientedHeight properties when the EXIF data specifies an orientation', function () {
+            return expect('GET /exifOriented.jpg?metadata', 'to yield response', {
+                body: {
+                    width: 3264,
+                    height: 2448,
+                    orientedWidth: 2448,
+                    orientedHeight: 3264
+                }
+            });
+        });
+
         it('should auto-orient an image', function () {
             return expect('GET /exifOriented.jpg?rotate', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
