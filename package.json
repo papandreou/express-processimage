@@ -1,6 +1,6 @@
 {
   "name": "express-processimage",
-  "version": "7.6.1",
+  "version": "7.7.0",
   "description": "Express middleware that processes served images according to the query string",
   "main": "lib/processImage.js",
   "directories": {
