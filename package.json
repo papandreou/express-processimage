@@ -38,7 +38,7 @@
     "gifsicle-stream": "0.3.1",
     "istanbul": "0.4.5",
     "magicpen": "5.5.0",
-    "magicpen-prism": "2.2.1",
+    "magicpen-prism": "2.4.0",
     "mocha": "2.4.5",
     "sinon": "5.0.10",
     "svgfilter": "1.2.0",
