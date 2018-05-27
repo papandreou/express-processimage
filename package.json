@@ -40,7 +40,7 @@
     "magicpen": "5.5.0",
     "magicpen-prism": "2.2.1",
     "mocha": "2.4.5",
-    "sinon": "1.17.3",
+    "sinon": "5.0.10",
     "svgfilter": "1.2.0",
     "unexpected": "^10.18.1",
     "unexpected-express": "^8.3.2",
