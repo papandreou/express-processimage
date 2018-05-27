@@ -1124,6 +1124,7 @@ describe('express-processimage', function () {
 
     describe('against a real server', function () {
         it('should destroy the created filters when the client closes the connection prematurely', function () {
+            var server;
             var createdStreams = [];
             var request;
             return expect.promise(function (run) {
@@ -1147,7 +1148,7 @@ describe('express-processimage', function () {
                         };
                     })
                 };
-                var server = express()
+                server = express()
                     .use(processImage(config))
                     .use(express.static(root))
                     .listen(0);
@@ -1163,6 +1164,8 @@ describe('express-processimage', function () {
                 }));
             }).then(function () {
                 expect(createdStreams[0].destroy, 'was called once');
+            }).finally(function () {
+                server.close();
             });
         });
     });
@@ -1236,6 +1239,8 @@ describe('express-processimage', function () {
 
         return expect(serverUrl + 'turtle.jpg?extract=100,100,800,10', 'to yield HTTP response satisfying', {
             body: /bad extract area/
+        }).finally(function () {
+            server.close();
         });
     });
 
