@@ -15,7 +15,7 @@ describe('express-processimage', function () {
     var sandbox;
     beforeEach(function () {
         config = { root: root, filters: {} };
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {
