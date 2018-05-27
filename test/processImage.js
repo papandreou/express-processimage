@@ -15,7 +15,7 @@ describe('express-processimage', function () {
     var sandbox;
     beforeEach(function () {
         config = { root: root, filters: {} };
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {
@@ -196,7 +196,7 @@ describe('express-processimage', function () {
                         Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
-                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+                    .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
             });
 
             it('should work and not log deprecation warnings when there is an explicit conversion', function () {
@@ -211,7 +211,7 @@ describe('express-processimage', function () {
                         Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
-                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+                    .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
             });
         });
     });
@@ -1006,7 +1006,7 @@ describe('express-processimage', function () {
                                 height: 48
                             }
                         })
-                        .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
+                            .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
                     });
                 });
 
@@ -1023,7 +1023,7 @@ describe('express-processimage', function () {
                             },
                             Interlace: 'Line'
                         })
-                        .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
+                            .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
                     });
                 });
 
@@ -1124,6 +1124,7 @@ describe('express-processimage', function () {
 
     describe('against a real server', function () {
         it('should destroy the created filters when the client closes the connection prematurely', function () {
+            var server;
             var createdStreams = [];
             var request;
             return expect.promise(function (run) {
@@ -1147,7 +1148,7 @@ describe('express-processimage', function () {
                         };
                     })
                 };
-                var server = express()
+                server = express()
                     .use(processImage(config))
                     .use(express.static(root))
                     .listen(0);
@@ -1163,6 +1164,8 @@ describe('express-processimage', function () {
                 }));
             }).then(function () {
                 expect(createdStreams[0].destroy, 'was called once');
+            }).finally(function () {
+                server.close();
             });
         });
     });
@@ -1236,6 +1239,8 @@ describe('express-processimage', function () {
 
         return expect(serverUrl + 'turtle.jpg?extract=100,100,800,10', 'to yield HTTP response satisfying', {
             body: /bad extract area/
+        }).finally(function () {
+            server.close();
         });
     });
 
