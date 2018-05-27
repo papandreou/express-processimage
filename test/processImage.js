@@ -196,7 +196,7 @@ describe('express-processimage', function () {
                         Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
-                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+                    .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
             });
 
             it('should work and not log deprecation warnings when there is an explicit conversion', function () {
@@ -211,7 +211,7 @@ describe('express-processimage', function () {
                         Filesize: expect.it('to match', /Ki?$/).and('when passed as parameter to', parseFloat, 'to be less than', 10)
                     })
                 })
-                .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
+                    .then(() => expect(console.error, 'to have no calls satisfying', () => console.error(/DeprecationWarning/)));
             });
         });
     });
@@ -1006,7 +1006,7 @@ describe('express-processimage', function () {
                                 height: 48
                             }
                         })
-                        .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
+                            .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
                     });
                 });
 
@@ -1023,7 +1023,7 @@ describe('express-processimage', function () {
                             },
                             Interlace: 'Line'
                         })
-                        .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
+                            .and('when converted to PNG to resemble', pathModule.resolve(__dirname, '..', 'testdata', 'rotatedBulb.png'))
                     });
                 });
 
