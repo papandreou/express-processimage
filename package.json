@@ -36,7 +36,7 @@
     "eslint-config-onelint": "1.1.0",
     "express": "4.13.4",
     "gifsicle-stream": "0.3.1",
-    "istanbul": "0.4.0",
+    "istanbul": "0.4.5",
     "magicpen": "5.5.0",
     "magicpen-prism": "2.2.1",
     "mocha": "2.4.5",
