@@ -39,7 +39,7 @@
     "istanbul": "0.4.0",
     "magicpen": "5.5.0",
     "magicpen-prism": "2.2.1",
-    "mocha": "2.4.5",
+    "mocha": "5.2.0",
     "sinon": "1.17.3",
     "svgfilter": "1.2.0",
     "unexpected": "^10.18.1",
