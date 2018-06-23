@@ -33,7 +33,7 @@
     "compression": "^1.6.1",
     "coveralls": "^3.0.1",
     "eslint": "^5.0.0",
-    "eslint-config-pretty-standard": "^1.4.1",
+    "eslint-config-pretty-standard-papandreou": "^1.4.1-patch1",
     "eslint-plugin-prettier": "^2.6.1",
     "express": "^4.16.3",
     "gifsicle-stream": "^0.3.1",
