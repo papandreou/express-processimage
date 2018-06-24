@@ -33,7 +33,7 @@
     "compression": "^1.6.1",
     "coveralls": "^3.0.1",
     "eslint": "^5.0.0",
-    "eslint-config-onelint": "^3.0.0",
+    "eslint-config-onelint": "^4.0.0",
     "express": "^4.16.3",
     "gifsicle-stream": "^0.3.1",
     "istanbul": "^0.4.5",
