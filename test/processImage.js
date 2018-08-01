@@ -1688,4 +1688,20 @@ describe('express-processimage', function() {
       });
     });
   });
+
+  it('should run resize .ico file with gm module by converting image from .ico to .png format', function() {
+    return expect('GET /favicon.ico?gm&png&resize=10,10', 'to yield response', {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'image/png'
+      },
+      body: expect.it('to have metadata satisfying', {
+        format: 'PNG',
+        size: {
+          width: 10,
+          height: 10
+        }
+      })
+    });
+  });
 });
