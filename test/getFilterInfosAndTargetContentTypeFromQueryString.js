@@ -182,10 +182,13 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
 
         expect(filterInfosAndTargetContentTypeFromQueryString, 'to satisfy', {
           targetContentType: 'image/gif',
-          operationNames: ['gm'],
+          operationNames: ['gm', 'sharpOrGm'],
           filterInfos: [
             {
               operationName: 'gm'
+            },
+            {
+              operationName: 'sharpOrGm'
             }
           ]
         });
