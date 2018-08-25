@@ -166,6 +166,30 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
           ]
         });
       });
+
+      it('should fall back to gm if there is an unsupported operation', function() {
+        var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+          'setFormat=gif&embed',
+          {
+            defaultEngineName: 'sharp',
+            sourceMetadata: {
+              contentType: 'image/jpeg'
+            }
+          }
+        );
+
+        filterInfosAndTargetContentTypeFromQueryString.filterInfos[0].create();
+
+        expect(filterInfosAndTargetContentTypeFromQueryString, 'to satisfy', {
+          targetContentType: 'image/gif',
+          operationNames: ['gm'],
+          filterInfos: [
+            {
+              operationName: 'gm'
+            }
+          ]
+        });
+      });
     });
   });
 });
