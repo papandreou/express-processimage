@@ -1,22 +1,13 @@
 /*global describe, it, beforeEach, afterEach, __dirname*/
 var express = require('express');
-
 var fs = require('fs');
-
 var http = require('http');
-
 var pathModule = require('path');
-
 var unexpected = require('unexpected');
-
 var sinon = require('sinon');
-
 var Stream = require('stream');
-
 var processImage = require('../lib/processImage');
-
 var root = pathModule.resolve(__dirname, '..', 'testdata') + '/';
-
 var sharp = require('sharp');
 
 describe('express-processimage', function() {
