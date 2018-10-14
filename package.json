@@ -43,7 +43,7 @@
     "mocha": "^5.2.0",
     "prettier": "^1.13.5",
     "sinon": "^6.0.0",
-    "svgfilter": "^1.2.0",
+    "svgfilter": "^3.0.0",
     "unexpected": "^10.18.1",
     "unexpected-express": "^11.0.0",
     "unexpected-http": "^6.0.0",
