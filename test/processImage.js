@@ -364,7 +364,7 @@ describe('express-processimage', () => {
           expect(
             body.slice(0, 10),
             'to equal',
-            new Buffer([
+            Buffer.from([
               0xff,
               0xd8,
               0xff,
