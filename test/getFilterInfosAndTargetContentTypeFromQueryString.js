@@ -1,11 +1,11 @@
 /*global describe, it*/
-var getFilterInfosAndTargetContentTypeFromQueryString = require('../lib/getFilterInfosAndTargetContentTypeFromQueryString');
+const getFilterInfosAndTargetContentTypeFromQueryString = require('../lib/getFilterInfosAndTargetContentTypeFromQueryString');
 
-var expect = require('unexpected');
+const expect = require('unexpected');
 
-describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
-  it('should make the right engine choice even if the source Content-Type is not available until filterInfo.create is called', function() {
-    var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+describe('getFilterInfosAndTargetContentTypeFromQueryString', () => {
+  it('should make the right engine choice even if the source Content-Type is not available until filterInfo.create is called', () => {
+    const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
       'resize=10,10',
       {
         sourceMetadata: {
@@ -27,9 +27,9 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
     });
   });
 
-  describe('gm:background', function() {
-    it('should match #rrggbb', function() {
-      var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+  describe('gm:background', () => {
+    it('should match #rrggbb', () => {
+      const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
         'background=#000000'
       );
 
@@ -50,8 +50,8 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
       });
     });
 
-    it('should match #rgb', function() {
-      var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+    it('should match #rgb', () => {
+      const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
         'background=#000'
       );
 
@@ -72,8 +72,8 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
       });
     });
 
-    it('should match #rrggbbaa', function() {
-      var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+    it('should match #rrggbbaa', () => {
+      const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
         'background=#00000000'
       );
 
@@ -94,8 +94,8 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
       });
     });
 
-    it('should match #rgba', function() {
-      var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+    it('should match #rgba', () => {
+      const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
         'background=#0000'
       );
 
@@ -117,9 +117,9 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
     });
   });
 
-  describe('sharp', function() {
-    it('should allow using setFormat to specify the output format', function() {
-      var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+  describe('sharp', () => {
+    it('should allow using setFormat to specify the output format', () => {
+      const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
         'setFormat=png',
         {
           defaultEngineName: 'sharp',
@@ -142,9 +142,9 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
       });
     });
 
-    describe('with a conversion to image/gif', function() {
-      it('should fall back to another engine', function() {
-        var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+    describe('with a conversion to image/gif', () => {
+      it('should fall back to another engine', () => {
+        const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
           'setFormat=gif',
           {
             defaultEngineName: 'sharp',
@@ -167,8 +167,8 @@ describe('getFilterInfosAndTargetContentTypeFromQueryString', function() {
         });
       });
 
-      it('should fall back to gm if there is an unsupported operation', function() {
-        var filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
+      it('should fall back to gm if there is an unsupported operation', () => {
+        const filterInfosAndTargetContentTypeFromQueryString = getFilterInfosAndTargetContentTypeFromQueryString(
           'setFormat=gif&embed',
           {
             defaultEngineName: 'sharp',
