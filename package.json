@@ -21,7 +21,7 @@
     "jpegtran": "^1.0.5",
     "mime": "^2.3.1",
     "optimist": "^0.6.1",
-    "optipng": "^1.0.0",
+    "optipng": "^2.0.0",
     "passerror": "^1.1.1",
     "pngcrush": "^2.0.0",
     "pngquant": "^1.2.0",
