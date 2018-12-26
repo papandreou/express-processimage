@@ -295,7 +295,7 @@ describe('express-processimage', () => {
             height: 20
           }
         })
-        .and('to satisfy', body => {
+        .and(body => {
           expect(body.length, 'to be within', 1, 3711);
         })
     }));
@@ -314,7 +314,7 @@ describe('express-processimage', () => {
             height: 100
           }
         })
-        .and('to satisfy', body => {
+        .and(body => {
           expect(body.length, 'to be within', 1, 8285);
         })
     }));
@@ -339,7 +339,7 @@ describe('express-processimage', () => {
               height: 424
             }
           })
-          .and('to satisfy', body => {
+          .and(body => {
             expect(body.length, 'to be within', 1, 105836);
           })
       }
@@ -359,7 +359,7 @@ describe('express-processimage', () => {
             height: 300
           }
         })
-        .and('to satisfy', body => {
+        .and(body => {
           expect(body.length, 'to be within', 1, 105836);
           expect(
             body.slice(0, 10),
@@ -440,8 +440,8 @@ describe('express-processimage', () => {
         },
         body: expect
           .it('when decoded as', 'ascii', 'not to match', /gAMA/)
-          .and('to satisfy', body => {
-            expect(body.length, 'to be greater than', 0);
+          .and('to satisfy', {
+            length: expect.it('to be greater than', 0)
           })
           .and('to have metadata satisfying', {
             format: 'PNG',
@@ -462,8 +462,8 @@ describe('express-processimage', () => {
       },
       body: expect
         .it('when decoded as', 'ascii', 'not to match', /gAMA/)
-        .and('to satisfy', body => {
-          expect(body.length, 'to be greater than', 0);
+        .and('to satisfy', {
+          length: expect.it('to be greater than', 0)
         })
         .and('to have metadata satisfying', {
           format: 'JPEG',

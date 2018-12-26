@@ -109,7 +109,7 @@ describe('browser-sync compatibility', () => {
               height: 20
             }
           })
-          .and('to satisfy', body => {
+          .and(body => {
             expect(body.length, 'to be within', 1, 3711);
           })
       }
