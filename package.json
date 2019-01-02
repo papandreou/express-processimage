@@ -45,10 +45,10 @@
     "sinon": "^7.0.0",
     "svgfilter": "^3.0.0",
     "unexpected": "^11.0.0-1",
-    "unexpected-express": "^11.0.0",
+    "unexpected-express": "^11.1.0",
     "unexpected-http": "^6.0.0",
     "unexpected-image": "^2.0.0",
-    "unexpected-resemble": "^3.1.0",
+    "unexpected-resemble": "^3.4.0",
     "unexpected-sinon": "^10.10.1"
   },
   "scripts": {
