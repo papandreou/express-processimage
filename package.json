@@ -24,7 +24,7 @@
     "optipng": "^2.0.0",
     "passerror": "^1.1.1",
     "pngcrush": "^2.0.0",
-    "pngquant": "^1.2.0",
+    "pngquant": "^2.0.1",
     "sharp": "^0.21.0",
     "underscore": "^1.8.3"
   },
