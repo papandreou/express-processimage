@@ -34,7 +34,6 @@
     "coveralls": "^3.0.1",
     "eslint": "^5.0.0",
     "eslint-config-pretty-standard": "^2.0.0",
-    "eslint-plugin-prettier": "^3.0.0",
     "express": "^4.16.3",
     "gifsicle-stream": "^0.3.1",
     "istanbul": "^0.4.5",
@@ -52,7 +51,7 @@
     "unexpected-sinon": "^10.10.1"
   },
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint . && prettier --check '**/*.js'",
     "test": "mocha && npm run lint",
     "travis": "npm test && npm run coverage && (<coverage/lcov.info coveralls || true)",
     "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
