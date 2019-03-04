@@ -1391,6 +1391,9 @@ describe('express-processimage', () => {
           );
         })
         .then(() => {
+          return new Promise(resolve => setTimeout(resolve, 10));
+        })
+        .then(() => {
           expect(createdStreams[0].destroy, 'was called once');
         })
         .finally(() => {
