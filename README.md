@@ -81,6 +81,32 @@ The `root` option is used by <a
 href="https://github.com/papandreou/node-svgfilter">node-svgfilter</a>
 for finding the location of external JavaScript files to run on the SVG document.
 
+Development with Docker
+-----------------------
+
+Build the docker image by running:
+
+```
+$ npm run docker:build
+```
+
+Open the development environment:
+
+```
+$ npm run docker
+```
+
+The above command will place you in a bash shell where the working directory is
+your express-processimage checkout from your local machine. It is mounted into
+the container which is based on Ubuntu 14.04 and contains all the required
+dependencies, and nvm with the latest node 8 version active.
+
+If you need to run the tests against another node version, you just have to
+change the version using nvm and reinstall your modules.
+
+The environment is configured to resemble our setup on Travis CI as much as
+possible.
+
 License
 -------
 

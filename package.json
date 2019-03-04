@@ -51,6 +51,8 @@
     "unexpected-sinon": "^10.10.1"
   },
   "scripts": {
+    "docker:build": "docker build -t express-processimage-dev .",
+    "docker": "docker run --rm -it -v \"$(pwd):/home/nvm/express-processimage\" express-processimage-dev",
     "lint": "eslint . && prettier --check '**/*.js'",
     "test": "mocha && npm run lint",
     "travis": "npm test && npm run coverage && (<coverage/lcov.info coveralls || true)",
