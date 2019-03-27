@@ -55,7 +55,7 @@
     "docker": "docker run --rm -it -v \"$(pwd):/home/nvm/express-processimage\" express-processimage-dev",
     "lint": "eslint . && prettier --check '**/*.js'",
     "test": "mocha && npm run lint",
-    "travis": "npm test && npm run coverage && (<coverage/lcov.info coveralls || true)",
+    "ci": "npm test && npm run coverage && (<coverage/lcov.info coveralls || true)",
     "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
   },
   "repository": {
