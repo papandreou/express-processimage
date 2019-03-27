@@ -36,10 +36,10 @@
     "eslint-config-pretty-standard": "^2.0.0",
     "express": "^4.16.3",
     "gifsicle-stream": "^0.3.1",
-    "istanbul": "^0.4.5",
     "magicpen": "^5.12.0",
     "magicpen-prism": "^2.4.0",
     "mocha": "^5.2.0",
+    "nyc": "^13.3.0",
     "prettier": "~1.16.0",
     "sinon": "^7.0.0",
     "svgfilter": "^3.0.0",
@@ -56,7 +56,7 @@
     "lint": "eslint . && prettier --check '**/*.js'",
     "test": "mocha",
     "ci": "npm run coverage && npm run lint",
-    "coverage": "NODE_ENV=development istanbul cover _mocha -- --reporter dot && echo google-chrome coverage/lcov-report/index.html"
+    "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- npm test && echo google-chrome coverage/lcov-report/index.html"
   },
   "repository": {
     "type": "git",
@@ -79,5 +79,10 @@
     "jpegtran"
   ],
   "author": "Andreas Lind <andreaslindpetersen@gmail.com>",
-  "license": "BSD-3-Clause"
+  "license": "BSD-3-Clause",
+  "nyc": {
+    "include": [
+      "lib/**"
+    ]
+  }
 }

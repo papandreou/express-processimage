@@ -1,3 +1,4 @@
 /node_modules/
 /coverage/
 /.vscode/settings.json
+/.nyc_output/
