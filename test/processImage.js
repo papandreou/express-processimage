@@ -1138,7 +1138,7 @@ describe('express-processimage', () => {
               body: expect.it('to have metadata satisfying', {
                 format: 'GIF',
                 size: gifsicleAvailable
-                  ? { width: 141, height: 104 }
+                  ? { width: 156, height: 200 }
                   : { width: 200 }
               })
             }));
@@ -1280,7 +1280,7 @@ describe('express-processimage', () => {
         body: expect
           .it('to have metadata satisfying', {
             size: { width: 100, height: 100 },
-            Scene: '3 of 4' // Animated
+            Scene: ['0 of 4', '1 of 4', '2 of 4', '3 of 4'] // Animated
           })
           .and(
             'to resemble',
