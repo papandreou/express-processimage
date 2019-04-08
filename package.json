@@ -37,7 +37,7 @@
     "express": "^4.16.3",
     "gifsicle-stream": "^0.3.1",
     "magicpen": "^6.0.2",
-    "magicpen-prism": "^2.4.0",
+    "magicpen-prism": "^3.0.1",
     "mocha": "^5.2.0",
     "nyc": "^13.3.0",
     "prettier": "~1.16.0",
