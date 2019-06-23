@@ -1,4 +1,3 @@
-/*global describe, it, beforeEach, afterEach, __dirname*/
 const express = require('express');
 const fs = require('fs');
 const http = require('http');

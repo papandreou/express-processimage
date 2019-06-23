@@ -1,4 +1,3 @@
-/*global describe, it, before, after*/
 const bs = require('browser-sync').create();
 const expect = require('unexpected').clone();
 const pathModule = require('path');
