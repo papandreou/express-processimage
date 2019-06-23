@@ -1,5 +1,4 @@
 const getFilterInfosAndTargetContentTypeFromQueryString = require('../lib/getFilterInfosAndTargetContentTypeFromQueryString');
-
 const expect = require('unexpected');
 
 describe('getFilterInfosAndTargetContentTypeFromQueryString', () => {
