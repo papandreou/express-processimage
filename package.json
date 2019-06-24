@@ -48,7 +48,7 @@
     "unexpected-express": "^11.1.0",
     "unexpected-http": "^7.0.0",
     "unexpected-image": "^3.0.0",
-    "unexpected-resemble": "^3.4.0",
+    "unexpected-resemble": "^4.0.0",
     "unexpected-sinon": "^10.10.1"
   },
   "scripts": {
