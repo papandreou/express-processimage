@@ -84,16 +84,6 @@ describe('express-processimage', () => {
   });
 
   describe('with the sharp engine', () => {
-    it('should resize by specifying a bounding box', () =>
-      expect('GET /turtle.jpg?resize=500,1000', 'to yield response', {
-        body: expect.it('to have metadata satisfying', {
-          size: {
-            width: 500,
-            height: 441
-          }
-        })
-      }));
-
     describe('when omitting the height', () => {
       it('should do a proportional resize to the given width', () =>
         expect('GET /turtle.jpg?resize=500,', 'to yield response', {
@@ -266,11 +256,9 @@ describe('express-processimage', () => {
         );
       });
     });
-  });
 
-  describe('with the sharp engine', () => {
     it('should resize by specifying a bounding box', () =>
-      expect('GET /turtle.jpg?sharp&resize=500,1000', 'to yield response', {
+      expect('GET /turtle.jpg?resize=500,1000', 'to yield response', {
         body: expect.it('to have metadata satisfying', {
           size: {
             width: 500,
@@ -278,312 +266,19 @@ describe('express-processimage', () => {
           }
         })
       }));
-  });
 
-  it('should run the image through pngcrush when the pngcrush CGI param is specified', () =>
-    expect('GET /ancillaryChunks.png?pngcrush=-rem+alla', 'to yield response', {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'image/png'
-      },
-      body: expect
-        .it('to have metadata satisfying', {
-          format: 'PNG',
-          size: {
-            width: 400,
-            height: 20
-          }
-        })
-        .and(body => {
-          expect(body.length, 'to be within', 1, 3711);
-        })
-    }));
-
-  it('should run the image through pngquant when the pngquant CGI param is specified', () =>
-    expect('GET /purplealpha24bit.png?pngquant', 'to yield response', {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'image/png'
-      },
-      body: expect
-        .it('to have metadata satisfying', {
-          format: 'PNG',
-          size: {
-            width: 100,
-            height: 100
-          }
-        })
-        .and(body => {
-          expect(body.length, 'to be within', 1, 8285);
-        })
-    }));
-
-  it('should run the image through jpegtran when the jpegtran CGI param is specified', () =>
-    expect(
-      'GET /turtle.jpg?jpegtran=-grayscale,-flip,horizontal',
-      'to yield response',
-      {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'image/jpeg'
-        },
-        body: expect
-          .it('to have metadata satisfying', {
-            format: 'JPEG',
-            'Channel Depths': {
-              Gray: '8 bits'
-            },
-            size: {
-              width: 481,
-              height: 424
-            }
-          })
-          .and(body => {
-            expect(body.length, 'to be within', 1, 105836);
-          })
-      }
-    ));
-
-  it('should run the image through graphicsmagick when methods exposed by the gm module are added as CGI params', () =>
-    expect('GET /turtle.jpg?gm&resize=340,300', 'to yield response', {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'image/jpeg'
-      },
-      body: expect
-        .it('to have metadata satisfying', {
-          format: 'JPEG',
-          size: {
-            width: 340,
-            height: 300
-          }
-        })
-        .and(body => {
-          expect(body.length, 'to be within', 1, 105836);
-          expect(
-            body.slice(0, 10),
-            'to equal',
-            Buffer.from([
-              0xff,
-              0xd8,
-              0xff,
-              0xe0,
-              0x00,
-              0x10,
-              0x4a,
-              0x46,
-              0x49,
-              0x46
-            ])
-          );
-        })
-    }));
-
-  it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', () =>
-    expect('GET /turtle.jpg?sharp&resize=340,300&png', 'to yield response', {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'image/png'
-      },
-      body: expect.it('to have metadata satisfying', {
-        format: 'PNG',
-        size: {
-          width: 340,
-          height: 300
-        }
-      })
-    }));
-
-  it('should run the image through svgfilter when the svgfilter parameter is specified', () =>
-    expect(
-      'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
-      'to yield response',
-      {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'image/svg+xml',
-          ETag: /"\w+-\w+-processimage"$/
-        },
-        body: expect
-          .it('to match', /<svg/)
-          .and('to match', /id="theBogusElementId"/)
-      }
-    ).then(context => {
-      const etag = context.httpResponse.headers.get('ETag');
-      return expect(
-        {
-          url:
-            'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
-          headers: {
-            'If-None-Match': etag
-          }
-        },
-        'to yield response',
-        {
-          statusCode: 304,
-          headers: {
-            ETag: etag
-          }
-        }
-      );
-    }));
-
-  it('should run the image through multiple filters when multiple CGI params are specified', () =>
-    expect(
-      'GET /purplealpha24bit.png?resize=800,800&pngquant=8&pngcrush=-rem,gAMA',
-      'to yield response',
-      {
-        statusCode: 200,
-        headers: {
-          'Content-Type': 'image/png'
-        },
-        body: expect
-          .it('when decoded as', 'ascii', 'not to match', /gAMA/)
-          .and('to satisfy', {
-            length: expect.it('to be greater than', 0)
-          })
-          .and('to have metadata satisfying', {
-            format: 'PNG',
-            size: {
-              width: 800,
-              height: 800
-            }
-          })
-      }
-    ));
-
-  it('should serve a converted image with the correct Content-Type', () =>
-    expect('GET /purplealpha24bit.png?setFormat=jpg', 'to yield response', {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'image/jpeg',
-        ETag: /-processimage/
-      },
-      body: expect
-        .it('when decoded as', 'ascii', 'not to match', /gAMA/)
-        .and('to satisfy', {
-          length: expect.it('to be greater than', 0)
-        })
-        .and('to have metadata satisfying', {
-          format: 'JPEG',
-          size: {
-            width: 100,
-            height: 100
-          }
-        })
-    }).then(context => {
-      const etag = context.httpResponse.headers.get('ETag');
-      return expect(
-        {
-          url: 'GET /purplealpha24bit.png?setFormat=jpg',
-          headers: {
-            'If-None-Match': etag
-          }
-        },
-        'to yield response',
-        {
-          statusCode: 304,
-          headers: {
-            ETag: etag
-          }
-        }
-      );
-    }));
-
-  it('should serve an error response if an invalid image is processed with GraphicsMagick', () =>
-    expect('GET /invalidImage.png?setFormat=jpg', 'to yield response', {
-      errorPassedToNext: true
-    }));
-
-  it('should serve an error response if an invalid image is processed with pngquant', () =>
-    expect('GET /invalidImage.png?pngquant', 'to yield response', {
-      errorPassedToNext: true
-    }));
-
-  it('should include the command line in the response body when an error is encountered', () =>
-    // TODO: This test results in a statusCode 404. That is weird...
-    expect('GET /notajpeg.jpg?jpegtran=-grayscale', 'to yield response', {
-      errorPassedToNext: /jpegtran -grayscale:/
-    }));
-
-  // Undetectable by gm -- the source format must be explicitly specified
-  it('should convert an icon to png via GraphicsMagick', () =>
-    expect('GET /favicon.ico?gm&png', 'to yield response', {
-      headers: {
-        'Content-Type': 'image/png'
-      },
-      body: expect.it('to have metadata satisfying', {
-        format: 'PNG',
-        size: {
-          width: 16,
-          height: 16
-        }
-      })
-    }));
-
-  it('should convert an icon served as image/vnd.microsoft.icon to png via GraphicsMagick', () =>
-    expect(
-      express()
-        .use(processImage(config))
-        .get('/favicon.ico', (req, res, next) => {
-          res.setHeader('Content-Type', 'image/vnd.microsoft.icon');
-          fs.createReadStream(
-            pathModule.resolve(__dirname, '..', 'testdata', 'favicon.ico')
-          ).pipe(res);
-        }),
-      'to yield exchange',
-      {
-        request: 'GET /favicon.ico?gm&png',
-        response: {
-          headers: {
-            'Content-Type': 'image/png'
-          },
+    describe('with an explicit &sharp parameter', () => {
+      it('should resize by specifying a bounding box', () =>
+        expect('GET /turtle.jpg?sharp&resize=500,1000', 'to yield response', {
           body: expect.it('to have metadata satisfying', {
-            format: 'PNG',
             size: {
-              width: 16,
-              height: 16
+              width: 500,
+              height: 441
             }
           })
-        }
-      }
-    ));
-
-  describe('with an allowOperation option', () => {
-    beforeEach(() => {
-      config.allowOperation = sandbox
-        .spy(keyValue => keyValue !== 'png')
-        .named('allowOperation');
+        }));
     });
 
-    it('should allow an operation for which allowOperation returns true', () =>
-      expect('GET /turtle.jpg?resize=87,100', 'to yield response', {
-        headers: {
-          'Content-Type': 'image/jpeg'
-        },
-        body: expect.it('to have metadata satisfying', { size: { width: 87 } })
-      }).then(() => {
-        expect(config.allowOperation, 'to have calls satisfying', () => {
-          config.allowOperation('resize', [87, 100]);
-        });
-      }));
-
-    it('should disallow an operation for which allowOperation returns false', () =>
-      expect('GET /turtle.jpg?png', 'to yield response', {
-        headers: {
-          'Content-Type': 'image/jpeg'
-        },
-        body: expect.it('to have metadata satisfying', {
-          format: 'JPEG'
-        })
-      }).then(() => {
-        expect(config.allowOperation, 'to have calls satisfying', () => {
-          config.allowOperation('png', []);
-        });
-      }));
-  });
-
-  describe('with the sharp engine', () => {
     // https://github.com/lovell/sharp/issues/375#issuecomment-214546310
     it.skip('should process and convert a transparent gif', () =>
       expect('GET /transparentbw.gif?flip&png', 'to yield response', {
@@ -900,6 +595,309 @@ describe('express-processimage', () => {
             height: 424
           }
         })
+      }));
+  });
+
+  it('should run the image through pngcrush when the pngcrush CGI param is specified', () =>
+    expect('GET /ancillaryChunks.png?pngcrush=-rem+alla', 'to yield response', {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'image/png'
+      },
+      body: expect
+        .it('to have metadata satisfying', {
+          format: 'PNG',
+          size: {
+            width: 400,
+            height: 20
+          }
+        })
+        .and(body => {
+          expect(body.length, 'to be within', 1, 3711);
+        })
+    }));
+
+  it('should run the image through pngquant when the pngquant CGI param is specified', () =>
+    expect('GET /purplealpha24bit.png?pngquant', 'to yield response', {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'image/png'
+      },
+      body: expect
+        .it('to have metadata satisfying', {
+          format: 'PNG',
+          size: {
+            width: 100,
+            height: 100
+          }
+        })
+        .and(body => {
+          expect(body.length, 'to be within', 1, 8285);
+        })
+    }));
+
+  it('should run the image through jpegtran when the jpegtran CGI param is specified', () =>
+    expect(
+      'GET /turtle.jpg?jpegtran=-grayscale,-flip,horizontal',
+      'to yield response',
+      {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'image/jpeg'
+        },
+        body: expect
+          .it('to have metadata satisfying', {
+            format: 'JPEG',
+            'Channel Depths': {
+              Gray: '8 bits'
+            },
+            size: {
+              width: 481,
+              height: 424
+            }
+          })
+          .and(body => {
+            expect(body.length, 'to be within', 1, 105836);
+          })
+      }
+    ));
+
+  it('should run the image through graphicsmagick when methods exposed by the gm module are added as CGI params', () =>
+    expect('GET /turtle.jpg?gm&resize=340,300', 'to yield response', {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'image/jpeg'
+      },
+      body: expect
+        .it('to have metadata satisfying', {
+          format: 'JPEG',
+          size: {
+            width: 340,
+            height: 300
+          }
+        })
+        .and(body => {
+          expect(body.length, 'to be within', 1, 105836);
+          expect(
+            body.slice(0, 10),
+            'to equal',
+            Buffer.from([
+              0xff,
+              0xd8,
+              0xff,
+              0xe0,
+              0x00,
+              0x10,
+              0x4a,
+              0x46,
+              0x49,
+              0x46
+            ])
+          );
+        })
+    }));
+
+  it('should run the image through sharp when methods exposed by the sharp module are added as CGI params', () =>
+    expect('GET /turtle.jpg?sharp&resize=340,300&png', 'to yield response', {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'image/png'
+      },
+      body: expect.it('to have metadata satisfying', {
+        format: 'PNG',
+        size: {
+          width: 340,
+          height: 300
+        }
+      })
+    }));
+
+  it('should run the image through svgfilter when the svgfilter parameter is specified', () =>
+    expect(
+      'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
+      'to yield response',
+      {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'image/svg+xml',
+          ETag: /"\w+-\w+-processimage"$/
+        },
+        body: expect
+          .it('to match', /<svg/)
+          .and('to match', /id="theBogusElementId"/)
+      }
+    ).then(context => {
+      const etag = context.httpResponse.headers.get('ETag');
+      return expect(
+        {
+          url:
+            'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
+          headers: {
+            'If-None-Match': etag
+          }
+        },
+        'to yield response',
+        {
+          statusCode: 304,
+          headers: {
+            ETag: etag
+          }
+        }
+      );
+    }));
+
+  it('should run the image through multiple filters when multiple CGI params are specified', () =>
+    expect(
+      'GET /purplealpha24bit.png?resize=800,800&pngquant=8&pngcrush=-rem,gAMA',
+      'to yield response',
+      {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'image/png'
+        },
+        body: expect
+          .it('when decoded as', 'ascii', 'not to match', /gAMA/)
+          .and('to satisfy', {
+            length: expect.it('to be greater than', 0)
+          })
+          .and('to have metadata satisfying', {
+            format: 'PNG',
+            size: {
+              width: 800,
+              height: 800
+            }
+          })
+      }
+    ));
+
+  it('should serve a converted image with the correct Content-Type', () =>
+    expect('GET /purplealpha24bit.png?setFormat=jpg', 'to yield response', {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'image/jpeg',
+        ETag: /-processimage/
+      },
+      body: expect
+        .it('when decoded as', 'ascii', 'not to match', /gAMA/)
+        .and('to satisfy', {
+          length: expect.it('to be greater than', 0)
+        })
+        .and('to have metadata satisfying', {
+          format: 'JPEG',
+          size: {
+            width: 100,
+            height: 100
+          }
+        })
+    }).then(context => {
+      const etag = context.httpResponse.headers.get('ETag');
+      return expect(
+        {
+          url: 'GET /purplealpha24bit.png?setFormat=jpg',
+          headers: {
+            'If-None-Match': etag
+          }
+        },
+        'to yield response',
+        {
+          statusCode: 304,
+          headers: {
+            ETag: etag
+          }
+        }
+      );
+    }));
+
+  it('should serve an error response if an invalid image is processed with GraphicsMagick', () =>
+    expect('GET /invalidImage.png?setFormat=jpg', 'to yield response', {
+      errorPassedToNext: true
+    }));
+
+  it('should serve an error response if an invalid image is processed with pngquant', () =>
+    expect('GET /invalidImage.png?pngquant', 'to yield response', {
+      errorPassedToNext: true
+    }));
+
+  it('should include the command line in the response body when an error is encountered', () =>
+    // TODO: This test results in a statusCode 404. That is weird...
+    expect('GET /notajpeg.jpg?jpegtran=-grayscale', 'to yield response', {
+      errorPassedToNext: /jpegtran -grayscale:/
+    }));
+
+  // Undetectable by gm -- the source format must be explicitly specified
+  it('should convert an icon to png via GraphicsMagick', () =>
+    expect('GET /favicon.ico?gm&png', 'to yield response', {
+      headers: {
+        'Content-Type': 'image/png'
+      },
+      body: expect.it('to have metadata satisfying', {
+        format: 'PNG',
+        size: {
+          width: 16,
+          height: 16
+        }
+      })
+    }));
+
+  it('should convert an icon served as image/vnd.microsoft.icon to png via GraphicsMagick', () =>
+    expect(
+      express()
+        .use(processImage(config))
+        .get('/favicon.ico', (req, res, next) => {
+          res.setHeader('Content-Type', 'image/vnd.microsoft.icon');
+          fs.createReadStream(
+            pathModule.resolve(__dirname, '..', 'testdata', 'favicon.ico')
+          ).pipe(res);
+        }),
+      'to yield exchange',
+      {
+        request: 'GET /favicon.ico?gm&png',
+        response: {
+          headers: {
+            'Content-Type': 'image/png'
+          },
+          body: expect.it('to have metadata satisfying', {
+            format: 'PNG',
+            size: {
+              width: 16,
+              height: 16
+            }
+          })
+        }
+      }
+    ));
+
+  describe('with an allowOperation option', () => {
+    beforeEach(() => {
+      config.allowOperation = sandbox
+        .spy(keyValue => keyValue !== 'png')
+        .named('allowOperation');
+    });
+
+    it('should allow an operation for which allowOperation returns true', () =>
+      expect('GET /turtle.jpg?resize=87,100', 'to yield response', {
+        headers: {
+          'Content-Type': 'image/jpeg'
+        },
+        body: expect.it('to have metadata satisfying', { size: { width: 87 } })
+      }).then(() => {
+        expect(config.allowOperation, 'to have calls satisfying', () => {
+          config.allowOperation('resize', [87, 100]);
+        });
+      }));
+
+    it('should disallow an operation for which allowOperation returns false', () =>
+      expect('GET /turtle.jpg?png', 'to yield response', {
+        headers: {
+          'Content-Type': 'image/jpeg'
+        },
+        body: expect.it('to have metadata satisfying', {
+          format: 'JPEG'
+        })
+      }).then(() => {
+        expect(config.allowOperation, 'to have calls satisfying', () => {
+          config.allowOperation('png', []);
+        });
       }));
   });
 
