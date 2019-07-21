@@ -1,7 +1,7 @@
 const bs = require('browser-sync').create();
 const expect = require('unexpected').clone();
 const pathModule = require('path');
-const root = pathModule.resolve(__dirname, '..', 'testdata') + '/';
+const root = `${pathModule.resolve(__dirname, '..', 'testdata')}/`;
 const processImage = require('../lib/processImage');
 
 const serverPort = '9999';
