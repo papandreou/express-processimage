@@ -41,7 +41,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "express": "^4.16.3",
-    "gifsicle-stream": "^0.3.1",
+    "gifsicle-stream": "^1.0.0",
     "magicpen": "^6.0.2",
     "magicpen-prism": "^3.0.1",
     "mocha": "^6.1.2",
