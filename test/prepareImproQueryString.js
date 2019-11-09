@@ -16,4 +16,12 @@ describe('prepareImproQueryString', () => {
       'svgfilter=runScript=addBogusElement.js+bogusElementId=theBogusElementId'
     );
   });
+
+  it('should parse pngquant with integer argument correctly', () => {
+    expect(
+      'resize=800,800&pngquant=8',
+      'when prepared to equal',
+      'resize=800,800&pngquant&speed=8'
+    );
+  });
 });
