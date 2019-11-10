@@ -17,6 +17,14 @@ describe('prepareImproQueryString', () => {
     );
   });
 
+  it('should parse setFormat and other arguments', () => {
+    expect(
+      'setFormat=JPG&resize=800,800',
+      'when prepared to equal',
+      'jpeg&resize=800,800'
+    );
+  });
+
   it('should parse jpegtran and an argument with -flip', () => {
     expect(
       'jpegtran=-grayscale,-flip,horizontal',
