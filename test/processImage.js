@@ -267,8 +267,8 @@ describe('express-processimage', () => {
       });
     });
 
-    it('should resize by specifying a bounding box', () =>
-      expect('GET /turtle.jpg?resize=500,1000', 'to yield response', {
+    it('should resize by specifying a bounding box (gm)', () =>
+      expect('GET /turtle.jpg?gm&resize=500,1000', 'to yield response', {
         body: expect.it('to have metadata satisfying', {
           size: {
             width: 500,
