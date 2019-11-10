@@ -46,7 +46,7 @@
     "magicpen-prism": "^3.0.1",
     "mocha": "^6.1.2",
     "nyc": "^14.0.0",
-    "prettier": "~1.18.2",
+    "prettier": "~1.19.1",
     "sinon": "^7.0.0",
     "svgfilter": "^3.0.0",
     "unexpected": "^11.0.0-1",
