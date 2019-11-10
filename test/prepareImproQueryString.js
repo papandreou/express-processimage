@@ -40,4 +40,12 @@ describe('prepareImproQueryString', () => {
       'resize=800,800&pngcrush&rem=gAMA'
     );
   });
+
+  it('should parse multiple engines and their operations', () => {
+    expect(
+      'resize=800,800&pngquant=8&pngcrush=-rem,gAMA',
+      'when prepared to equal',
+      'resize=800,800&pngquant&speed=8&pngcrush&rem=gAMA'
+    );
+  });
 });
