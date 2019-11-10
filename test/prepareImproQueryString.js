@@ -25,6 +25,30 @@ describe('prepareImproQueryString', () => {
     );
   });
 
+  it('should parse ignoreAspectRatio followed by resize', () => {
+    expect(
+      'ignoreAspectRatio&resize=800,800',
+      'when prepared to equal',
+      'resize=800,800&ignoreAspectRatio'
+    );
+  });
+
+  it('should parse withoutEnlargement followed by resize', () => {
+    expect(
+      'withoutEnlargement&resize=800,800',
+      'when prepared to equal',
+      'resize=800,800&withoutEnlargement'
+    );
+  });
+
+  it('should parse resize followed by withoutEnlargement', () => {
+    expect(
+      'resize=800,800&withoutEnlargement',
+      'when prepared to equal',
+      'resize=800,800&withoutEnlargement'
+    );
+  });
+
   it('should parse jpegtran and an argument with -flip', () => {
     expect(
       'jpegtran=-grayscale,-flip,horizontal',
