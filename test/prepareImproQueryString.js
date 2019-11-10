@@ -17,11 +17,27 @@ describe('prepareImproQueryString', () => {
     );
   });
 
+  it('should parse jpegtran and an argument with -flip', () => {
+    expect(
+      'jpegtran=-grayscale,-flip,horizontal',
+      'when prepared to equal',
+      'jpegtran&grayscale&flip=horizontal'
+    );
+  });
+
   it('should parse pngquant with integer argument correctly', () => {
     expect(
       'resize=800,800&pngquant=8',
       'when prepared to equal',
       'resize=800,800&pngquant&speed=8'
+    );
+  });
+
+  it('should parse pngcrush with integer argument correctly', () => {
+    expect(
+      'resize=800,800&pngcrush=-rem,gAMA',
+      'when prepared to equal',
+      'resize=800,800&pngcrush&rem=gAMA'
     );
   });
 });
