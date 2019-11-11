@@ -231,9 +231,9 @@ describe('express-processimage', () => {
             })
           }
         ).then(() =>
-          expect(console.error, 'to have no calls satisfying', () =>
-            console.error(/DeprecationWarning/)
-          )
+          expect(console.error, 'to have no calls satisfying', [
+            /DeprecationWarning/
+          ])
         );
       });
 
@@ -260,9 +260,9 @@ describe('express-processimage', () => {
             })
           }
         ).then(() =>
-          expect(console.error, 'to have no calls satisfying', () =>
-            console.error(/DeprecationWarning/)
-          )
+          expect(console.error, 'to have no calls satisfying', [
+            /DeprecationWarning/
+          ])
         );
       });
     });
@@ -305,9 +305,7 @@ describe('express-processimage', () => {
           contentType: 'image/jpeg'
         }
       }).then(() => {
-        expect(cacheStub, 'to have calls satisfying', () => {
-          cacheStub(123);
-        });
+        expect(cacheStub, 'to have a call satisfying', [123]);
       });
     });
 
@@ -891,9 +889,10 @@ describe('express-processimage', () => {
         },
         body: expect.it('to have metadata satisfying', { size: { width: 87 } })
       }).then(() => {
-        expect(config.allowOperation, 'to have calls satisfying', () => {
-          config.allowOperation('resize', [87, 100]);
-        });
+        expect(config.allowOperation, 'to have a call satisfying', [
+          'resize',
+          [87, 100]
+        ]);
       }));
 
     it('should disallow an operation for which allowOperation returns false', () =>
@@ -905,9 +904,7 @@ describe('express-processimage', () => {
           format: 'JPEG'
         })
       }).then(() => {
-        expect(config.allowOperation, 'to have calls satisfying', () => {
-          config.allowOperation('png', []);
-        });
+        expect(config.allowOperation, 'to have a call satisfying', ['png', []]);
       }));
   });
 
