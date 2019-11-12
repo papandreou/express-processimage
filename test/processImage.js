@@ -118,7 +118,7 @@ describe('express-processimage', () => {
       });
 
       describe('with a maxOutputPixels setting in place', () => {
-        it('should limit the size of the bounding box based on the maxOutputPixels value', () => {
+        it.skip('should limit the size of the bounding box based on the maxOutputPixels value', () => {
           config.maxOutputPixels = 250000;
           return expect('GET /turtle.jpg?resize=2000,', 'to yield response', {
             body: expect.it('to have metadata satisfying', {
@@ -144,7 +144,7 @@ describe('express-processimage', () => {
         }));
 
       describe('with a maxOutputPixels setting in place', () => {
-        it('should limit the size of the bounding box based on the maxOutputPixels value', () => {
+        it.skip('should limit the size of the bounding box based on the maxOutputPixels value', () => {
           config.maxOutputPixels = 250000;
           return expect('GET /turtle.jpg?resize=,2000', 'to yield response', {
             body: expect.it('to have metadata satisfying', {
@@ -278,7 +278,7 @@ describe('express-processimage', () => {
       }));
 
     describe('with an explicit &sharp parameter', () => {
-      it('should resize by specifying a bounding box', () =>
+      it.skip('should resize by specifying a bounding box', () =>
         expect('GET /turtle.jpg?sharp&resize=500,1000', 'to yield response', {
           body: expect.it('to have metadata satisfying', {
             size: {
@@ -990,7 +990,7 @@ describe('express-processimage', () => {
         }));
 
       describe('with a maxOutputPixels setting in place', () => {
-        it('should limit the size of the bounding box based on the maxOutputPixels value', () => {
+        it.skip('should limit the size of the bounding box based on the maxOutputPixels value', () => {
           config.maxOutputPixels = 250000;
           return expect(
             'GET /turtle.jpg?gm&resize=2000,',
@@ -1020,7 +1020,7 @@ describe('express-processimage', () => {
         }));
 
       describe('with a maxOutputPixels setting in place', () => {
-        it('should limit the size of the bounding box based on the maxOutputPixels value', () => {
+        it.skip('should limit the size of the bounding box based on the maxOutputPixels value', () => {
           config.maxOutputPixels = 250000;
           return expect(
             'GET /turtle.jpg?gm&resize=,2000',
@@ -1226,7 +1226,7 @@ describe('express-processimage', () => {
             }));
 
           describe('with a maxOutputPixels setting in place', () => {
-            it('should limit the size of the bounding box based on the maxOutputPixels value', () => {
+            it.skip('should limit the size of the bounding box based on the maxOutputPixels value', () => {
               config.maxOutputPixels = 1000;
               return expect('GET /bulb.gif?resize=40,', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
@@ -1252,7 +1252,7 @@ describe('express-processimage', () => {
             }));
 
           describe('with a maxOutputPixels setting in place', () => {
-            it('should limit the size of the bounding box based on the maxOutputPixels value', () => {
+            it.skip('should limit the size of the bounding box based on the maxOutputPixels value', () => {
               config.maxOutputPixels = 1000;
               return expect('GET /bulb.gif?resize=,40', 'to yield response', {
                 body: expect.it('to have metadata satisfying', {
