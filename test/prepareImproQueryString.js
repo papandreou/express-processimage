@@ -80,4 +80,8 @@ describe('prepareImproQueryString', () => {
       'resize=800,800&pngquant&speed=8&pngcrush&rem=gAMA'
     );
   });
+
+  it('should parse the single format form of resize', () => {
+    expect('resize=800', 'when prepared to equal', 'resize=800,');
+  });
 });
