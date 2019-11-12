@@ -567,7 +567,7 @@ describe('express-processimage', () => {
         'to yield response',
         {
           headers: {
-            'X-Express-Processimage': 'sharp'
+            'X-Express-Processimage': 'gifsicle,sharp'
           },
           body: expect.it('to have metadata satisfying', {
             format: 'PNG',
