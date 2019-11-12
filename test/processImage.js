@@ -11,13 +11,17 @@ const sharp = require('sharp');
 
 describe('express-processimage', () => {
   let config;
+  let impro;
   let sandbox;
+
   beforeEach(() => {
     config = { root, filters: {} };
     sandbox = sinon.createSandbox();
   });
 
   afterEach(() => {
+    // clear the cache marker to ensure clean state for each test
+    delete impro._sharpCacheSet;
     sandbox.restore();
   });
 
@@ -31,17 +35,22 @@ describe('express-processimage', () => {
     .use(require('magicpen-prism'))
     .addAssertion(
       '<string|object> to yield response <object|number>',
-      (expect, subject, value) =>
-        expect(
+      (expect, subject, value) => {
+        const middleware = processImage(config);
+
+        impro = middleware._impro;
+
+        return expect(
           express()
-            .use(processImage(config))
+            .use(middleware)
             .use(express.static(root)),
           'to yield exchange',
           {
             request: subject,
             response: value
           }
-        )
+        );
+      }
     )
     .addAssertion(
       '<Buffer> [when] converted to PNG <assertion>',
