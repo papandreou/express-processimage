@@ -17,6 +17,7 @@
     "hijackresponse": "^4.0.0",
     "httperrors": "^2.0.1",
     "icc": "^1.0.0",
+    "impro": "github:papandreou/impro#master",
     "inkscape": "^2.0.0",
     "jpegtran": "^1.0.6",
     "mime": "^2.3.1",
