@@ -4,7 +4,6 @@ const http = require('http');
 const pathModule = require('path');
 const unexpected = require('unexpected');
 const sinon = require('sinon');
-const Stream = require('stream');
 const processImage = require('../lib/processImage');
 const root = `${pathModule.resolve(__dirname, '..', 'testdata')}/`;
 const sharp = require('sharp');
@@ -20,8 +19,10 @@ describe('express-processimage', () => {
   });
 
   afterEach(() => {
-    // clear the cache marker to ensure clean state for each test
-    delete impro._sharpCacheSet;
+    if (impro) {
+      // clear the cache marker to ensure clean state for each test
+      delete impro._sharpCacheSet;
+    }
     sandbox.restore();
   });
 
@@ -1336,58 +1337,55 @@ describe('express-processimage', () => {
 
   describe('against a real server', () => {
     it('should destroy the created filters when the client closes the connection prematurely', () => {
-      let server;
-      const createdStreams = [];
-      let request;
-      return expect
-        .promise(run => {
-          config.filters = {
-            montage: run(() => ({
-              create: run(() => {
-                const stream = new Stream.Transform();
-                stream._transform = (chunk, encoding, callback) => {
-                  setTimeout(() => {
-                    callback(null, chunk);
-                  }, 1000);
-                };
-                stream.destroy = sandbox.spy().named('destroy');
-                createdStreams.push(stream);
-                setTimeout(
-                  run(() => {
-                    request.abort();
-                  }),
-                  0
-                );
-                return stream;
-              })
-            }))
-          };
-          server = express()
-            .use(processImage(config))
-            .use(express.static(root))
-            .listen(0);
+      let resolveOnPipeline;
+      const onPipelinePromise = new Promise(
+        resolve => (resolveOnPipeline = resolve)
+      );
+      const config = {
+        onPipeline: p => {
+          resolveOnPipeline(p);
+        }
+      };
 
-          const serverAddress = server.address();
-          const serverHostname =
-            serverAddress.address === '::'
-              ? 'localhost'
-              : serverAddress.address;
-          const serverUrl = `http://${serverHostname}:${serverAddress.port}/testImage.png?montage`;
+      const server = express()
+        .use(processImage(config))
+        .use(express.static(root))
+        .listen(0);
+      const serverAddress = server.address();
+      const serverHostname =
+        serverAddress.address === '::' ? 'localhost' : serverAddress.address;
+      const serverUrl = `http://${serverHostname}:${serverAddress.port}/testImage.png?progressive`;
+      const request = http.get(serverUrl);
+      request.end();
 
-          request = http.get(serverUrl);
-          request.end();
-          request.once(
-            'error',
-            run(err => {
-              expect(err, 'to have message', 'socket hang up');
-            })
-          );
+      const spies = [];
+
+      return onPipelinePromise
+        .then(pipeline => {
+          spies.push(sinon.spy(pipeline._streams[0], 'unpipe'));
+
+          setTimeout(() => {
+            request.abort();
+          }, 0);
         })
+        .then(
+          () =>
+            new Promise((resolve, reject) => {
+              request.once('error', err => {
+                try {
+                  expect(err, 'to have message', 'socket hang up');
+                  resolve();
+                } catch (e) {
+                  reject(e);
+                }
+              });
+            })
+        )
         .then(() => {
           return new Promise(resolve => setTimeout(resolve, 10));
         })
         .then(() => {
-          expect(createdStreams[0].destroy, 'was called once');
+          expect(spies[0], 'was called once');
         })
         .finally(() => {
           server.close();
