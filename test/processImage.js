@@ -1333,7 +1333,7 @@ describe('express-processimage', () => {
   });
 
   describe('against a real server', () => {
-    it('should destroy the created filters when the client closes the connection prematurely', () => {
+    it('should destroy the created filters when the client closes the connection prematurely', async () => {
       let resolveOnPipeline;
       const onPipelinePromise = new Promise(
         resolve => (resolveOnPipeline = resolve)
@@ -1357,36 +1357,32 @@ describe('express-processimage', () => {
 
       const spies = [];
 
-      return onPipelinePromise
-        .then(pipeline => {
-          spies.push(sinon.spy(pipeline._streams[0], 'unpipe'));
+      try {
+        const pipeline = await onPipelinePromise;
 
-          setTimeout(() => {
-            request.abort();
-          }, 0);
-        })
-        .then(
-          () =>
-            new Promise((resolve, reject) => {
-              request.once('error', err => {
-                try {
-                  expect(err, 'to have message', 'socket hang up');
-                  resolve();
-                } catch (e) {
-                  reject(e);
-                }
-              });
-            })
-        )
-        .then(() => {
-          return new Promise(resolve => setTimeout(resolve, 10));
-        })
-        .then(() => {
-          expect(spies[0], 'was called once');
-        })
-        .finally(() => {
-          server.close();
+        spies.push(sinon.spy(pipeline._streams[0], 'unpipe'));
+
+        setTimeout(() => {
+          request.abort();
+        }, 0);
+
+        await new Promise((resolve, reject) => {
+          request.once('error', err => {
+            try {
+              expect(err, 'to have message', 'socket hang up');
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
         });
+
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        expect(spies[0], 'was called once');
+      } finally {
+        server.close();
+      }
     });
   });
 
