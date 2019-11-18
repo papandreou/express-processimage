@@ -559,7 +559,7 @@ describe('express-processimage', () => {
         })
       }));
 
-    it('should use sharp when a gif is converted to png', () => {
+    it('should use the best engine for an operation for a GIF', () => {
       config.debug = true;
       return expect(
         'GET /animated.gif?resize=40,100&png',
@@ -571,7 +571,7 @@ describe('express-processimage', () => {
           body: expect.it('to have metadata satisfying', {
             format: 'PNG',
             size: {
-              width: 40
+              width: 23
             }
           })
         }
