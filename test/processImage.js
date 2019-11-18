@@ -571,7 +571,7 @@ describe('express-processimage', () => {
           body: expect.it('to have metadata satisfying', {
             format: 'PNG',
             size: {
-              width: expect.it('to be a number') // FIXME: output should be 40
+              width: 40
             }
           })
         }
@@ -587,7 +587,7 @@ describe('express-processimage', () => {
           body: expect.it('to have metadata satisfying', {
             size: {
               width: 100,
-              height: expect.it('to be a number') // FIXME: output should be 88
+              height: 88
             },
             Interlace: 'Line'
           })
@@ -1411,10 +1411,7 @@ describe('express-processimage', () => {
         },
         body: expect.it('to have metadata satisfying', {
           format: 'PNG',
-          size: {
-            width: 40,
-            height: expect.it('to be a number') // FIXME: output should be 17
-          }
+          size: { width: 40, height: 17 }
         })
       });
     });
