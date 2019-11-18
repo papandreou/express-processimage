@@ -283,7 +283,7 @@ describe('express-processimage', () => {
           body: expect.it('to have metadata satisfying', {
             size: {
               width: 500,
-              height: expect.it('to be a number') // FIXME: output should be 441
+              height: 441
             }
           })
         }));
