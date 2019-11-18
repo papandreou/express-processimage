@@ -4,20 +4,25 @@ const http = require('http');
 const pathModule = require('path');
 const unexpected = require('unexpected');
 const sinon = require('sinon');
-const Stream = require('stream');
 const processImage = require('../lib/processImage');
 const root = `${pathModule.resolve(__dirname, '..', 'testdata')}/`;
 const sharp = require('sharp');
 
 describe('express-processimage', () => {
   let config;
+  let impro;
   let sandbox;
+
   beforeEach(() => {
     config = { root, filters: {} };
     sandbox = sinon.createSandbox();
   });
 
   afterEach(() => {
+    if (impro) {
+      // clear the cache marker to ensure clean state for each test
+      delete impro._sharpCacheSet;
+    }
     sandbox.restore();
   });
 
@@ -31,17 +36,22 @@ describe('express-processimage', () => {
     .use(require('magicpen-prism'))
     .addAssertion(
       '<string|object> to yield response <object|number>',
-      (expect, subject, value) =>
-        expect(
+      (expect, subject, value) => {
+        const middleware = processImage(config);
+
+        impro = middleware._impro;
+
+        return expect(
           express()
-            .use(processImage(config))
+            .use(middleware)
             .use(express.static(root)),
           'to yield exchange',
           {
             request: subject,
             response: value
           }
-        )
+        );
+      }
     )
     .addAssertion(
       '<Buffer> [when] converted to PNG <assertion>',
@@ -221,9 +231,9 @@ describe('express-processimage', () => {
             })
           }
         ).then(() =>
-          expect(console.error, 'to have no calls satisfying', () =>
-            console.error(/DeprecationWarning/)
-          )
+          expect(console.error, 'to have no calls satisfying', [
+            /DeprecationWarning/
+          ])
         );
       });
 
@@ -250,15 +260,15 @@ describe('express-processimage', () => {
             })
           }
         ).then(() =>
-          expect(console.error, 'to have no calls satisfying', () =>
-            console.error(/DeprecationWarning/)
-          )
+          expect(console.error, 'to have no calls satisfying', [
+            /DeprecationWarning/
+          ])
         );
       });
     });
 
-    it('should resize by specifying a bounding box', () =>
-      expect('GET /turtle.jpg?resize=500,1000', 'to yield response', {
+    it('should resize by specifying a bounding box (gm)', () =>
+      expect('GET /turtle.jpg?gm&resize=500,1000', 'to yield response', {
         body: expect.it('to have metadata satisfying', {
           size: {
             width: 500,
@@ -295,9 +305,7 @@ describe('express-processimage', () => {
           contentType: 'image/jpeg'
         }
       }).then(() => {
-        expect(cacheStub, 'to have calls satisfying', () => {
-          cacheStub(123);
-        });
+        expect(cacheStub, 'to have a call satisfying', [123]);
       });
     });
 
@@ -551,19 +559,19 @@ describe('express-processimage', () => {
         })
       }));
 
-    it('should use sharp when a gif is converted to png', () => {
+    it('should use the best engine for an operation for a GIF', () => {
       config.debug = true;
       return expect(
         'GET /animated.gif?resize=40,100&png',
         'to yield response',
         {
           headers: {
-            'X-Express-Processimage': 'sharp'
+            'X-Express-Processimage': 'gifsicle,sharp'
           },
           body: expect.it('to have metadata satisfying', {
             format: 'PNG',
             size: {
-              width: 40
+              width: 23
             }
           })
         }
@@ -881,9 +889,10 @@ describe('express-processimage', () => {
         },
         body: expect.it('to have metadata satisfying', { size: { width: 87 } })
       }).then(() => {
-        expect(config.allowOperation, 'to have calls satisfying', () => {
-          config.allowOperation('resize', [87, 100]);
-        });
+        expect(config.allowOperation, 'to have a call satisfying', [
+          'resize',
+          [87, 100]
+        ]);
       }));
 
     it('should disallow an operation for which allowOperation returns false', () =>
@@ -895,9 +904,7 @@ describe('express-processimage', () => {
           format: 'JPEG'
         })
       }).then(() => {
-        expect(config.allowOperation, 'to have calls satisfying', () => {
-          config.allowOperation('png', []);
-        });
+        expect(config.allowOperation, 'to have a call satisfying', ['png', []]);
       }));
   });
 
@@ -1326,63 +1333,56 @@ describe('express-processimage', () => {
   });
 
   describe('against a real server', () => {
-    it('should destroy the created filters when the client closes the connection prematurely', () => {
-      let server;
-      const createdStreams = [];
-      let request;
-      return expect
-        .promise(run => {
-          config.filters = {
-            montage: run(() => ({
-              create: run(() => {
-                const stream = new Stream.Transform();
-                stream._transform = (chunk, encoding, callback) => {
-                  setTimeout(() => {
-                    callback(null, chunk);
-                  }, 1000);
-                };
-                stream.destroy = sandbox.spy().named('destroy');
-                createdStreams.push(stream);
-                setTimeout(
-                  run(() => {
-                    request.abort();
-                  }),
-                  0
-                );
-                return stream;
-              })
-            }))
-          };
-          server = express()
-            .use(processImage(config))
-            .use(express.static(root))
-            .listen(0);
+    it('should destroy the created filters when the client closes the connection prematurely', async () => {
+      let resolveOnPipeline;
+      const onPipelinePromise = new Promise(
+        resolve => (resolveOnPipeline = resolve)
+      );
+      const config = {
+        onPipeline: p => {
+          resolveOnPipeline(p);
+        }
+      };
 
-          const serverAddress = server.address();
-          const serverHostname =
-            serverAddress.address === '::'
-              ? 'localhost'
-              : serverAddress.address;
-          const serverUrl = `http://${serverHostname}:${serverAddress.port}/testImage.png?montage`;
+      const server = express()
+        .use(processImage(config))
+        .use(express.static(root))
+        .listen(0);
+      const serverAddress = server.address();
+      const serverHostname =
+        serverAddress.address === '::' ? 'localhost' : serverAddress.address;
+      const serverUrl = `http://${serverHostname}:${serverAddress.port}/testImage.png?progressive`;
+      const request = http.get(serverUrl);
+      request.end();
 
-          request = http.get(serverUrl);
-          request.end();
-          request.once(
-            'error',
-            run(err => {
+      const spies = [];
+
+      try {
+        const pipeline = await onPipelinePromise;
+
+        spies.push(sinon.spy(pipeline._streams[0], 'unpipe'));
+
+        setTimeout(() => {
+          request.abort();
+        }, 0);
+
+        await new Promise((resolve, reject) => {
+          request.once('error', err => {
+            try {
               expect(err, 'to have message', 'socket hang up');
-            })
-          );
-        })
-        .then(() => {
-          return new Promise(resolve => setTimeout(resolve, 10));
-        })
-        .then(() => {
-          expect(createdStreams[0].destroy, 'was called once');
-        })
-        .finally(() => {
-          server.close();
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
         });
+
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        expect(spies[0], 'was called once');
+      } finally {
+        server.close();
+      }
     });
   });
 
