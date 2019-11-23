@@ -18,7 +18,7 @@ libraries based on the requested options.
 > **Important note: This module is intended for development. While impro
 > validates requested image operations, ultimately image data which could
 > be untrusted in such use would be passed directly to various command line
-> tools. In addition, extremely large images my represent an attack surface
+> tools. In addition, extremely large images represent an attack surface
 > unless restrictions on maximum input and output sizes are configured.**
 
 ## Installation
