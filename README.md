@@ -1,36 +1,33 @@
-express-processimage
-====================
+# express-processimage
 
 [![NPM version](https://badge.fury.io/js/express-processimage.svg)](http://badge.fury.io/js/express-processimage)
 [![Build Status](https://travis-ci.org/papandreou/express-processimage.svg?branch=master)](https://travis-ci.org/papandreou/express-processimage)
 [![Coverage Status](https://coveralls.io/repos/papandreou/express-processimage/badge.svg)](https://coveralls.io/r/papandreou/express-processimage)
 [![Dependency Status](https://david-dm.org/papandreou/express-processimage.svg)](https://david-dm.org/papandreou/express-processimage)
 
-Middleware that processes images according to the query
-string. Intended to be used in a development setting with the
-`connect.static` middleware, but should work with any middleware
-further down the stack, even an http proxy.
+Middleware that processes images according to the query string.
+It is intended to be used in a development setting with the static
+middleware, but should play well with any middleware further down
+the stack, even an http proxy, via
+[hijackresponse](https://github.com/gustavnikolaj/hijackresponse).
 
-**Important note: This module is intended for development. You're
-strongly discouraged from using it in production or with any kind of
-untrusted input. Parts of the query string will be passed directly to
-various command line tools.**
+Images are processed using the [impro](https://github.com/papandreou/impro)
+module which implements automatic switching between a number of image
+libraries based on the requested options.
 
-The response will be be processed under these circumstances:
+> **Important note: This module is intended for development. While impro
+> validates requested image operations, ultimately image data which could
+> be untrusted in such use would be passed directly to various command line
+> tools. In addition, extremely large images my represent an attack surface
+> unless restrictions on maximum input and output sizes are configured.**
 
-* If the request has a query string and accepts `image/*`.
-* If the response is served with a `Content-Type` of `image/*`.
+## Installation
 
-`express-processimage` plays nice with conditional GET. If the
-original response has an ETag, `express-processimage` will add to it
-so the ETag of the processed image never clashes with the original
-ETag. That prevents the middleware issuing the original response from
-being confused into sending a false positive `304 Not Modified` if
-`express-processimage` is turned off or removed from the stack later.
+Make sure you have node.js and npm installed, then run:
 
+    npm install express-processimage
 
-Query string syntax
--------------------
+## Query string syntax
 
 `express-processimage` supports `pngcrush`, `pngquant`, `optipng`,
 `jpegtran`, <a
@@ -54,35 +51,46 @@ http://localhost:1337/logo.svg?inkscape
 http://localhost:1337/file.svg?svgfilter=--runScript=makeItBlue.js
 ```
 
-Installation
-------------
-
-Make sure you have node.js and npm installed, then run:
-
-    npm install express-processimage
-
-Example usage
--------------
+## Example usage
 
 Express 3.0 syntax:
 
 ```javascript
 var express = require('express'),
-    processImage = require('express-processimage'),
-    root = '/path/to/my/static/files';
+  processImage = require('express-processimage'),
+  root = '/path/to/my/static/files';
 
 express()
-    .use(processImage({root: root}))
-    .use(express.static(root))
-    .listen(1337);
+  .use(processImage({ root: root }))
+  .use(express.static(root))
+  .listen(1337);
 ```
+
+From this point forward, GET requests to port 1337 may be processed
+be processed via the image processing pipeline and the options on the
+query string applied, the output of which is delivered to the client.
+
+### Svg processing
 
 The `root` option is used by <a
 href="https://github.com/papandreou/node-svgfilter">node-svgfilter</a>
 for finding the location of external JavaScript files to run on the SVG document.
 
-Development with Docker
------------------------
+## Response processing
+
+The response will be be processed under these circumstances:
+
+- If the request has a query string and accepts `image/*`.
+- If the response is served with a `Content-Type` of `image/*`.
+
+`express-processimage` plays nice with conditional GET. If the
+original response has an ETag, `express-processimage` will add to it
+so the ETag of the processed image never clashes with the original
+ETag. That prevents the middleware issuing the original response from
+being confused into sending a false positive `304 Not Modified` if
+`express-processimage` is turned off or removed from the stack later.
+
+## Development with Docker
 
 Build the docker image by running:
 
@@ -107,7 +115,6 @@ change the version using nvm and reinstall your modules.
 The environment is configured to resemble our setup on Travis CI as much as
 possible.
 
-License
--------
+## License
 
 3-clause BSD license -- see the `LICENSE` file for details.
