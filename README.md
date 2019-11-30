@@ -66,9 +66,10 @@ express()
   .listen(1337);
 ```
 
-From this point forward, GET requests to port 1337 may be processed
-be processed via the image processing pipeline and the options on the
-query string applied, the output of which is delivered to the client.
+From this point forward, the resposnes tp GET requests to port 1337 are
+matched by their Content-Type matched and in the case of an it will be
+processed by the image pipeline using options specified in query string.
+The processed output is delivered to the client.
 
 ### Svg processing
 
