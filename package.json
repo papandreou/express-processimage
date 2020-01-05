@@ -44,7 +44,7 @@
     "gifsicle-stream": "^1.0.0",
     "magicpen": "^6.0.2",
     "magicpen-prism": "^4.0.0",
-    "mocha": "^6.1.2",
+    "mocha": "^7.0.0",
     "nyc": "^15.0.0",
     "prettier": "~1.19.1",
     "sinon": "^8.0.1",
