@@ -9,6 +9,14 @@ expect.addAssertion('<string> when prepared <assertion>', (expect, subject) => {
 });
 
 describe('prepareImproQueryString', () => {
+  it('should parse resize (comma separator)', () => {
+    expect('resize=800,800', 'when prepared to equal', 'resize=800,800');
+  });
+
+  it('should parse resize (plus separator)', () => {
+    expect('resize=800+800', 'when prepared to equal', 'resize=800,800');
+  });
+
   it('should parse svgfilter with options', () => {
     expect(
       'svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
