@@ -73,11 +73,19 @@ describe('prepareImproQueryString', () => {
     );
   });
 
-  it('should parse pngcrush with integer argument correctly', () => {
+  it('should parse pngcrush with -rm argument correctly (using -)', () => {
     expect(
       'resize=800,800&pngcrush=-rem,gAMA',
       'when prepared to equal',
       'resize=800,800&pngcrush&rem=gAMA'
+    );
+  });
+
+  it('should parse pngcrush with -rm argument correctly (using +)', () => {
+    expect(
+      'resize=800,800&pngcrush=-rem+pHYs',
+      'when prepared to equal',
+      'resize=800,800&pngcrush&rem=pHYs'
     );
   });
 
