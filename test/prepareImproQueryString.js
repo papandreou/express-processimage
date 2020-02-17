@@ -65,6 +65,10 @@ describe('prepareImproQueryString', () => {
     );
   });
 
+  it('should parse optipng with no argument', () => {
+    expect('optipng', 'when prepared to equal', 'optipng');
+  });
+
   it('should parse pngquant with integer argument correctly', () => {
     expect(
       'resize=800,800&pngquant=8',
