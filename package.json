@@ -59,7 +59,7 @@
   "scripts": {
     "docker:build": "docker build -t express-processimage-dev .",
     "docker": "docker run --rm -it -v \"$(pwd):/home/nvm/express-processimage\" express-processimage-dev",
-    "lint": "eslint . && prettier --check '**/*.js'",
+    "lint": "eslint . && prettier --check '**/*.{js,md}'",
     "test": "mocha",
     "ci": "npm run coverage && npm run lint",
     "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- npm test && echo google-chrome coverage/lcov-report/index.html"
