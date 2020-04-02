@@ -9,14 +9,14 @@ const serverPort = '9999';
 expect.use(require('unexpected-http')).use(require('unexpected-image'));
 
 describe('browser-sync compatibility', () => {
-  before(done => {
+  before((done) => {
     bs.init(
       {
         port: serverPort,
         server: root,
         open: false,
         logLevel: 'silent',
-        middleware: [processImage({ root })]
+        middleware: [processImage({ root })],
       },
       done
     );
@@ -32,9 +32,9 @@ describe('browser-sync compatibility', () => {
       'to yield response',
       {
         headers: {
-          'Content-Type': 'text/plain; charset=UTF-8'
+          'Content-Type': 'text/plain; charset=UTF-8',
         },
-        body: 'foo\n'
+        body: 'foo\n',
       }
     ));
 
@@ -44,9 +44,9 @@ describe('browser-sync compatibility', () => {
       'to yield response',
       {
         headers: {
-          'Content-Type': 'image/png'
+          'Content-Type': 'image/png',
         },
-        body: expect.it('to have length', 3711)
+        body: expect.it('to have length', 3711),
       }
     ));
 
@@ -56,9 +56,9 @@ describe('browser-sync compatibility', () => {
       'to yield response',
       {
         headers: {
-          'Content-Type': 'image/png'
+          'Content-Type': 'image/png',
         },
-        body: expect.it('to have length', 3711)
+        body: expect.it('to have length', 3711),
       }
     ));
 
@@ -69,24 +69,24 @@ describe('browser-sync compatibility', () => {
       {
         statusCode: 200,
         headers: {
-          'Content-Type': 'image/png'
+          'Content-Type': 'image/png',
         },
-        body: expect.it('to have length', 3711)
+        body: expect.it('to have length', 3711),
       }
-    ).then(context => {
+    ).then((context) => {
       const etag = context.httpResponse.headers.get('ETag');
       return expect(
         {
           url: `GET http://localhost:${serverPort}/ancillaryChunks.png?foo=bar`,
           headers: {
-            'If-None-Match': etag
-          }
+            'If-None-Match': etag,
+          },
         },
         'to yield response',
         {
           statusCode: 304,
           headers: expect.it('to be empty'),
-          body: expect.it('to be', '')
+          body: expect.it('to be', ''),
         }
       );
     }));
@@ -98,19 +98,19 @@ describe('browser-sync compatibility', () => {
       {
         statusCode: 200,
         headers: {
-          'Content-Type': 'image/png'
+          'Content-Type': 'image/png',
         },
         body: expect
           .it('to have metadata satisfying', {
             format: 'PNG',
             size: {
               width: 400,
-              height: 20
-            }
+              height: 20,
+            },
           })
-          .and(body => {
+          .and((body) => {
             expect(body.length, 'to be within', 1, 3711);
-          })
+          }),
       }
     ));
 });
