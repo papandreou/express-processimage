@@ -73,7 +73,7 @@ describe('prepareImproQueryString', () => {
     expect(
       'resize=800,800&pngquant=8',
       'when prepared to equal',
-      'resize=800,800&pngquant&speed=8'
+      'resize=800,800&pngquant&ncolors=8'
     );
   });
 
@@ -97,7 +97,7 @@ describe('prepareImproQueryString', () => {
     expect(
       'resize=800,800&pngquant=8&pngcrush=-rem,gAMA',
       'when prepared to equal',
-      'resize=800,800&pngquant&speed=8&pngcrush&rem=gAMA'
+      'resize=800,800&pngquant&ncolors=8&pngcrush&rem=gAMA'
     );
   });
 
