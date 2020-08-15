@@ -17,7 +17,7 @@
     "hijackresponse": "^4.0.0",
     "httperrors": "^2.0.1",
     "impro": "~0.7.1",
-    "inkscape": "^2.0.0",
+    "inkscape": "^3.0.0",
     "jpegtran": "^1.0.6",
     "mime": "^2.3.1",
     "optimist": "^0.6.1",
