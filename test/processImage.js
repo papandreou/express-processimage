@@ -942,6 +942,8 @@ describe('express-processimage', () => {
     }));
 
   describe('with the gm engine', () => {
+    const isDarwin = process.platform === 'darwin';
+
     it('should allow a crop operation with a gravity of center', () =>
       expect(
         'GET /turtle.jpg?gm&resize=40,15&crop=center',
@@ -953,7 +955,9 @@ describe('express-processimage', () => {
               __dirname,
               '..',
               'testdata',
-              'turtleCroppedCenterGm.jpg'
+              isDarwin
+                ? 'turtleCroppedCenterGm-darwin.jpg'
+                : 'turtleCroppedCenterGm.jpg'
             )
           ),
         }
@@ -970,7 +974,9 @@ describe('express-processimage', () => {
               __dirname,
               '..',
               'testdata',
-              'turtleCroppedNorthEastGm.jpg'
+              isDarwin
+                ? 'turtleCroppedNorthEastGm-darwin.jpg'
+                : 'turtleCroppedNorthEastGm.jpg'
             )
           ),
         }
