@@ -954,7 +954,10 @@ describe('express-processimage', () => {
               '..',
               'testdata',
               'turtleCroppedCenterGm.jpg'
-            )
+            ),
+            {
+              ignoreAntialiasing: true, // Ignore small pixel nuance differences observed on OSX vs. linux
+            }
           ),
         }
       ));
@@ -971,7 +974,10 @@ describe('express-processimage', () => {
               '..',
               'testdata',
               'turtleCroppedNorthEastGm.jpg'
-            )
+            ),
+            {
+              ignoreAntialiasing: true, // Ignore small pixel nuance differences observed on OSX vs. linux
+            }
           ),
         }
       ));
