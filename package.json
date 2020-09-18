@@ -14,7 +14,7 @@
     "createerror": "^1.1.0",
     "exif-reader": "^1.0.2",
     "gm-papandreou": "^1.23.0-patch1",
-    "hijackresponse": "^4.0.0",
+    "hijackresponse": "git://github.com/gustavnikolaj/hijackresponse.git#split-stream-rewrite",
     "httperrors": "^2.0.1",
     "impro": "~0.8.0",
     "inkscape": "^3.0.0",
