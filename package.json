@@ -14,7 +14,7 @@
     "createerror": "^1.1.0",
     "exif-reader": "^1.0.2",
     "gm-papandreou": "^1.23.0-patch1",
-    "hijackresponse": "^5.0.0-rc.2",
+    "hijackresponse": "^5.0.0",
     "httperrors": "^2.0.1",
     "impro": "~0.8.0",
     "inkscape": "^3.0.0",
