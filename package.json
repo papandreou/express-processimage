@@ -49,7 +49,7 @@
     "sinon": "^9.0.0",
     "svgfilter": "^3.0.0",
     "unexpected": "^12.0.0",
-    "unexpected-express": "^12.0.0",
+    "unexpected-express": "^13.0.1",
     "unexpected-http": "^7.0.0",
     "unexpected-image": "^3.0.0",
     "unexpected-resemble": "^5.0.0",
