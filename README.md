@@ -1,7 +1,7 @@
 # express-processimage
 
 [![NPM version](https://badge.fury.io/js/express-processimage.svg)](http://badge.fury.io/js/express-processimage)
-[![Build Status](https://travis-ci.org/papandreou/express-processimage.svg?branch=master)](https://travis-ci.org/papandreou/express-processimage)
+[![Build Status](https://github.com/papandreou/express-processimage/workflows/tests/badge.svg)](https://github.com/papandreou/express-processimage/actions)
 [![Coverage Status](https://coveralls.io/repos/papandreou/express-processimage/badge.svg)](https://coveralls.io/r/papandreou/express-processimage)
 [![Dependency Status](https://david-dm.org/papandreou/express-processimage.svg)](https://david-dm.org/papandreou/express-processimage)
 
