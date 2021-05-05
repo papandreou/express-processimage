@@ -41,7 +41,7 @@ jobs:
         with:
           node-version: '12'
       - name: Install dependencies
-        run: sudo add-apt-repository -y ppa:inkscape.dev/stable && sudo apt-get install -y libcairo2-dev libjpeg8-dev libgif-dev optipng pngcrush pngquant libpango1.0-dev graphicsmagick libjpeg-turbo-progs inkscape gifsicle
+        run: sudo add-apt-repository -y ppa:inkscape.dev/stable && sudo apt-get install -y optipng pngcrush pngquant graphicsmagick libjpeg-turbo-progs inkscape libcairo2-dev libgif-dev libjpeg8-dev zlib1g-dev
       - run: npm install
       - run: npm run ${{ matrix.targets.target }}
       - name: Upload coverage
