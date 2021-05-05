@@ -3,10 +3,10 @@
   "version": "10.1.0",
   "description": "Express middleware that processes served images according to the query string",
   "main": "lib/processImage.js",
-  "directories": {
-    "test": "test",
-    "bin": "bin"
-  },
+  "files": [
+    "bin",
+    "lib"
+  ],
   "dependencies": {
     "accepts": "^1.3.3",
     "animated-gif-detector": "^1.2.0",
