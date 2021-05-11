@@ -688,16 +688,7 @@ describe('express-processimage', () => {
             body.slice(0, 10),
             'to equal',
             Buffer.from([
-              0xff,
-              0xd8,
-              0xff,
-              0xe0,
-              0x00,
-              0x10,
-              0x4a,
-              0x46,
-              0x49,
-              0x46,
+              0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46,
             ])
           );
         }),
@@ -736,8 +727,7 @@ describe('express-processimage', () => {
       const etag = context.httpResponse.headers.get('ETag');
       return expect(
         {
-          url:
-            'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
+          url: 'GET /dialog-information.svg?svgfilter=--runScript=addBogusElement.js,--bogusElementId=theBogusElementId',
           headers: {
             'If-None-Match': etag,
           },
