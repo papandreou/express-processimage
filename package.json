@@ -25,7 +25,7 @@
     "passerror": "^1.1.1",
     "pngcrush": "^3.0.0",
     "pngquant": "^4.0.0",
-    "sharp": "^0.28.2"
+    "sharp": "^0.29.0"
   },
   "devDependencies": {
     "browser-sync": "^2.18.6",
