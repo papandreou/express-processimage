@@ -91,6 +91,11 @@ describe('express-processimage', () => {
     return expect('GET /hugearea.png?resize=100,100', 'to yield response', 413);
   });
 
+  it('refuses to process an empty image', () => {
+    config.secondGuessSourceContentType = true;
+    return expect('GET /empty.jpg?resize=100,100', 'to yield response', 415);
+  });
+
   describe('with the sharp engine', () => {
     describe('when omitting the height', () => {
       it('should do a proportional resize to the given width', () =>
