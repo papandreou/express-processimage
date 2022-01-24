@@ -1388,7 +1388,7 @@ describe('express-processimage', () => {
           });
         });
 
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         expect(spies[0], 'was called once');
       } finally {
