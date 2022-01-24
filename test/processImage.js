@@ -607,6 +607,13 @@ describe('express-processimage', () => {
           },
         }),
       }));
+    
+    it('should not have uncaught error when processing an image with bugos resize value', () => {
+      config.secondGuessSourceContentType = true;
+      return expect('GET /ancillaryChunks.png?ignoreAspectRatio&resize=22239,200&crop=center', 'to yield response', {
+        errorPassedToNext: /sharp: ignoreAspectRatio\(\) operation must follow resize/,
+      });
+    });
   });
 
   it('should run the image through pngcrush when the pngcrush CGI param is specified', () =>
