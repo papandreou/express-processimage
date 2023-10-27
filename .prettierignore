@@ -1,3 +1,6 @@
 /node_modules/
 /coverage/
 /.nyc_output/
+
+# Don't battle offline-github-changelog
+/CHANGELOG.md
