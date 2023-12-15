@@ -10,7 +10,6 @@
   "dependencies": {
     "accepts": "^1.3.3",
     "animated-gif-detector": "^1.2.0",
-    "bluebird": "^3.3.4",
     "exif-reader": "^1.0.2",
     "gm-papandreou": "^1.23.0-patch1",
     "hijackresponse": "^5.0.0",
