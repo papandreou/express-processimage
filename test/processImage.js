@@ -1274,6 +1274,22 @@ describe('express-processimage', () => {
                 }),
               });
             });
+
+            it('should refuse to resize an image to exceed the max number of pixels', () => {
+              config.maxOutputPixels = 2;
+              return expect(
+                'GET /bulb.gif?resize=100,100',
+                'to yield response',
+                {
+                  errorPassedToNext: expect.it('to satisfy', {
+                    message:
+                      'resize: Target dimensions of 100x100 exceed maxOutputPixels (2)',
+                    name: 'OutputDimensionsExceeded',
+                    OutputDimensionsExceeded: true,
+                  }),
+                }
+              );
+            });
           });
         });
       });
