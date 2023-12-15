@@ -16,7 +16,7 @@
     "gm-papandreou": "^1.23.0-patch1",
     "hijackresponse": "^5.0.0",
     "httperrors": "^2.0.1",
-    "impro": "~0.13.1",
+    "impro": "~0.14.0",
     "inkscape": "^3.0.0",
     "jpegtran": "^2.0.0",
     "mime": "^3.0.0",
@@ -25,7 +25,7 @@
     "passerror": "^1.1.1",
     "pngcrush": "^3.0.0",
     "pngquant": "^4.0.0",
-    "sharp": "^0.30.0"
+    "sharp": "^0.32.0"
   },
   "devDependencies": {
     "browser-sync": "^2.18.6",
@@ -40,7 +40,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^5.0.0",
     "express": "^4.16.3",
-    "gifsicle-stream": "^1.0.0",
+    "gifsicle": "^5.3.0",
     "magicpen": "^6.0.2",
     "magicpen-prism": "^5.0.0",
     "mocha": "^9.0.1",
