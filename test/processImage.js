@@ -5,8 +5,17 @@ const pathModule = require('path');
 const unexpected = require('unexpected');
 const sinon = require('sinon');
 const processImage = require('../lib/processImage');
-const root = `${pathModule.resolve(__dirname, '..', 'testdata')}/`;
+const memoizeSync = require('memoizesync');
 const sharp = require('sharp');
+
+const isDarwin = process.platform === 'darwin';
+const root = `${pathModule.resolve(__dirname, '..', 'testdata')}/`;
+
+const itSkipMac = isDarwin ? it.skip : it;
+
+const load = memoizeSync((fileName) =>
+  fs.readFileSync(pathModule.resolve(__dirname, '..', 'testdata', fileName))
+);
 
 describe('express-processimage', () => {
   let config;
@@ -31,7 +40,6 @@ describe('express-processimage', () => {
     .use(require('unexpected-express'))
     .use(require('unexpected-http'))
     .use(require('unexpected-image'))
-    .use(require('unexpected-resemble'))
     .use(require('unexpected-sinon'))
     .use(require('magicpen-prism'))
     .addAssertion(
@@ -167,15 +175,7 @@ describe('express-processimage', () => {
         'to yield response',
         {
           body: expect
-            .it(
-              'to resemble',
-              pathModule.resolve(
-                __dirname,
-                '..',
-                'testdata',
-                'turtleCroppedEntropy100x200.jpg'
-              )
-            )
+            .it('to equal', load('turtleCroppedEntropy100x200.jpg'))
             .and('to have metadata satisfying', {
               size: {
                 width: 100,
@@ -191,15 +191,7 @@ describe('express-processimage', () => {
         'to yield response',
         {
           body: expect
-            .it(
-              'to resemble',
-              pathModule.resolve(
-                __dirname,
-                '..',
-                'testdata',
-                'turtleCroppedAttention100x200.jpg'
-              )
-            )
+            .it('to equal', load('turtleCroppedAttention100x200.jpg'))
             .and('to have metadata satisfying', {
               size: {
                 width: 100,
@@ -526,24 +518,13 @@ describe('express-processimage', () => {
 
     it('should allow a crop operation with the gravity specified as a string', () =>
       expect('GET /turtle.jpg?resize=40,15&crop=north', 'to yield response', {
-        body: expect.it(
-          'to resemble',
-          pathModule.resolve(
-            __dirname,
-            '..',
-            'testdata',
-            'turtleCroppedNorth.jpg'
-          )
-        ),
+        body: expect.it('to equal', load('turtleCroppedNorth.jpg')),
       }));
 
     // https://github.com/lovell/sharp/issues/276
     it('should fix the ordering of the parameters to extract to be left,top,width,height', () =>
       expect('GET /turtle.jpg?extract=40,60,30,40', 'to yield response', {
-        body: expect.it(
-          'to resemble',
-          pathModule.resolve(__dirname, '..', 'testdata', 'turtleExtract.jpg')
-        ),
+        body: expect.it('to equal', load('turtleExtract.jpg')),
       }));
 
     it('should propagate a "bad extract area" error correctly', () =>
@@ -937,57 +918,29 @@ describe('express-processimage', () => {
 
   it('should work fine when cropping an item starting from top 0 and left 0', () =>
     expect('GET /turtle.jpg?extract=0,0,300,200', 'to yield response', {
-      body: expect.it(
-        'to resemble',
-        pathModule.resolve(
-          __dirname,
-          '..',
-          'testdata',
-          'turtleCropped300x200FromTopLeft.jpg'
-        )
-      ),
+      body: expect.it('to equal', load('turtleCropped300x200FromTopLeft.jpg')),
     }));
 
   describe('with the gm engine', () => {
-    it('should allow a crop operation with a gravity of center', () =>
-      expect(
+    itSkipMac('should allow a crop operation with a gravity of center', () => {
+      return expect(
         'GET /turtle.jpg?gm&resize=40,15&crop=center',
         'to yield response',
         {
-          body: expect.it(
-            'to resemble',
-            pathModule.resolve(
-              __dirname,
-              '..',
-              'testdata',
-              'turtleCroppedCenterGm.jpg'
-            ),
-            {
-              ignoreAntialiasing: true, // Ignore small pixel nuance differences observed on OSX vs. linux
-            }
-          ),
+          body: expect.it('to equal', load('turtleCroppedCenterGm.jpg')),
         }
-      ));
+      );
+    });
 
-    it('should allow a crop operation with a gravity of northeast', () =>
+    itSkipMac('should allow a crop operation with a gravity of northeast', () =>
       expect(
         'GET /turtle.jpg?gm&resize=40,15&crop=northeast',
         'to yield response',
         {
-          body: expect.it(
-            'to resemble',
-            pathModule.resolve(
-              __dirname,
-              '..',
-              'testdata',
-              'turtleCroppedNorthEastGm.jpg'
-            ),
-            {
-              ignoreAntialiasing: true, // Ignore small pixel nuance differences observed on OSX vs. linux
-            }
-          ),
+          body: expect.it('to equal', load('turtleCroppedNorthEastGm.jpg')),
         }
-      ));
+      )
+    );
 
     describe('when omitting the height', () => {
       it('should do a proportional resize to the given width', () =>
@@ -1052,11 +1005,17 @@ describe('express-processimage', () => {
 
   describe('with a GIF', () => {
     [true, false].forEach((gifsicleAvailable) => {
+      const engineName = gifsicleAvailable ? 'gifsicle' : 'im';
+
       describe(`with gifsicle ${
         gifsicleAvailable ? '' : 'un'
       }available`, () => {
         beforeEach(() => {
           config.filters.gifsicle = gifsicleAvailable;
+          // use imageMagick to produce consistently identical output
+          config.filters.gm = {
+            imageMagick: true,
+          };
           config.debug = true;
         });
 
@@ -1152,7 +1111,7 @@ describe('express-processimage', () => {
             }),
           }));
 
-        it('should support extract and rotate', () =>
+        it('should support extract', () =>
           expect('GET /bulb.gif?extract=10,10,15,15', 'to yield response', {
             headers: {
               'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm',
@@ -1165,18 +1124,10 @@ describe('express-processimage', () => {
                   height: 15,
                 },
               })
-              .and(
-                'to resemble',
-                pathModule.resolve(
-                  __dirname,
-                  '..',
-                  'testdata',
-                  'croppedBulb.gif'
-                )
-              ),
+              .and('to equal', load(`bulbCropped.${engineName}.gif`)),
           }));
 
-        it('should support rotate with a single argument', () =>
+        itSkipMac('should support rotate with a single argument', () =>
           expect('GET /bulb.gif?rotate=90', 'to yield response', {
             headers: {
               'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm',
@@ -1189,18 +1140,11 @@ describe('express-processimage', () => {
                   height: 48,
                 },
               })
-              .and(
-                'when converted to PNG to resemble',
-                pathModule.resolve(
-                  __dirname,
-                  '..',
-                  'testdata',
-                  'rotatedBulb.png'
-                )
-              ),
-          }));
+              .and('to equal', load(`bulbRotated.${engineName}.gif`)),
+          })
+        );
 
-        it('should support generating a progressive (interlaced) GIF', () =>
+        itSkipMac('should support progressive (interlaced) GIF', () =>
           expect('GET /bulb.gif?rotate=90&progressive', 'to yield response', {
             headers: {
               'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm',
@@ -1214,16 +1158,9 @@ describe('express-processimage', () => {
                 },
                 Interlace: 'Line',
               })
-              .and(
-                'when converted to PNG to resemble',
-                pathModule.resolve(
-                  __dirname,
-                  '..',
-                  'testdata',
-                  'rotatedBulb.png'
-                )
-              ),
-          }));
+              .and('to equal', load(`bulbInterlaced.${engineName}.gif`)),
+          })
+        );
 
         describe('when omitting the width', () => {
           it('should do a proportional resize to the given height', () =>
@@ -1306,15 +1243,7 @@ describe('express-processimage', () => {
             size: { width: 100, height: 100 },
             Scene: ['0 of 4', '1 of 4', '2 of 4', '3 of 4'], // Animated
           })
-          .and(
-            'to resemble',
-            pathModule.resolve(
-              __dirname,
-              '..',
-              'testdata',
-              'cat-resized-then-cropped.gif'
-            )
-          ),
+          .and('to equal', load('cat-resized-then-cropped.gif')),
       }
     ));
 
