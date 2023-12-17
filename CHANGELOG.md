@@ -1,3 +1,12 @@
+### v11.0.0 (2023-12-17)
+
+- [Call time on testing images by asserting on their resemblance.](https://github.com/papandreou/express-processimage/commit/5c4550d844654a05c66abc2c7dee0ec1669e5c51) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Remove unused bluebird dependency.](https://github.com/papandreou/express-processimage/commit/b1af310e000f89ab864f5f947351fdd4f1ff1b5d) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Remove error definitions unused since the introduction of impro.](https://github.com/papandreou/express-processimage/commit/2f80f462f78b1a698d17f78fa0075a34b050cb98) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Update impro to version 0.14.0.](https://github.com/papandreou/express-processimage/commit/76ab7b07b9105210f8ed0bacd6b65b6eb22c4f82) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [Cover an OutputDimensionsExceeded error being passed to next.](https://github.com/papandreou/express-processimage/commit/ef89ce56858c1705f750e97fd41620e4ec9107c7) ([Alex J Burke](mailto:alex@alexjeffburke.com))
+- [+1 more](https://github.com/papandreou/express-processimage/compare/v10.3.0...v11.0.0)
+
 ### v10.3.0 (2023-10-27)
 
 #### Pull requests
