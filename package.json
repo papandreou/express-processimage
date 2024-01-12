@@ -44,7 +44,7 @@
     "memoizesync": "^1.1.1",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
-    "offline-github-changelog": "^1.7.0",
+    "offline-github-changelog": "^3.0.1",
     "prettier": "^3.1.1",
     "sinon": "^17.0.1",
     "svgfilter": "^4.1.0",
