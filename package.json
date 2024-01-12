@@ -45,7 +45,7 @@
     "mocha": "^9.0.1",
     "nyc": "^15.1.0",
     "offline-github-changelog": "^1.7.0",
-    "prettier": "~2.5.0",
+    "prettier": "^3.1.1",
     "sinon": "^12.0.1",
     "svgfilter": "^4.1.0",
     "unexpected": "^12.0.5",
@@ -57,7 +57,9 @@
   "scripts": {
     "docker:build": "docker build -t express-processimage-dev .",
     "docker": "docker run --rm -it -v \"$(pwd):/home/nvm/express-processimage\" express-processimage-dev",
-    "lint": "eslint . && prettier --check '**/*.{js,md}'",
+    "prettier:check": "prettier --check '**/*.{js,md}'",
+    "prettier:write": "prettier --write '**/*.{js,md}'",
+    "lint": "eslint . && npm run prettier:check",
     "test": "mocha",
     "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- npm test && echo google-chrome coverage/lcov-report/index.html",
     "version": "offline-github-changelog --next=${npm_new_version} > CHANGELOG.md && git add CHANGELOG.md"
