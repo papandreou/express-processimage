@@ -91,14 +91,12 @@ describe('express-processimage', () => {
 
         impro = middleware._impro;
 
-        return expect(
-          express().use(middleware).use(express.static(root)),
-          'to yield exchange',
-          {
-            request: subject,
-            response: value,
-          }
-        );
+        const app = express().use(middleware).use(express.static(root));
+
+        return expect(app, 'to yield exchange', {
+          request: subject,
+          response: value,
+        });
       }
     )
     .addAssertion(
