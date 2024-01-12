@@ -72,12 +72,8 @@
   "scripts": {
     "docker:build": "docker build -t express-processimage-dev .",
     "docker": "docker run --rm -it -v \"$(pwd):/home/nvm/express-processimage\" express-processimage-dev",
-    "prettier:check": "prettier --check '**/*.{js,md}'",
-    "prettier:write": "prettier --write '**/*.{js,md}'",
-    "lint": "eslint . && npm run prettier:check",
-    "mocha": "mocha",
-    "mocha:inspect-brk": "node --inspect-brk ./node_modules/.bin/mocha",
-    "test": "npm run lint && npm run mocha",
+    "lint": "eslint . && prettier --check '**/*.{js,md}'",
+    "test": "mocha",
     "coverage": "NODE_ENV=development nyc --reporter=lcov --reporter=text --all -- npm test && echo google-chrome coverage/lcov-report/index.html",
     "version": "offline-github-changelog --next=${npm_new_version} > CHANGELOG.md && git add CHANGELOG.md"
   },
