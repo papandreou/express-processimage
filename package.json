@@ -54,21 +54,6 @@
     "unexpected-image": "^4.1.0",
     "unexpected-sinon": "^11.1.0"
   },
-  "overrides": {
-    "optimist": {
-      "minimist": "^0.2.3"
-    },
-    "lpad-align": {
-      "trim-newlines": "^3.0.1"
-    },
-    "semver-regex": "^3.1.4",
-    "gm-papandreou": {
-      "debug": "^2.6.9"
-    },
-    "cacheable-request": {
-      "http-cache-semantics": "^4.1.1"
-    }
-  },
   "scripts": {
     "docker:build": "docker build -t express-processimage-dev .",
     "docker": "docker run --rm -it -v \"$(pwd):/home/nvm/express-processimage\" express-processimage-dev",
