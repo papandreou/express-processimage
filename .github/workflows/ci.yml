@@ -10,6 +10,7 @@ jobs:
     strategy:
       matrix:
         node:
+          - '16'
           - '18'
           - '20'
     steps:
@@ -38,7 +39,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '18'
+          node-version: '16'
       - name: Install dependencies
         run: sudo add-apt-repository -y ppa:inkscape.dev/stable && sudo apt-get install -y optipng pngcrush pngquant graphicsmagick imagemagick libjpeg-turbo-progs inkscape libcairo2-dev libgif-dev libjpeg8-dev zlib1g-dev
       - run: npm install
