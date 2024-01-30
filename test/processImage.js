@@ -17,6 +17,48 @@ const load = memoizeSync((fileName) =>
   fs.readFileSync(pathModule.resolve(__dirname, '..', 'testdata', fileName))
 );
 
+/*
+  Sample guide for updating image test data:
+    * Suppose, the original test case looks like this:
+      it('should do an entropy-based crop', () =>
+        expect(
+          'GET /turtle.jpg?resize=100,200&crop=entropy',
+          'to yield response',
+          {
+            body: expect
+              .it('to equal', load('turtleCroppedEntropy100x200.jpg'))
+              .and('to have metadata satisfying', {
+                size: {
+                  width: 100,
+                  height: 200
+                }
+              })
+          }
+        ));
+    * Rename the concerned file to the new name (turtleCroppedEntropy100x200.jpg -> turtleCroppedEntropy100x200.old.jpg)
+    * Now, temporarily update the test case in a way to make it pass, like:
+      it('should do an entropy-based crop', () =>
+        expect(
+          'GET /turtle.jpg?resize=100,200&crop=entropy',
+          'to yield response',
+          {
+            statusCode: 200
+          }
+        ).then((context) => {
+          const outputPath = pathModule.resolve(root, 'turtleCroppedEntropy100x200.jpg');
+          const body = context.httpResponse.body;
+          fs.writeFileSync(outputPath, body);
+        }));
+    * Run the test case. This will create a new file with the new name (turtleCroppedEntropy100x200.jpg)
+    * Now, compare the new file with the old file using appropriate tool, if required
+    * If the new file is:
+      * Correct, then:
+        * revert the test case to the original state
+        * delete the old file (turtleCroppedEntropy100x200.old.jpg)
+      * Incorrect, then:
+        * revert the test case to the original state and investigate
+*/
+
 describe('express-processimage', () => {
   let config;
   let impro;
@@ -49,14 +91,12 @@ describe('express-processimage', () => {
 
         impro = middleware._impro;
 
-        return expect(
-          express().use(middleware).use(express.static(root)),
-          'to yield exchange',
-          {
-            request: subject,
-            response: value,
-          }
-        );
+        const app = express().use(middleware).use(express.static(root));
+
+        return expect(app, 'to yield exchange', {
+          request: subject,
+          response: value,
+        });
       }
     )
     .addAssertion(
