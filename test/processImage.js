@@ -1398,17 +1398,15 @@ describe('express-processimage', () => {
         }),
       });
     });
-    // it('should return the correct contentType of a wrongly named ico', () => {
-    //   config.debug = true;
-    //   return expect('GET /reallyaico.gif?metadata', 'to yield response', {
-    //     headers: {
-    //       'X-Express-Processimage': 'metadata',
-    //     },
-    //     body: {
-    //       contentType: expect.it('to equal', 'image/x-icon')
-    //     },
-    //   });
-    // });
+    it('should return the correct contentType of a wrongly named ico', () => {
+      config.debug = true;
+      return expect('GET /reallyaico.gif?metadata', 'to yield response', {
+        body: {
+          format: expect.it('to equal', 'ico'),
+          contentType: expect.it('to equal', 'image/x-icon'),
+        },
+      });
+    });
     it('should recover gracefully when attempting to process a wrongly named jpeg', () => {
       config.debug = true;
       return expect('GET /reallyajpeg.gif?resize=40,35', 'to yield response', {
