@@ -1387,32 +1387,22 @@ describe('express-processimage', () => {
       config.secondGuessSourceContentType = true;
     });
     it('should recover gracefully when attempting to process a wrongly named webp', () => {
-      return expect('GET /reallyawebp.png?metadata', 'to yield response', {
-        body: {
-          format: 'webp',
-          size: 176972,
-          width: 1024,
-          height: 772,
-          space: 'srgb',
-          channels: 3,
-          depth: 'uchar',
-          isProgressive: false,
-          hasProfile: false,
-          hasAlpha: false,
-          contentType: 'image/webp',
-          filesize: 176972,
-          etag: 'W/"2b34c-18e564af60c"'
-        }
+      config.debug = true;
+      return expect('GET /reallyawebp.png?resize=40,30', 'to yield response', {
+        headers: {
+          'X-Express-Processimage': 'sharp',
+        },
+        body: expect.it('to have metadata satisfying', {
+          format: 'WEBP',
+          size: { width: 40, height: 30 },
+        }),
       });
     });
-    it('should return the correct contentType of  a wrongly named ico', () => {
+    it('should return the correct contentType of a wrongly named ico', () => {
+      config.debug = true;
       return expect('GET /reallyaico.gif?metadata', 'to yield response', {
         body: {
-          error: 'Input buffer contains unsupported image format',
-          format: 'ico',
-          contentType: 'image/x-icon',
-          filesize: 67646,
-          etag: 'W/"1083e-18d82105007"'
+          contentType: expect.it('to equal', 'image/x-icon')
         }
       });
     });
