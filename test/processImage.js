@@ -1386,6 +1386,7 @@ describe('express-processimage', () => {
     beforeEach(() => {
       config.secondGuessSourceContentType = true;
     });
+
     it('should recover gracefully when attempting to process a wrongly named jpeg', () => {
       config.debug = true;
       return expect('GET /reallyajpeg.gif?resize=40,35', 'to yield response', {
