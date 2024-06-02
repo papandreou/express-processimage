@@ -1,4 +1,11 @@
-### v11.0.0 (2023-12-17)
+### v11.1.0 (2024-06-02)
+
+- [eslint --fix .](https://github.com/papandreou/express-processimage/commit/e41c8129938d39205724162207893a351c28fbf1) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Enable the mocha\/consistent-spacing-between-blocks rule](https://github.com/papandreou/express-processimage/commit/a41e38b9762d335c60a495ad264e9afabd1ff121) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [npm i --save-dev eslint-plugin-mocha@latest](https://github.com/papandreou/express-processimage/commit/5c1a5981219337737e7cf92642abe543f45a3993) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Refresh development dependencies and use prettier 3 for formatting \(\#202\)](https://github.com/papandreou/express-processimage/commit/4d637020b0b8efd9bf675ecac95ce9ad510d536c) ([Priyank Parashar](mailto:paras20xx@users.noreply.github.com))
+
+### v11.0.0 (2023-12-18)
 
 - [Call time on testing images by asserting on their resemblance.](https://github.com/papandreou/express-processimage/commit/5c4550d844654a05c66abc2c7dee0ec1669e5c51) ([Alex J Burke](mailto:alex@alexjeffburke.com))
 - [Remove unused bluebird dependency.](https://github.com/papandreou/express-processimage/commit/b1af310e000f89ab864f5f947351fdd4f1ff1b5d) ([Alex J Burke](mailto:alex@alexjeffburke.com))
@@ -427,12 +434,9 @@
 
 - [Make sure to close the connection properly when an invalid operation is attempted.](https://github.com/papandreou/express-processimage/commit/053869ca79479a1c5e8a384a6999a5863e1735f5) ([Andreas Lind](mailto:andreas@one.com))
 - [Test suite: Drop the skipIf construct now that sharp is always available.](https://github.com/papandreou/express-processimage/commit/6fc268d4249eacdeccbd27f03209f7532e695cb8) ([Andreas Lind](mailto:andreas@one.com))
-
-### v5.6.2 (2016-04-21)
-
 - [Minor version bump for sharp library](https://github.com/papandreou/express-processimage/commit/162f51d1951eed31554d8d49c3fdb2e700887fbe) ([Priyank Parashar](mailto:priyank@one.com))
 
-### v5.5.1 (2016-04-21)
+### v5.6.0
 
 - [Now using sharp library v0.14.0 \(patched version\)](https://github.com/papandreou/express-processimage/commit/d48e48d3ee255ac426b822e96f7140bc3bd28fe5) ([Priyank Parashar](mailto:priyank@one.com))
 - [Revert "Now using sharp library v0.14.0 \(patched version\)"](https://github.com/papandreou/express-processimage/commit/1d4b374f35e3effa4ef5925cdda0c4181071e9ec) ([Priyank Parashar](mailto:priyank@one.com))
@@ -543,6 +547,7 @@
 - [Ensure filters are destroyed if a filter error occurs](https://github.com/papandreou/express-processimage/commit/522cd0f9ddd62798aa59a89ab03412b00de65b56) ([Joel Mukuthu](mailto:jmu@one.com))
 
 ### v4.5.3
+
 - [Changes to support resize + crop=center for gm](https://github.com/papandreou/express-processimage/commit/03a588622d5763d9ce79f4eef0a017e4bba1240f) ([Priyank Parashar](mailto:priyank@one.com))
 
 ### v4.5.2 (2016-02-29)
@@ -790,6 +795,7 @@
 - [Added command line tool for doing the same thing as the middleware.](https://github.com/papandreou/express-processimage/commit/188da4c3486f3bb9e7332948b30c3250db84a75f) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.12
+
 #### Pull requests
 
 - [#3](https://github.com/papandreou/express-processimage/pull/3) Fix git repository URL ([Jeppe Toustrup](mailto:tenzer@tenzer.dk))
@@ -801,6 +807,7 @@
 - [Update pngquant to 0.1.0.](https://github.com/papandreou/express-processimage/commit/241d441cf6ec9d730720dc37a6baf321207fc425) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.11
+
 - [Release 0.1.11.](https://github.com/papandreou/express-processimage/commit/0a0dc5124b10dc6d2894e82b9825b0128b99d52b) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [package.json: Indent with 2 spaces.](https://github.com/papandreou/express-processimage/commit/2ca7465b7e0df02af6506e5fb9672b205c5e6dd4) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update inkscape to 0.0.3.](https://github.com/papandreou/express-processimage/commit/c628de4e92ef001a649814cad85ca9803938fd79) ([Andreas Lind Petersen](mailto:andreas@one.com))
@@ -809,14 +816,17 @@
 - [+1 more](https://github.com/papandreou/express-processimage/compare/v0.1.10...v0.1.11)
 
 ### v0.1.10
+
 - [Release 0.1.10.](https://github.com/papandreou/express-processimage/commit/18fe1917f01444be407651898c9c5a0a78839e17) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Rolled back 5a6dd93 as it spooks livestyle. We'll have to live with the ETags not changing until I figure something out :\/](https://github.com/papandreou/express-processimage/commit/c32182828c5d1cf0923ae7d704a1acde1e0bdba5) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.9
+
 - [Release 0.1.9.](https://github.com/papandreou/express-processimage/commit/d53d24c8fd47fdda2fda3ff13ac9068043b70c2e) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update svgfilter to 0.3.1 and include emitted 'etagFragment' events in the ETag for the produced image so conditional GET works correctly with external JavaScripts.](https://github.com/papandreou/express-processimage/commit/5a6dd93676f38b338ac41d8259053b63bfd1cd5f) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.8
+
 - [Release 0.1.8.](https://github.com/papandreou/express-processimage/commit/983707f2dcb6ce926841ab9fed6ef11e80a2b2df) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Fixed the SvgFilter arguments \(external --runScript was broken for files not residing at the root level\).](https://github.com/papandreou/express-processimage/commit/dcc8496dbc94391e2d984f0182d1412a257a3e46) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Added an svgfilter=... test and updated the docs.](https://github.com/papandreou/express-processimage/commit/f96ce2c5c75f74e0010d845e73a68861a3d77a05) ([Andreas Lind Petersen](mailto:andreas@one.com))
@@ -825,10 +835,12 @@
 - [+1 more](https://github.com/papandreou/express-processimage/compare/v0.1.7...v0.1.8)
 
 ### v0.1.7
+
 - [Release 0.1.7.](https://github.com/papandreou/express-processimage/commit/28a0659edf4aa1479a7108d8150aa35dab113310) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update svgfilter to 0.2.2.](https://github.com/papandreou/express-processimage/commit/6f4da0b24a24713489b711183249b4870f75f6a8) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.6
+
 #### Pull requests
 
 - [#1](https://github.com/papandreou/express-processimage/pull/1) Attempt to make svgfilter optional to ease windows installation ([Peter Müller](mailto:munter@fumle.dk))
@@ -838,49 +850,60 @@
 - [Release 0.1.6.](https://github.com/papandreou/express-processimage/commit/cdac41d7aef443b3ab640f524dcb7fd5cf9d670b) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.5
+
 - [Release 0.1.5.](https://github.com/papandreou/express-processimage/commit/59866a57e657bcb7b338ef711097b7e9e2380beb) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update svgfilter to 0.2.1.](https://github.com/papandreou/express-processimage/commit/31fd5fb60cc4c30a8c0568c8487238aa926ca1e8) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.4
+
 - [Release 0.1.4.](https://github.com/papandreou/express-processimage/commit/50a683583eda71a26057a5bac598fa59855b1e87) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update svgfilter to 0.2.0.](https://github.com/papandreou/express-processimage/commit/1ef4934da7e3493c46f387c1da987813163c8483) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.3
+
 - [Release 0.1.3.](https://github.com/papandreou/express-processimage/commit/06036598028d5b2a1161a180b7520b2577399334) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update svgfilter to 0.1.1.](https://github.com/papandreou/express-processimage/commit/e34619f220c8208b2bc10d76973c474ce9e52914) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.2
+
 - [Release 0.1.2.](https://github.com/papandreou/express-processimage/commit/72f1339f935aba0a4b89ab7af37336b935973432) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Added svgfilter support.](https://github.com/papandreou/express-processimage/commit/50ad2dccb440e01b466ba3469f018c98f8b78e55) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.1
+
 - [Release 0.1.1.](https://github.com/papandreou/express-processimage/commit/bfac16e781eb54e7211489fc79ed3b6aba0ca22e) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update inkscape to 0.0.2.](https://github.com/papandreou/express-processimage/commit/76dc9faf227b397b140d5c78963fd3ca2e77f672) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.1.0
+
 - [Release 0.1.0.](https://github.com/papandreou/express-processimage/commit/97e21b641efe7ab9b02543f61be95bf7a2215d67) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Added support for inkscape using node-inkscape.](https://github.com/papandreou/express-processimage/commit/038c43b0fab5fdb6a6c2ad71f62ebd073cda808e) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.0.6
+
 - [Release 0.0.6.](https://github.com/papandreou/express-processimage/commit/38ca2748963c833fb5638e1d10e62819a5670fb6) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update jpegtran to 0.0.4 and optipng to 0.0.4.](https://github.com/papandreou/express-processimage/commit/d81ae41cd9abefa77175066c7698ac57393fccb9) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.0.5
+
 - [Release 0.0.5.](https://github.com/papandreou/express-processimage/commit/63f132f97dce9602bc502e310f2832aa9b47d3a5) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [Update jpegtran to 0.0.3 and optipng to 0.0.3.](https://github.com/papandreou/express-processimage/commit/9b4c1efa6b745a2fe3528e8164a49ae9db7f5887) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.0.4
+
 - [Release 0.0.4.](https://github.com/papandreou/express-processimage/commit/f1b9642ed7eeb86e7ed1d6eae5a81423c313c773) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [getFiltersAndTargetContentTypeFromQueryString: Also include an array of operation names in the returned object.](https://github.com/papandreou/express-processimage/commit/8e57671da981f3d91188398a0d9a8c4c4c690912) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.0.3
+
 - [Release 0.0.3.](https://github.com/papandreou/express-processimage/commit/257ea97636eba1617052d667a9fb13e7cbbe5286) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [getFiltersAndTargetContentTypeFromQueryString: Fixed end method of the readable\/writable stream wrapped around the gm module.](https://github.com/papandreou/express-processimage/commit/07dec854e0f22d52dd6c9489eaa46c8fab1638a8) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.0.2
+
 - [Release 0.0.2.](https://github.com/papandreou/express-processimage/commit/3ddee72da8746ac8a3ab786ab68358281a8a2174) ([Andreas Lind Petersen](mailto:andreas@one.com))
 - [getFiltersAndTargetContentTypeFromQueryString: Also report which fragments of the query string were used and which were not.](https://github.com/papandreou/express-processimage/commit/368a1c398d509d2bfd07d7f74b946e51e16bc80a) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
 ### v0.0.1
-- [Initial commit, release 0.0.1.](https://github.com/papandreou/express-processimage/commit/845cddf7d2df404f52b7f60d88ab77503ede5754) ([Andreas Lind Petersen](mailto:andreas@one.com))
 
+- [Initial commit, release 0.0.1.](https://github.com/papandreou/express-processimage/commit/845cddf7d2df404f52b7f60d88ab77503ede5754) ([Andreas Lind Petersen](mailto:andreas@one.com))
