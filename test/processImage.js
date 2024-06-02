@@ -1386,6 +1386,7 @@ describe('express-processimage', () => {
     beforeEach(() => {
       config.secondGuessSourceContentType = true;
     });
+
     it('should recover gracefully when attempting to process a wrongly named webp', () => {
       config.debug = true;
       return expect('GET /reallyawebp.png?resize=40,30', 'to yield response', {
@@ -1398,6 +1399,7 @@ describe('express-processimage', () => {
         }),
       });
     });
+
     it('should return the correct contentType of a wrongly named ico', () => {
       config.debug = true;
       return expect('GET /reallyaico.gif?metadata', 'to yield response', {
@@ -1407,6 +1409,7 @@ describe('express-processimage', () => {
         },
       });
     });
+
     it('should recover gracefully when attempting to process a wrongly named jpeg', () => {
       config.debug = true;
       return expect('GET /reallyajpeg.gif?resize=40,35', 'to yield response', {
