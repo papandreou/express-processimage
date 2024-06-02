@@ -1386,6 +1386,27 @@ describe('express-processimage', () => {
     beforeEach(() => {
       config.secondGuessSourceContentType = true;
     });
+    it('should recover gracefully when attempting to process a wrongly named webp', () => {
+      config.debug = true;
+      return expect('GET /reallyawebp.png?resize=40,30', 'to yield response', {
+        headers: {
+          'X-Express-Processimage': 'sharp',
+        },
+        body: expect.it('to have metadata satisfying', {
+          format: 'WEBP',
+          size: { width: 40, height: 30 },
+        }),
+      });
+    });
+    it('should return the correct contentType of a wrongly named ico', () => {
+      config.debug = true;
+      return expect('GET /reallyaico.gif?metadata', 'to yield response', {
+        body: {
+          format: expect.it('to equal', 'ico'),
+          contentType: expect.it('to equal', 'image/x-icon'),
+        },
+      });
+    });
     it('should recover gracefully when attempting to process a wrongly named jpeg', () => {
       config.debug = true;
       return expect('GET /reallyajpeg.gif?resize=40,35', 'to yield response', {
