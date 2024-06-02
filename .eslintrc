@@ -9,6 +9,7 @@
     "mocha/no-exclusive-tests": "error",
     "mocha/no-nested-tests": "error",
     "mocha/no-identical-title": "error",
+    "mocha/consistent-spacing-between-blocks": "error",
     "prefer-const": [
       "error",
       {
