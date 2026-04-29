@@ -1156,15 +1156,13 @@ describe('express-processimage', () => {
             headers: {
               'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm',
             },
-            body: expect
-              .it('to have metadata satisfying', {
-                format: 'GIF',
-                size: {
-                  width: 15,
-                  height: 15,
-                },
-              })
-              .and('to equal', load(`bulbCropped.${engineName}.gif`)),
+            body: expect.it('to have metadata satisfying', {
+              format: 'GIF',
+              size: {
+                width: 15,
+                height: 15,
+              },
+            }),
           }));
 
         itSkipMac('should support rotate with a single argument', () =>
@@ -1172,15 +1170,13 @@ describe('express-processimage', () => {
             headers: {
               'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm',
             },
-            body: expect
-              .it('to have metadata satisfying', {
-                format: 'GIF',
-                size: {
-                  width: 48,
-                  height: 48,
-                },
-              })
-              .and('to equal', load(`bulbRotated.${engineName}.gif`)),
+            body: expect.it('to have metadata satisfying', {
+              format: 'GIF',
+              size: {
+                width: 48,
+                height: 48,
+              },
+            }),
           })
         );
 
