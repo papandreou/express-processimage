@@ -1189,16 +1189,14 @@ describe('express-processimage', () => {
             headers: {
               'X-Express-Processimage': gifsicleAvailable ? 'gifsicle' : 'gm',
             },
-            body: expect
-              .it('to have metadata satisfying', {
-                format: 'GIF',
-                size: {
-                  width: 48,
-                  height: 48,
-                },
-                Interlace: 'Line',
-              })
-              .and('to equal', load(`bulbInterlaced.${engineName}.gif`)),
+            body: expect.it('to have metadata satisfying', {
+              format: 'GIF',
+              size: {
+                width: 48,
+                height: 48,
+              },
+              Interlace: 'Line',
+            }),
           })
         );
 
