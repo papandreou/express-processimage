@@ -1045,8 +1045,6 @@ describe('express-processimage', () => {
 
   describe('with a GIF', () => {
     [true, false].forEach((gifsicleAvailable) => {
-      const engineName = gifsicleAvailable ? 'gifsicle' : 'im';
-
       describe(`with gifsicle ${
         gifsicleAvailable ? '' : 'un'
       }available`, () => {
