@@ -1459,6 +1459,80 @@ describe('express-processimage', () => {
     });
   });
 
+  it('should call next with the original stream Error (not the number 500) when the hijacked readable emits an error before the first data chunk with secondGuessSourceContentType enabled', () => {
+    config.secondGuessSourceContentType = true;
+
+    // Replace hijackresponse in the require cache with a controllable mock so
+    // we can trigger the 'error' event on the hijacked readable directly.
+    // processImage must be re-loaded so it captures the mock reference.
+    const { EventEmitter } = require('events');
+    const hijackresponsePath = require.resolve('hijackresponse');
+    const processImagePath = require.resolve('../lib/processImage');
+    const streamError = new Error('upstream stream error');
+    let controlledReadable;
+
+    const mockHijackResponse = (res, next) => {
+      controlledReadable = new EventEmitter();
+      controlledReadable.pipe = () => controlledReadable;
+      controlledReadable.unpipe = () => {};
+
+      let resolveHijack;
+      const hijackPromise = new Promise((resolve, reject) => {
+        resolveHijack = resolve;
+      });
+
+      // Intercept writeHead so we can delay promise resolution until the
+      // downstream has set response headers (matching real hijackresponse flow).
+      // We do NOT call the original writeHead here — headers are held back so
+      // the error handler can still write a fresh response.
+      res.writeHead = (...args) => {
+        if (args[0]) res.statusCode = args[0];
+        res.writeHead = res.constructor.prototype.writeHead.bind(res);
+        resolveHijack({
+          readable: controlledReadable,
+          writable: res,
+          destroyAndRestore: () => {},
+        });
+      };
+
+      // Advance the Express middleware chain (mirrors real hijackresponse).
+      setImmediate(next);
+      return hijackPromise;
+    };
+
+    const originalExports = require.cache[hijackresponsePath].exports;
+    require.cache[hijackresponsePath].exports = mockHijackResponse;
+    delete require.cache[processImagePath];
+    const processImageMocked = require(processImagePath);
+
+    const app = express()
+      .use(processImageMocked(config))
+      .use((req, res) => {
+        res.setHeader('Content-Type', 'image/jpeg');
+        res.writeHead(200);
+        // The promise resolved inside writeHead above queues processImage's
+        // .then() as a microtask.  setImmediate fires only after all pending
+        // microtasks, so the error listener is guaranteed to be registered.
+        setImmediate(() => controlledReadable.emit('error', streamError));
+      });
+
+    return expect(app, 'to yield exchange', {
+      request: 'GET /turtle.jpg?resize=100,100',
+      response: {
+        // Bug: next(500) passes a number — unexpected-express converts it to
+        //      Error('500') so errorPassedToNext.message === '500'.
+        // Fix: next(err) passes the original stream error — message matches.
+        errorPassedToNext: expect.it('to satisfy', {
+          message: 'upstream stream error',
+        }),
+      },
+    }).finally(() => {
+      require.cache[hijackresponsePath].exports = originalExports;
+      delete require.cache[processImagePath];
+      require(processImagePath);
+    });
+  });
+
   it('should send an error response when an out-of-bounds extract operation is requested', () => {
     const server = express()
       .use(processImage(config))
