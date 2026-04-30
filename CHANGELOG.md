@@ -1,3 +1,16 @@
+### v11.2.1 (2026-04-30)
+
+#### Pull requests
+
+- [#207](https://github.com/papandreou/express-processimage/pull/207) Fix: pass stream error to next and call destroyAndRestore\(\) in second… ([alexander](mailto:alexander@one.com))
+
+#### Commits to master
+
+- [Remove unused var](https://github.com/papandreou/express-processimage/commit/ce4950cb778fb59fd881c0e00627f34b3c1a83b7) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Simplify more tests](https://github.com/papandreou/express-processimage/commit/3c69d947124d9b39a43e0e605595b1a5ec360af8) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Simplify failing test to not do a binary comparison](https://github.com/papandreou/express-processimage/commit/c596191ef50c78ad4704f444e5387ae3a45c2c5d) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+- [Switch to ubuntu-latest](https://github.com/papandreou/express-processimage/commit/df7f29303e02b8fe141f1a3a748717503b055986) ([Andreas Lind](mailto:andreaslindpetersen@gmail.com))
+
 ### v11.1.0 (2024-06-02)
 
 #### Pull requests
