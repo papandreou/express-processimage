@@ -64,7 +64,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/papandreou/express-processimage.git"
+    "url": "git+https://github.com/papandreou/express-processimage.git"
   },
   "keywords": [
     "express",
